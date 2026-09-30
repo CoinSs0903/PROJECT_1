@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Thảo luận & Hỏi đáp kiến trúc (Discussions)
+    url: https://github.com
+    about: Hãy mở thảo luận nếu bạn có câu hỏi hoặc đề xuất ý tưởng kiến trúc mới trước khi tạo Issue.
