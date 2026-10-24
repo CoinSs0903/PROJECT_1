@@ -1,0 +1,616 @@
+<mxfile host="Electron" agent="Antigravity IDE" version="22.1.0" type="device">
+  <diagram id="auction_db_schema" name="Sơ đồ ERD 19 Bảng Đấu Giá">
+    <mxGraphModel dx="1800" dy="1100" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2000" pageHeight="1500" background="#0b0f19" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="t_users" value="users" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=32;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#f59e0b;strokeWidth=2;fontColor=#f59e0b;fontSize=14;fontFamily=Segoe UI;rounded=1;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="60" y="80" width="280" height="344" as="geometry" />
+        </mxCell>
+        <mxCell id="t_users_c_0" value="[PK] id: BIGINT" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#ef4444;fontStyle=1;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_users">
+          <mxGeometry y="32" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_users_c_1" value="[UK] username: VARCHAR(50)" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#c084fc;fontStyle=1;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_users">
+          <mxGeometry y="56" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_users_c_2" value="[UK] email: VARCHAR(100)" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#c084fc;fontStyle=1;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_users">
+          <mxGeometry y="80" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_users_c_3" value="password_hash: VARCHAR(255)" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_users">
+          <mxGeometry y="104" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_users_c_4" value="full_name: VARCHAR(100)" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_users">
+          <mxGeometry y="128" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_users_c_5" value="[UK] citizen_id: VARCHAR(20) (NULL)" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#c084fc;fontStyle=1;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_users">
+          <mxGeometry y="152" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_users_c_6" value="phone_number: VARCHAR(20) (NULL)" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_users">
+          <mxGeometry y="176" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_users_c_7" value="bank_name: VARCHAR(100) (NULL)" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_users">
+          <mxGeometry y="200" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_users_c_8" value="bank_account_number: VARCHAR(50) (NULL)" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_users">
+          <mxGeometry y="224" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_users_c_9" value="role: VARCHAR(20)" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_users">
+          <mxGeometry y="248" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_users_c_10" value="status: VARCHAR(20)" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_users">
+          <mxGeometry y="272" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_users_c_11" value="created_at: DATETIME(3)" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_users">
+          <mxGeometry y="296" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_users_c_12" value="updated_at: DATETIME(3)" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_users">
+          <mxGeometry y="320" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_seller_profiles" value="seller_profiles" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=32;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#f59e0b;strokeWidth=2;fontColor=#f59e0b;fontSize=14;fontFamily=Segoe UI;rounded=1;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="60" y="480" width="280" height="248" as="geometry" />
+        </mxCell>
+        <mxCell id="t_seller_profiles_c_0" value="[PK] id: BIGINT" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#ef4444;fontStyle=1;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_seller_profiles">
+          <mxGeometry y="32" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_seller_profiles_c_1" value="[FK,UK] user_id: BIGINT" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#38bdf8;fontStyle=1;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_seller_profiles">
+          <mxGeometry y="56" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_seller_profiles_c_2" value="profile_info: TEXT (NULL)" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_seller_profiles">
+          <mxGeometry y="80" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_seller_profiles_c_3" value="status: VARCHAR(30)" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_seller_profiles">
+          <mxGeometry y="104" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_seller_profiles_c_4" value="rejected_reason: TEXT (NULL)" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_seller_profiles">
+          <mxGeometry y="128" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_seller_profiles_c_5" value="[FK] reviewed_by: BIGINT (NULL)" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#38bdf8;fontStyle=1;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_seller_profiles">
+          <mxGeometry y="152" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_seller_profiles_c_6" value="reviewed_at: DATETIME(3) (NULL)" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_seller_profiles">
+          <mxGeometry y="176" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_seller_profiles_c_7" value="created_at: DATETIME(3)" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_seller_profiles">
+          <mxGeometry y="200" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_seller_profiles_c_8" value="updated_at: DATETIME(3)" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_seller_profiles">
+          <mxGeometry y="224" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_notifications" value="notifications" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=32;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#f59e0b;strokeWidth=2;fontColor=#f59e0b;fontSize=14;fontFamily=Segoe UI;rounded=1;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="60" y="780" width="280" height="224" as="geometry" />
+        </mxCell>
+        <mxCell id="t_notifications_c_0" value="[PK] id: BIGINT" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#ef4444;fontStyle=1;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_notifications">
+          <mxGeometry y="32" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_notifications_c_1" value="[FK] user_id: BIGINT" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#38bdf8;fontStyle=1;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_notifications">
+          <mxGeometry y="56" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_notifications_c_2" value="title: VARCHAR(255)" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_notifications">
+          <mxGeometry y="80" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_notifications_c_3" value="content: TEXT" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_notifications">
+          <mxGeometry y="104" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_notifications_c_4" value="type: VARCHAR(50)" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_notifications">
+          <mxGeometry y="128" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_notifications_c_5" value="reference_id: BIGINT (NULL)" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_notifications">
+          <mxGeometry y="152" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_notifications_c_6" value="is_read: BOOLEAN" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_notifications">
+          <mxGeometry y="176" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_notifications_c_7" value="created_at: DATETIME(3)" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_notifications">
+          <mxGeometry y="200" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_audit_logs" value="audit_logs" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=32;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#f59e0b;strokeWidth=2;fontColor=#f59e0b;fontSize=14;fontFamily=Segoe UI;rounded=1;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="60" y="1050" width="280" height="248" as="geometry" />
+        </mxCell>
+        <mxCell id="t_audit_logs_c_0" value="[PK] id: BIGINT" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#ef4444;fontStyle=1;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_audit_logs">
+          <mxGeometry y="32" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_audit_logs_c_1" value="entity_type: VARCHAR(50)" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_audit_logs">
+          <mxGeometry y="56" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_audit_logs_c_2" value="entity_id: BIGINT" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_audit_logs">
+          <mxGeometry y="80" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_audit_logs_c_3" value="action: VARCHAR(50)" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_audit_logs">
+          <mxGeometry y="104" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_audit_logs_c_4" value="[FK] performed_by: BIGINT (NULL)" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#38bdf8;fontStyle=1;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_audit_logs">
+          <mxGeometry y="128" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_audit_logs_c_5" value="data_before: JSON (NULL)" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_audit_logs">
+          <mxGeometry y="152" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_audit_logs_c_6" value="data_after: JSON (NULL)" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_audit_logs">
+          <mxGeometry y="176" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_audit_logs_c_7" value="ip_address: VARCHAR(50) (NULL)" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_audit_logs">
+          <mxGeometry y="200" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_audit_logs_c_8" value="created_at: DATETIME(3)" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_audit_logs">
+          <mxGeometry y="224" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_wallets" value="wallets" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=32;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#f59e0b;strokeWidth=2;fontColor=#f59e0b;fontSize=14;fontFamily=Segoe UI;rounded=1;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="400" y="80" width="280" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="t_wallets_c_0" value="[PK] id: BIGINT" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#ef4444;fontStyle=1;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_wallets">
+          <mxGeometry y="32" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_wallets_c_1" value="[FK,UK] user_id: BIGINT (NULL)" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#38bdf8;fontStyle=1;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_wallets">
+          <mxGeometry y="56" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_wallets_c_2" value="balance: BIGINT" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_wallets">
+          <mxGeometry y="80" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_wallets_c_3" value="locked_balance: BIGINT" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_wallets">
+          <mxGeometry y="104" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_wallets_c_4" value="status: VARCHAR(20)" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_wallets">
+          <mxGeometry y="128" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_wallets_c_5" value="created_at: DATETIME(3)" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_wallets">
+          <mxGeometry y="152" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_wallets_c_6" value="updated_at: DATETIME(3)" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_wallets">
+          <mxGeometry y="176" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_transactions" value="transactions" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=32;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#f59e0b;strokeWidth=2;fontColor=#f59e0b;fontSize=14;fontFamily=Segoe UI;rounded=1;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="400" y="340" width="280" height="272" as="geometry" />
+        </mxCell>
+        <mxCell id="t_transactions_c_0" value="[PK] id: BIGINT" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#ef4444;fontStyle=1;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_transactions">
+          <mxGeometry y="32" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_transactions_c_1" value="[FK] wallet_id: BIGINT" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#38bdf8;fontStyle=1;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_transactions">
+          <mxGeometry y="56" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_transactions_c_2" value="transaction_type: VARCHAR(30)" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_transactions">
+          <mxGeometry y="80" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_transactions_c_3" value="amount: BIGINT" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_transactions">
+          <mxGeometry y="104" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_transactions_c_4" value="balance_before: BIGINT" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_transactions">
+          <mxGeometry y="128" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_transactions_c_5" value="balance_after: BIGINT" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_transactions">
+          <mxGeometry y="152" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_transactions_c_6" value="reference_type: VARCHAR(50) (NULL)" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_transactions">
+          <mxGeometry y="176" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_transactions_c_7" value="reference_id: BIGINT (NULL)" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_transactions">
+          <mxGeometry y="200" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_transactions_c_8" value="description: VARCHAR(255) (NULL)" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_transactions">
+          <mxGeometry y="224" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_transactions_c_9" value="created_at: DATETIME(3)" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_transactions">
+          <mxGeometry y="248" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_complaints" value="complaints" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=32;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#f59e0b;strokeWidth=2;fontColor=#f59e0b;fontSize=14;fontFamily=Segoe UI;rounded=1;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="400" y="660" width="280" height="296" as="geometry" />
+        </mxCell>
+        <mxCell id="t_complaints_c_0" value="[PK] id: BIGINT" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#ef4444;fontStyle=1;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_complaints">
+          <mxGeometry y="32" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_complaints_c_1" value="[FK] auction_id: BIGINT" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#38bdf8;fontStyle=1;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_complaints">
+          <mxGeometry y="56" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_complaints_c_2" value="[FK] user_id: BIGINT" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#38bdf8;fontStyle=1;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_complaints">
+          <mxGeometry y="80" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_complaints_c_3" value="content: TEXT" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_complaints">
+          <mxGeometry y="104" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_complaints_c_4" value="evidence_url: VARCHAR(500) (NULL)" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_complaints">
+          <mxGeometry y="128" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_complaints_c_5" value="status: VARCHAR(30)" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_complaints">
+          <mxGeometry y="152" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_complaints_c_6" value="resolution_note: TEXT (NULL)" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_complaints">
+          <mxGeometry y="176" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_complaints_c_7" value="[FK] resolved_by: BIGINT (NULL)" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#38bdf8;fontStyle=1;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_complaints">
+          <mxGeometry y="200" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_complaints_c_8" value="resolved_at: DATETIME(3) (NULL)" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_complaints">
+          <mxGeometry y="224" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_complaints_c_9" value="created_at: DATETIME(3)" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_complaints">
+          <mxGeometry y="248" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_complaints_c_10" value="updated_at: DATETIME(3)" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_complaints">
+          <mxGeometry y="272" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_system_configs" value="system_configs" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=32;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#f59e0b;strokeWidth=2;fontColor=#f59e0b;fontSize=14;fontFamily=Segoe UI;rounded=1;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="400" y="1000" width="280" height="152" as="geometry" />
+        </mxCell>
+        <mxCell id="t_system_configs_c_0" value="[PK] id: BIGINT" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#ef4444;fontStyle=1;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_system_configs">
+          <mxGeometry y="32" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_system_configs_c_1" value="[UK] config_key: VARCHAR(100)" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#c084fc;fontStyle=1;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_system_configs">
+          <mxGeometry y="56" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_system_configs_c_2" value="config_value: VARCHAR(255)" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_system_configs">
+          <mxGeometry y="80" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_system_configs_c_3" value="description: VARCHAR(255) (NULL)" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_system_configs">
+          <mxGeometry y="104" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_system_configs_c_4" value="updated_at: DATETIME(3)" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_system_configs">
+          <mxGeometry y="128" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_holidays" value="holidays" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=32;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#f59e0b;strokeWidth=2;fontColor=#f59e0b;fontSize=14;fontFamily=Segoe UI;rounded=1;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="400" y="1200" width="280" height="104" as="geometry" />
+        </mxCell>
+        <mxCell id="t_holidays_c_0" value="[PK] id: BIGINT" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#ef4444;fontStyle=1;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_holidays">
+          <mxGeometry y="32" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_holidays_c_1" value="[UK] holiday_date: DATE" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#c084fc;fontStyle=1;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_holidays">
+          <mxGeometry y="56" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_holidays_c_2" value="description: VARCHAR(255) (NULL)" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_holidays">
+          <mxGeometry y="80" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_assets" value="assets" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=32;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#f59e0b;strokeWidth=2;fontColor=#f59e0b;fontSize=14;fontFamily=Segoe UI;rounded=1;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="740" y="80" width="280" height="224" as="geometry" />
+        </mxCell>
+        <mxCell id="t_assets_c_0" value="[PK] id: BIGINT" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#ef4444;fontStyle=1;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_assets">
+          <mxGeometry y="32" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_assets_c_1" value="[FK] seller_id: BIGINT" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#38bdf8;fontStyle=1;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_assets">
+          <mxGeometry y="56" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_assets_c_2" value="name: VARCHAR(255)" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_assets">
+          <mxGeometry y="80" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_assets_c_3" value="description: TEXT (NULL)" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_assets">
+          <mxGeometry y="104" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_assets_c_4" value="asset_type: VARCHAR(30)" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_assets">
+          <mxGeometry y="128" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_assets_c_5" value="main_image_url: VARCHAR(500) (NULL)" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_assets">
+          <mxGeometry y="152" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_assets_c_6" value="created_at: DATETIME(3)" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_assets">
+          <mxGeometry y="176" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_assets_c_7" value="updated_at: DATETIME(3)" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_assets">
+          <mxGeometry y="200" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_asset_images" value="asset_images" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=32;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#f59e0b;strokeWidth=2;fontColor=#f59e0b;fontSize=14;fontFamily=Segoe UI;rounded=1;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="740" y="350" width="280" height="152" as="geometry" />
+        </mxCell>
+        <mxCell id="t_asset_images_c_0" value="[PK] id: BIGINT" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#ef4444;fontStyle=1;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_asset_images">
+          <mxGeometry y="32" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_asset_images_c_1" value="[FK] asset_id: BIGINT" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#38bdf8;fontStyle=1;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_asset_images">
+          <mxGeometry y="56" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_asset_images_c_2" value="image_url: VARCHAR(500)" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_asset_images">
+          <mxGeometry y="80" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_asset_images_c_3" value="display_order: INT" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_asset_images">
+          <mxGeometry y="104" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_asset_images_c_4" value="created_at: DATETIME(3)" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_asset_images">
+          <mxGeometry y="128" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_registrations" value="registrations" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=32;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#f59e0b;strokeWidth=2;fontColor=#f59e0b;fontSize=14;fontFamily=Segoe UI;rounded=1;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="740" y="550" width="280" height="248" as="geometry" />
+        </mxCell>
+        <mxCell id="t_registrations_c_0" value="[PK] id: BIGINT" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#ef4444;fontStyle=1;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_registrations">
+          <mxGeometry y="32" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_registrations_c_1" value="[FK] auction_id: BIGINT" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#38bdf8;fontStyle=1;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_registrations">
+          <mxGeometry y="56" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_registrations_c_2" value="[FK] bidder_id: BIGINT" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#38bdf8;fontStyle=1;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_registrations">
+          <mxGeometry y="80" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_registrations_c_3" value="[UK] anonymous_code: VARCHAR(20)" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#c084fc;fontStyle=1;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_registrations">
+          <mxGeometry y="104" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_registrations_c_4" value="status: VARCHAR(30)" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_registrations">
+          <mxGeometry y="128" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_registrations_c_5" value="rejection_reason: TEXT (NULL)" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_registrations">
+          <mxGeometry y="152" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_registrations_c_6" value="terms_committed_at: DATETIME(3)" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_registrations">
+          <mxGeometry y="176" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_registrations_c_7" value="decision_on_listing_change: VARCHAR(20) (NULL)" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_registrations">
+          <mxGeometry y="200" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_registrations_c_8" value="registered_at: DATETIME(3)" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_registrations">
+          <mxGeometry y="224" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_deposits" value="deposits" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=32;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#f59e0b;strokeWidth=2;fontColor=#f59e0b;fontSize=14;fontFamily=Segoe UI;rounded=1;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="740" y="850" width="280" height="272" as="geometry" />
+        </mxCell>
+        <mxCell id="t_deposits_c_0" value="[PK] id: BIGINT" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#ef4444;fontStyle=1;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_deposits">
+          <mxGeometry y="32" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_deposits_c_1" value="[FK,UK] registration_id: BIGINT" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#38bdf8;fontStyle=1;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_deposits">
+          <mxGeometry y="56" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_deposits_c_2" value="amount: BIGINT" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_deposits">
+          <mxGeometry y="80" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_deposits_c_3" value="status: VARCHAR(30)" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_deposits">
+          <mxGeometry y="104" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_deposits_c_4" value="refund_deadline: DATETIME(3) (NULL)" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_deposits">
+          <mxGeometry y="128" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_deposits_c_5" value="transfer_deadline: DATETIME(3) (NULL)" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_deposits">
+          <mxGeometry y="152" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_deposits_c_6" value="refunded_at: DATETIME(3) (NULL)" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_deposits">
+          <mxGeometry y="176" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_deposits_c_7" value="transferred_to_seller_at: DATETIME(3) (NULL)" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_deposits">
+          <mxGeometry y="200" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_deposits_c_8" value="created_at: DATETIME(3)" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_deposits">
+          <mxGeometry y="224" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_deposits_c_9" value="updated_at: DATETIME(3)" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_deposits">
+          <mxGeometry y="248" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_auctions" value="auctions" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=32;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#f59e0b;strokeWidth=2;fontColor=#f59e0b;fontSize=14;fontFamily=Segoe UI;rounded=1;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="80" width="330" height="512" as="geometry" />
+        </mxCell>
+        <mxCell id="t_auctions_c_0" value="[PK] id: BIGINT" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#ef4444;fontStyle=1;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_auctions">
+          <mxGeometry y="32" width="330" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_auctions_c_1" value="[FK,UK] asset_id: BIGINT" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#38bdf8;fontStyle=1;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_auctions">
+          <mxGeometry y="56" width="330" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_auctions_c_2" value="method: VARCHAR(30)" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_auctions">
+          <mxGeometry y="80" width="330" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_auctions_c_3" value="starting_price: BIGINT" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_auctions">
+          <mxGeometry y="104" width="330" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_auctions_c_4" value="step_price: BIGINT (NULL)" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_auctions">
+          <mxGeometry y="128" width="330" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_auctions_c_5" value="price_reduction_interval_seconds: INT (NULL)" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_auctions">
+          <mxGeometry y="152" width="330" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_auctions_c_6" value="floor_price: BIGINT (NULL)" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_auctions">
+          <mxGeometry y="176" width="330" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_auctions_c_7" value="deposit_percent: DECIMAL(5,2)" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_auctions">
+          <mxGeometry y="200" width="330" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_auctions_c_8" value="deposit_amount: BIGINT" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_auctions">
+          <mxGeometry y="224" width="330" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_auctions_c_9" value="terms_and_conditions: TEXT (NULL)" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_auctions">
+          <mxGeometry y="248" width="330" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_auctions_c_10" value="listing_at: DATETIME(3) (NULL)" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_auctions">
+          <mxGeometry y="272" width="330" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_auctions_c_11" value="registration_deadline: DATETIME(3) (NULL)" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_auctions">
+          <mxGeometry y="296" width="330" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_auctions_c_12" value="start_time: DATETIME(3)" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_auctions">
+          <mxGeometry y="320" width="330" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_auctions_c_13" value="end_time: DATETIME(3)" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_auctions">
+          <mxGeometry y="344" width="330" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_auctions_c_14" value="status: VARCHAR(30)" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_auctions">
+          <mxGeometry y="368" width="330" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_auctions_c_15" value="current_price: BIGINT (NULL)" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_auctions">
+          <mxGeometry y="392" width="330" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_auctions_c_16" value="[FK] highest_bidder_id: BIGINT (NULL)" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#38bdf8;fontStyle=1;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_auctions">
+          <mxGeometry y="416" width="330" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_auctions_c_17" value="rejection_reason: TEXT (NULL)" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_auctions">
+          <mxGeometry y="440" width="330" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_auctions_c_18" value="created_at: DATETIME(3)" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_auctions">
+          <mxGeometry y="464" width="330" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_auctions_c_19" value="updated_at: DATETIME(3)" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_auctions">
+          <mxGeometry y="488" width="330" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_bids" value="bids" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=32;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#f59e0b;strokeWidth=2;fontColor=#f59e0b;fontSize=14;fontFamily=Segoe UI;rounded=1;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="640" width="330" height="176" as="geometry" />
+        </mxCell>
+        <mxCell id="t_bids_c_0" value="[PK] id: BIGINT" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#ef4444;fontStyle=1;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_bids">
+          <mxGeometry y="32" width="330" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_bids_c_1" value="[FK] auction_id: BIGINT" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#38bdf8;fontStyle=1;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_bids">
+          <mxGeometry y="56" width="330" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_bids_c_2" value="[FK] bidder_id: BIGINT" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#38bdf8;fontStyle=1;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_bids">
+          <mxGeometry y="80" width="330" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_bids_c_3" value="amount: BIGINT" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_bids">
+          <mxGeometry y="104" width="330" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_bids_c_4" value="bid_time: DATETIME(3)" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_bids">
+          <mxGeometry y="128" width="330" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_bids_c_5" value="ip_address: VARCHAR(50) (NULL)" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_bids">
+          <mxGeometry y="152" width="330" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_settlements" value="settlements" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=32;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#f59e0b;strokeWidth=2;fontColor=#f59e0b;fontSize=14;fontFamily=Segoe UI;rounded=1;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="850" width="330" height="296" as="geometry" />
+        </mxCell>
+        <mxCell id="t_settlements_c_0" value="[PK] id: BIGINT" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#ef4444;fontStyle=1;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_settlements">
+          <mxGeometry y="32" width="330" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_settlements_c_1" value="[FK,UK] auction_id: BIGINT" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#38bdf8;fontStyle=1;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_settlements">
+          <mxGeometry y="56" width="330" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_settlements_c_2" value="[FK] winner_id: BIGINT" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#38bdf8;fontStyle=1;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_settlements">
+          <mxGeometry y="80" width="330" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_settlements_c_3" value="final_price: BIGINT" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_settlements">
+          <mxGeometry y="104" width="330" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_settlements_c_4" value="deposit_deducted: BIGINT" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_settlements">
+          <mxGeometry y="128" width="330" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_settlements_c_5" value="remaining_amount: BIGINT" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_settlements">
+          <mxGeometry y="152" width="330" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_settlements_c_6" value="payment_status: VARCHAR(30)" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_settlements">
+          <mxGeometry y="176" width="330" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_settlements_c_7" value="payment_deadline: DATETIME(3)" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_settlements">
+          <mxGeometry y="200" width="330" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_settlements_c_8" value="paid_at: DATETIME(3) (NULL)" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_settlements">
+          <mxGeometry y="224" width="330" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_settlements_c_9" value="created_at: DATETIME(3)" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_settlements">
+          <mxGeometry y="248" width="330" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_settlements_c_10" value="updated_at: DATETIME(3)" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_settlements">
+          <mxGeometry y="272" width="330" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_auction_minutes" value="auction_minutes" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=32;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#f59e0b;strokeWidth=2;fontColor=#f59e0b;fontSize=14;fontFamily=Segoe UI;rounded=1;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="1470" y="80" width="280" height="128" as="geometry" />
+        </mxCell>
+        <mxCell id="t_auction_minutes_c_0" value="[PK] id: BIGINT" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#ef4444;fontStyle=1;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_auction_minutes">
+          <mxGeometry y="32" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_auction_minutes_c_1" value="[FK,UK] auction_id: BIGINT" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#38bdf8;fontStyle=1;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_auction_minutes">
+          <mxGeometry y="56" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_auction_minutes_c_2" value="snapshot_data: JSON" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_auction_minutes">
+          <mxGeometry y="80" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_auction_minutes_c_3" value="generated_at: DATETIME(3)" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_auction_minutes">
+          <mxGeometry y="104" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_listing_change_requests" value="listing_change_requests" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=32;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#f59e0b;strokeWidth=2;fontColor=#f59e0b;fontSize=14;fontFamily=Segoe UI;rounded=1;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="1470" y="250" width="300" height="272" as="geometry" />
+        </mxCell>
+        <mxCell id="t_listing_change_requests_c_0" value="[PK] id: BIGINT" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#ef4444;fontStyle=1;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_listing_change_requests">
+          <mxGeometry y="32" width="300" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_listing_change_requests_c_1" value="[FK] auction_id: BIGINT" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#38bdf8;fontStyle=1;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_listing_change_requests">
+          <mxGeometry y="56" width="300" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_listing_change_requests_c_2" value="[FK] seller_id: BIGINT" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#38bdf8;fontStyle=1;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_listing_change_requests">
+          <mxGeometry y="80" width="300" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_listing_change_requests_c_3" value="change_summary: TEXT" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_listing_change_requests">
+          <mxGeometry y="104" width="300" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_listing_change_requests_c_4" value="old_values: JSON (NULL)" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_listing_change_requests">
+          <mxGeometry y="128" width="300" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_listing_change_requests_c_5" value="new_values: JSON (NULL)" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_listing_change_requests">
+          <mxGeometry y="152" width="300" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_listing_change_requests_c_6" value="status: VARCHAR(30)" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_listing_change_requests">
+          <mxGeometry y="176" width="300" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_listing_change_requests_c_7" value="[FK] reviewed_by: BIGINT (NULL)" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#38bdf8;fontStyle=1;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_listing_change_requests">
+          <mxGeometry y="200" width="300" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_listing_change_requests_c_8" value="reviewed_at: DATETIME(3) (NULL)" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_listing_change_requests">
+          <mxGeometry y="224" width="300" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_listing_change_requests_c_9" value="created_at: DATETIME(3)" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_listing_change_requests">
+          <mxGeometry y="248" width="300" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_auction_follows" value="auction_follows" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=32;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#f59e0b;strokeWidth=2;fontColor=#f59e0b;fontSize=14;fontFamily=Segoe UI;rounded=1;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="1470" y="570" width="280" height="128" as="geometry" />
+        </mxCell>
+        <mxCell id="t_auction_follows_c_0" value="[PK] id: BIGINT" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#ef4444;fontStyle=1;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_auction_follows">
+          <mxGeometry y="32" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_auction_follows_c_1" value="[FK] user_id: BIGINT" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#38bdf8;fontStyle=1;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_auction_follows">
+          <mxGeometry y="56" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_auction_follows_c_2" value="[FK] auction_id: BIGINT" style="text;strokeColor=none;fillColor=#111827;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#38bdf8;fontStyle=1;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_auction_follows">
+          <mxGeometry y="80" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="t_auction_follows_c_3" value="created_at: DATETIME(3)" style="text;strokeColor=none;fillColor=#0f172a;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=6;overflow=hidden;portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#f8fafc;fontStyle=0;fontSize=11;fontFamily=SFMono-Regular,Consolas,Monospace;" vertex="1" parent="t_auction_follows">
+          <mxGeometry y="104" width="280" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_0" value="1 : 0..1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#60a5fa;strokeWidth=2;fontSize=10;fontColor=#60a5fa;fontStyle=1;endArrow=ERmany;startArrow=ERone;endFill=0;startFill=0;" edge="1" parent="1" source="t_users" target="t_seller_profiles">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_1" value="1 : 1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#10b981;strokeWidth=2;fontSize=10;fontColor=#10b981;fontStyle=1;endArrow=ERmany;startArrow=ERone;endFill=0;startFill=0;" edge="1" parent="1" source="t_users" target="t_wallets">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_2" value="1 : N" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#10b981;strokeWidth=2;fontSize=10;fontColor=#10b981;fontStyle=1;endArrow=ERmany;startArrow=ERone;endFill=0;startFill=0;" edge="1" parent="1" source="t_wallets" target="t_transactions">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_3" value="1 : N" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#f59e0b;strokeWidth=2;fontSize=10;fontColor=#f59e0b;fontStyle=1;endArrow=ERmany;startArrow=ERone;endFill=0;startFill=0;" edge="1" parent="1" source="t_users" target="t_assets">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_4" value="1 : N" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#f59e0b;strokeWidth=2;fontSize=10;fontColor=#f59e0b;fontStyle=1;endArrow=ERmany;startArrow=ERone;endFill=0;startFill=0;" edge="1" parent="1" source="t_assets" target="t_asset_images">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_5" value="1 : 1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#f59e0b;strokeWidth=2;fontSize=10;fontColor=#f59e0b;fontStyle=1;endArrow=ERmany;startArrow=ERone;endFill=0;startFill=0;" edge="1" parent="1" source="t_assets" target="t_auctions">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_6" value="1 : N" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#c084fc;strokeWidth=2;fontSize=10;fontColor=#c084fc;fontStyle=1;endArrow=ERmany;startArrow=ERone;endFill=0;startFill=0;" edge="1" parent="1" source="t_auctions" target="t_registrations">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_7" value="1 : N" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#c084fc;strokeWidth=2;fontSize=10;fontColor=#c084fc;fontStyle=1;endArrow=ERmany;startArrow=ERone;endFill=0;startFill=0;" edge="1" parent="1" source="t_users" target="t_registrations">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_8" value="1 : 1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#c084fc;strokeWidth=2;fontSize=10;fontColor=#c084fc;fontStyle=1;endArrow=ERmany;startArrow=ERone;endFill=0;startFill=0;" edge="1" parent="1" source="t_registrations" target="t_deposits">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_9" value="1 : N" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#ec4899;strokeWidth=2;fontSize=10;fontColor=#ec4899;fontStyle=1;endArrow=ERmany;startArrow=ERone;endFill=0;startFill=0;" edge="1" parent="1" source="t_auctions" target="t_bids">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_10" value="1 : N" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#ec4899;strokeWidth=2;fontSize=10;fontColor=#ec4899;fontStyle=1;endArrow=ERmany;startArrow=ERone;endFill=0;startFill=0;" edge="1" parent="1" source="t_users" target="t_bids">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_11" value="1 : 1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#eab308;strokeWidth=2;fontSize=10;fontColor=#eab308;fontStyle=1;endArrow=ERmany;startArrow=ERone;endFill=0;startFill=0;" edge="1" parent="1" source="t_auctions" target="t_settlements">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_12" value="1 : N" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#eab308;strokeWidth=2;fontSize=10;fontColor=#eab308;fontStyle=1;endArrow=ERmany;startArrow=ERone;endFill=0;startFill=0;" edge="1" parent="1" source="t_users" target="t_settlements">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_13" value="1 : 1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#38bdf8;strokeWidth=2;fontSize=10;fontColor=#38bdf8;fontStyle=1;endArrow=ERmany;startArrow=ERone;endFill=0;startFill=0;" edge="1" parent="1" source="t_auctions" target="t_auction_minutes">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_14" value="1 : N" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#38bdf8;strokeWidth=2;fontSize=10;fontColor=#38bdf8;fontStyle=1;endArrow=ERmany;startArrow=ERone;endFill=0;startFill=0;" edge="1" parent="1" source="t_auctions" target="t_listing_change_requests">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_15" value="1 : N" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#94a3b8;strokeWidth=2;fontSize=10;fontColor=#94a3b8;fontStyle=1;endArrow=ERmany;startArrow=ERone;endFill=0;startFill=0;" edge="1" parent="1" source="t_auctions" target="t_auction_follows">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_16" value="1 : N" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#94a3b8;strokeWidth=2;fontSize=10;fontColor=#94a3b8;fontStyle=1;endArrow=ERmany;startArrow=ERone;endFill=0;startFill=0;" edge="1" parent="1" source="t_users" target="t_auction_follows">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_17" value="1 : N" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#ef4444;strokeWidth=2;fontSize=10;fontColor=#ef4444;fontStyle=1;endArrow=ERmany;startArrow=ERone;endFill=0;startFill=0;" edge="1" parent="1" source="t_auctions" target="t_complaints">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_18" value="1 : N" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#ef4444;strokeWidth=2;fontSize=10;fontColor=#ef4444;fontStyle=1;endArrow=ERmany;startArrow=ERone;endFill=0;startFill=0;" edge="1" parent="1" source="t_users" target="t_complaints">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_19" value="1 : N" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#94a3b8;strokeWidth=2;fontSize=10;fontColor=#94a3b8;fontStyle=1;endArrow=ERmany;startArrow=ERone;endFill=0;startFill=0;" edge="1" parent="1" source="t_users" target="t_notifications">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_20" value="1 : N" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#94a3b8;strokeWidth=2;fontSize=10;fontColor=#94a3b8;fontStyle=1;endArrow=ERmany;startArrow=ERone;endFill=0;startFill=0;" edge="1" parent="1" source="t_users" target="t_audit_logs">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
