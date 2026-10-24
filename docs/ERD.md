@@ -31,29 +31,251 @@
 
 ```mermaid
 erDiagram
-    users ||--o| seller_profiles : "có tối đa 1"
-    users ||--o| wallets : "sở hữu 1"
-    users ||--o{ assets : "đăng ký"
+    users {
+        bigint id PK
+        varchar username UK
+        varchar email UK
+        varchar password_hash
+        varchar full_name
+        varchar citizen_id UK
+        varchar phone_number
+        varchar bank_name
+        varchar bank_account_number
+        varchar role
+        varchar status
+        datetime created_at
+        datetime updated_at
+    }
+
+    seller_profiles {
+        bigint id PK
+        bigint user_id FK,UK
+        text profile_info
+        varchar status
+        text rejected_reason
+        bigint reviewed_by FK
+        datetime reviewed_at
+        datetime created_at
+        datetime updated_at
+    }
+
+    assets {
+        bigint id PK
+        bigint seller_id FK
+        varchar name
+        text description
+        varchar asset_type
+        varchar main_image_url
+        datetime created_at
+        datetime updated_at
+    }
+
+    asset_images {
+        bigint id PK
+        bigint asset_id FK
+        varchar image_url
+        int display_order
+        datetime created_at
+    }
+
+    auctions {
+        bigint id PK
+        bigint asset_id FK,UK
+        varchar method
+        bigint starting_price
+        bigint step_price
+        int price_reduction_interval_seconds
+        bigint floor_price
+        decimal deposit_percent
+        bigint deposit_amount
+        text terms_and_conditions
+        datetime listing_at
+        datetime registration_deadline
+        datetime start_time
+        datetime end_time
+        varchar status
+        bigint current_price
+        bigint highest_bidder_id FK
+        text rejection_reason
+        datetime created_at
+        datetime updated_at
+    }
+
+    registrations {
+        bigint id PK
+        bigint auction_id FK
+        bigint bidder_id FK
+        varchar anonymous_code
+        varchar status
+        text rejection_reason
+        datetime terms_committed_at
+        varchar decision_on_listing_change
+        datetime registered_at
+    }
+
+    deposits {
+        bigint id PK
+        bigint registration_id FK,UK
+        bigint amount
+        varchar status
+        datetime refund_deadline
+        datetime transfer_deadline
+        datetime refunded_at
+        datetime transferred_to_seller_at
+        datetime created_at
+        datetime updated_at
+    }
+
+    bids {
+        bigint id PK
+        bigint auction_id FK
+        bigint bidder_id FK
+        bigint amount
+        varchar bid_type
+        datetime server_time
+        boolean is_valid
+        varchar invalid_reason
+        datetime created_at
+    }
+
+    settlements {
+        bigint id PK
+        bigint auction_id FK
+        bigint bidder_id FK
+        bigint winning_price
+        bigint deposit_deducted
+        bigint remaining_amount
+        datetime payment_deadline
+        varchar status
+        datetime paid_at
+        datetime created_at
+        datetime updated_at
+    }
+
+    wallets {
+        bigint id PK
+        bigint user_id FK,UK
+        varchar wallet_type
+        bigint available_balance
+        bigint frozen_balance
+        datetime created_at
+        datetime updated_at
+    }
+
+    transactions {
+        bigint id PK
+        bigint wallet_id FK
+        varchar transaction_type
+        bigint amount
+        bigint balance_before
+        bigint balance_after
+        varchar idempotency_key UK
+        varchar reference_type
+        bigint reference_id
+        varchar description
+        datetime created_at
+    }
+
+    notifications {
+        bigint id PK
+        bigint user_id FK
+        varchar type
+        text content
+        varchar target_url
+        boolean is_read
+        datetime created_at
+    }
+
+    audit_logs {
+        bigint id PK
+        varchar entity_type
+        bigint entity_id
+        varchar action
+        bigint performed_by FK
+        json data_before
+        json data_after
+        varchar ip_address
+        datetime created_at
+    }
+
+    complaints {
+        bigint id PK
+        bigint auction_id FK
+        bigint user_id FK
+        text content
+        varchar evidence_url
+        varchar status
+        text resolution_note
+        bigint resolved_by FK
+        datetime resolved_at
+        datetime created_at
+        datetime updated_at
+    }
+
+    system_configs {
+        bigint id PK
+        varchar config_key UK
+        varchar config_value
+        varchar description
+        datetime updated_at
+    }
+
+    holidays {
+        bigint id PK
+        date holiday_date UK
+        varchar description
+    }
+
+    auction_follows {
+        bigint id PK
+        bigint user_id FK
+        bigint auction_id FK
+        datetime created_at
+    }
+
+    auction_minutes {
+        bigint id PK
+        bigint auction_id FK,UK
+        json snapshot_data
+        datetime generated_at
+    }
+
+    listing_change_requests {
+        bigint id PK
+        bigint auction_id FK
+        bigint seller_id FK
+        text change_summary
+        json old_values
+        json new_values
+        varchar status
+        bigint reviewed_by FK
+        datetime reviewed_at
+        datetime created_at
+    }
+
+    %% Quan hệ
+    users ||--o| seller_profiles : "1 user có tối đa 1 hồ sơ"
+    users ||--o| wallets : "1 user sở hữu 1 ví"
+    users ||--o{ assets : "người bán sở hữu tài sản"
     users ||--o{ registrations : "đăng ký tham gia"
-    users ||--o{ bids : "trả giá"
-    users ||--o{ settlements : "thanh toán trúng"
-    users ||--o{ notifications : "nhận"
-    users ||--o{ complaints : "khiếu nại"
-    users ||--o{ auction_follows : "theo dõi"
+    users ||--o{ bids : "thực hiện trả giá"
+    users ||--o{ settlements : "người trúng thanh toán"
+    users ||--o{ notifications : "nhận thông báo"
+    users ||--o{ complaints : "gửi khiếu nại"
+    users ||--o{ auction_follows : "theo dõi yêu thích"
 
-    assets ||--o| auctions : "gắn với"
-    assets ||--o{ asset_images : "có nhiều ảnh"
+    assets ||--o| auctions : "1 tài sản gắn với 1 phiên"
+    assets ||--o{ asset_images : "nhiều ảnh minh họa"
 
-    auctions ||--o{ registrations : "tiếp nhận"
-    auctions ||--o{ bids : "ghi nhận lượt"
+    auctions ||--o{ registrations : "tiếp nhận đăng ký"
+    auctions ||--o{ bids : "ghi nhận lượt trả giá"
     auctions ||--o{ settlements : "kết quả trúng"
     auctions ||--o{ complaints : "bị khiếu nại"
-    auctions ||--o| auction_minutes : "lập biên bản"
-    auctions ||--o{ listing_change_requests : "đề xuất đổi"
+    auctions ||--o| auction_minutes : "lập biên bản kết thúc"
+    auctions ||--o{ listing_change_requests : "đề xuất thay đổi"
 
-    registrations ||--|| deposits : "gắn với 1 khoản"
-
-    wallets ||--o{ transactions : "biến động số dư"
+    registrations ||--|| deposits : "mỗi đăng ký có 1 khoản đặt trước"
+    wallets ||--o{ transactions : "biến động số dư bất biến"
 ```
 
 ---

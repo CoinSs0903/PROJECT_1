@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sơ Đồ Cơ Sở Dữ Liệu (Database Diagram) – Hệ Thống Đấu Giá Trực Tuyến</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background-color: #0b0f19;
+      color: #f8fafc;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    header {
+      background: rgba(17, 24, 39, 0.95);
+      border-bottom: 1px solid rgba(245, 158, 11, 0.3);
+      padding: 0.75rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 10;
+    }
+    h1 {
+      font-size: 1.25rem;
+      color: #f59e0b;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .badge {
+      background: #10b981;
+      color: #000;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+    }
+    .controls {
+      display: flex;
+      gap: 0.5rem;
+    }
+    button {
+      background: #1e293b;
+      color: #f8fafc;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    button:hover {
+      background: #f59e0b;
+      color: #000;
+    }
+    #diagram-container {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 50% 50%, #111827 0%, #0b0f19 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      cursor: grab;
+    }
+    #diagram-container:active {
+      cursor: grabbing;
+    }
+    .mermaid {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🏛️ DATABASE DIAGRAM (19 BẢNG) <span class="badge">MySQL V1__init.sql</span></h1>
+    <div class="controls">
+      <button onclick="panZoom.zoomIn()">➕ Phóng To</button>
+      <button onclick="panZoom.zoomOut()">➖ Thu Nhỏ</button>
+      <button onclick="panZoom.reset()">🔄 Mặc Định</button>
+      <button onclick="window.print()">🖨️ In / Xuất PDF</button>
+    </div>
+  </header>
+
+  <div id="diagram-container">
+    <div class="mermaid" id="mermaidGraph">
+erDiagram
+    users {
+        bigint id PK
+        varchar username UK
+        varchar email UK
+        varchar password_hash
+        varchar full_name
+        varchar citizen_id UK
+        varchar phone_number
+        varchar bank_name
+        varchar bank_account_number
+        varchar role
+        varchar status
+        datetime created_at
+        datetime updated_at
+    }
+
+    seller_profiles {
+        bigint id PK
+        bigint user_id FK,UK
+        text profile_info
+        varchar status
+        text rejected_reason
+        bigint reviewed_by FK
+        datetime reviewed_at
+        datetime created_at
+        datetime updated_at
+    }
+
+    assets {
+        bigint id PK
+        bigint seller_id FK
+        varchar name
+        text description
+        varchar asset_type
+        varchar main_image_url
+        datetime created_at
+        datetime updated_at
+    }
+
+    asset_images {
+        bigint id PK
+        bigint asset_id FK
+        varchar image_url
+        int display_order
+        datetime created_at
+    }
+
+    auctions {
+        bigint id PK
+        bigint asset_id FK,UK
+        varchar method
+        bigint starting_price
+        bigint step_price
+        int price_reduction_interval_seconds
+        bigint floor_price
+        decimal deposit_percent
+        bigint deposit_amount
+        text terms_and_conditions
+        datetime listing_at
+        datetime registration_deadline
+        datetime start_time
+        datetime end_time
+        varchar status
+        bigint current_price
+        bigint highest_bidder_id FK
+        text rejection_reason
+        datetime created_at
+        datetime updated_at
+    }
+
+    registrations {
+        bigint id PK
+        bigint auction_id FK
+        bigint bidder_id FK
+        varchar anonymous_code
+        varchar status
+        text rejection_reason
+        datetime terms_committed_at
+        varchar decision_on_listing_change
+        datetime registered_at
+    }
+
+    deposits {
+        bigint id PK
+        bigint registration_id FK,UK
+        bigint amount
+        varchar status
+        datetime refund_deadline
+        datetime transfer_deadline
+        datetime refunded_at
+        datetime transferred_to_seller_at
+        datetime created_at
+        datetime updated_at
+    }
+
+    bids {
+        bigint id PK
+        bigint auction_id FK
+        bigint bidder_id FK
+        bigint amount
+        varchar bid_type
+        datetime server_time
+        boolean is_valid
+        varchar invalid_reason
+        datetime created_at
+    }
+
+    settlements {
+        bigint id PK
+        bigint auction_id FK
+        bigint bidder_id FK
+        bigint winning_price
+        bigint deposit_deducted
+        bigint remaining_amount
+        datetime payment_deadline
+        varchar status
+        datetime paid_at
+        datetime created_at
+        datetime updated_at
+    }
+
+    wallets {
+        bigint id PK
+        bigint user_id FK,UK
+        varchar wallet_type
+        bigint available_balance
+        bigint frozen_balance
+        datetime created_at
+        datetime updated_at
+    }
+
+    transactions {
+        bigint id PK
+        bigint wallet_id FK
+        varchar transaction_type
+        bigint amount
+        bigint balance_before
+        bigint balance_after
+        varchar idempotency_key UK
+        varchar reference_type
+        bigint reference_id
+        varchar description
+        datetime created_at
+    }
+
+    notifications {
+        bigint id PK
+        bigint user_id FK
+        varchar type
+        text content
+        varchar target_url
+        boolean is_read
+        datetime created_at
+    }
+
+    audit_logs {
+        bigint id PK
+        varchar entity_type
+        bigint entity_id
+        varchar action
+        bigint performed_by FK
+        json data_before
+        json data_after
+        varchar ip_address
+        datetime created_at
+    }
+
+    complaints {
+        bigint id PK
+        bigint auction_id FK
+        bigint user_id FK
+        text content
+        varchar evidence_url
+        varchar status
+        text resolution_note
+        bigint resolved_by FK
+        datetime resolved_at
+        datetime created_at
+        datetime updated_at
+    }
+
+    system_configs {
+        bigint id PK
+        varchar config_key UK
+        varchar config_value
+        varchar description
+        datetime updated_at
+    }
+
+    holidays {
+        bigint id PK
+        date holiday_date UK
+        varchar description
+    }
+
+    auction_follows {
+        bigint id PK
+        bigint user_id FK
+        bigint auction_id FK
+        datetime created_at
+    }
+
+    auction_minutes {
+        bigint id PK
+        bigint auction_id FK,UK
+        json snapshot_data
+        datetime generated_at
+    }
+
+    listing_change_requests {
+        bigint id PK
+        bigint auction_id FK
+        bigint seller_id FK
+        text change_summary
+        json old_values
+        json new_values
+        varchar status
+        bigint reviewed_by FK
+        datetime reviewed_at
+        datetime created_at
+    }
+
+    %% Relationships
+    users ||--o| seller_profiles : "1 user có tối đa 1 hồ sơ"
+    users ||--o| wallets : "1 user có 1 ví"
+    users ||--o{ assets : "người bán sở hữu tài sản"
+    users ||--o{ registrations : "đăng ký tham gia"
+    users ||--o{ bids : "thực hiện trả giá"
+    users ||--o{ settlements : "người trúng thanh toán"
+    users ||--o{ notifications : "nhận thông báo"
+    users ||--o{ complaints : "gửi khiếu nại"
+    users ||--o{ auction_follows : "theo dõi yêu thích"
+
+    assets ||--o| auctions : "1 tài sản gắn 1 phiên"
+    assets ||--o{ asset_images : "nhiều ảnh minh họa"
+
+    auctions ||--o{ registrations : "tiếp nhận đăng ký"
+    auctions ||--o{ bids : "ghi nhận lịch sử giá"
+    auctions ||--o{ settlements : "kết quả trúng"
+    auctions ||--o{ complaints : "bị khiếu nại"
+    auctions ||--o| auction_minutes : "lập biên bản kết thúc"
+    auctions ||--o{ listing_change_requests : "yêu cầu sửa niêm yết"
+
+    registrations ||--|| deposits : "mỗi đăng ký có 1 khoản đặt trước"
+    wallets ||--o{ transactions : "biến động số dư bất biến"
+    </div>
+  </div>
+
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'dark',
+      themeVariables: {
+        darkMode: true,
+        background: '#111827',
+        primaryColor: '#1e293b',
+        primaryTextColor: '#f8fafc',
+        primaryBorderColor: '#f59e0b',
+        lineColor: '#60a5fa',
+        secondaryColor: '#0f172a',
+        tertiaryColor: '#1e293b'
+      }
+    });
+
+    let panZoom;
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const svg = document.querySelector('#mermaidGraph svg');
+        if (svg) {
+          svg.style.width = '100%';
+          svg.style.height = '100%';
+          panZoom = svgPanZoom(svg, {
+            zoomEnabled: true,
+            controlIconsEnabled: false,
+            fit: true,
+            center: true,
+            minZoom: 0.2,
+            maxZoom: 10
+          });
+        }
+      }, 500);
+    });
+  </script>
+</body>
+</html>
