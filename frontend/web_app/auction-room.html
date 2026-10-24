@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phòng Đấu Giá Thời Gian Thực – Live Auction Room</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .room-layout {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 2rem;
+      margin-top: 1rem;
+    }
+    @media (max-width: 900px) {
+      .room-layout { grid-template-columns: 1fr; }
+    }
+    .room-panel {
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+    }
+    .timer-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: #ef4444;
+      padding: 0.5rem 1rem;
+      border-radius: 30px;
+      font-weight: 700;
+      font-size: 1rem;
+    }
+    .big-price {
+      font-size: 2.75rem;
+      font-weight: 800;
+      color: var(--gold-light);
+      font-family: 'Outfit', sans-serif;
+      margin: 1rem 0;
+    }
+    .bid-actions {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+    .bid-log-stream {
+      max-height: 400px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .bid-entry {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      background: rgba(15, 23, 42, 0.8);
+      border-left: 3px solid var(--gold-primary);
+      border-radius: 6px;
+      font-size: 0.9rem;
+    }
+    .bidder-tag {
+      font-family: monospace;
+      font-weight: 600;
+      color: var(--gold-light);
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <a href="index.html" class="brand">
+      <span>🏛️ AUCTION HOUSE</span>
+      <span class="brand-badge">Live Room</span>
+    </a>
+    <a href="index.html" class="btn btn-outline">⬅️ Về Danh Sách Phiên</a>
+  </nav>
+
+  <main class="container">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+      <div>
+        <h2 id="roomTitle" style="font-size: 1.75rem;">Xe Ô tô Cổ Mercedes-Benz 280SL Pagoda 1969</h2>
+        <p style="color: var(--text-muted); font-size: 0.95rem;">Mã phiên: #AUC-2026-0891 • Phương thức: Đấu giá tăng dần</p>
+      </div>
+      <div class="timer-badge">
+        <span>⏱️ Thời gian còn lại:</span>
+        <span id="countdownTimer" style="font-family: monospace; font-size: 1.25rem;">44:52</span>
+      </div>
+    </div>
+
+    <div class="room-layout">
+      <!-- Left: Asset & Bidding Console -->
+      <section class="room-panel">
+        <img id="roomImg" src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=800&q=80" style="width: 100%; height: 320px; object-fit: cover; border-radius: 8px; margin-bottom: 1.5rem;" alt="Asset Preview">
+        
+        <div style="background: rgba(11, 15, 25, 0.8); padding: 1.5rem; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.08);">
+          <div style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase;">Giá hiện tại đang dẫn đầu:</div>
+          <div class="big-price" id="currentPriceDisplay">2.850.000.000 ₫</div>
+          <div style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.25rem;">
+            Bước giá tối thiểu: <b style="color: #fff;">50.000.000 ₫</b>
+          </div>
+
+          <div style="font-size: 0.85rem; color: var(--gold-light); margin-bottom: 0.5rem; font-weight: 600;">⚡ CHỌN MỨC TRẢ GIÁ NHANH:</div>
+          <div class="bid-actions">
+            <button class="btn btn-outline" onclick="placeQuickBid(1)">+ 1 Bước giá<br><small>(+50 Tr)</small></button>
+            <button class="btn btn-outline" onclick="placeQuickBid(2)">+ 2 Bước giá<br><small>(+100 Tr)</small></button>
+            <button class="btn btn-gold" onclick="placeQuickBid(5)">+ 5 Bước giá<br><small>(+250 Tr)</small></button>
+          </div>
+
+          <div style="display: flex; gap: 0.75rem;">
+            <input type="number" id="customBidInput" placeholder="Nhập mức giá tự do (VNĐ)..." style="flex: 1; padding: 0.75rem 1rem; background: #1e293b; border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; color: #fff;">
+            <button class="btn btn-gold" onclick="placeCustomBid()">Trả Giá Ngay</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right: Real-time Live Bids Stream -->
+      <section class="room-panel">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+          <h3 style="font-size: 1.2rem;">📡 Lịch Sử Trả Giá Trực Tiếp</h3>
+          <span style="font-size: 0.8rem; background: rgba(16, 185, 129, 0.2); color: #10b981; padding: 0.2rem 0.6rem; border-radius: 12px; font-weight: 600;">● WebSocket Connected</span>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
+          Tuân thủ BR-31: Danh tính đấu giá viên được mã hóa hoàn toàn thành Mã ẩn danh để đảm bảo tính công bằng tuyệt đối.
+        </p>
+
+        <div class="bid-log-stream" id="bidLogStream">
+          <div class="bid-entry">
+            <div>
+              <div class="bidder-tag">Bidder #829104 (Dẫn đầu)</div>
+              <small style="color: var(--text-muted);">13:42:15 • Máy chủ Asia/Ho_Chi_Minh</small>
+            </div>
+            <div style="font-weight: 700; color: var(--gold-light);">2.850.000.000 ₫</div>
+          </div>
+          <div class="bid-entry" style="opacity: 0.85; border-left-color: #64748b;">
+            <div>
+              <div class="bidder-tag">Bidder #540192</div>
+              <small style="color: var(--text-muted);">13:41:04</small>
+            </div>
+            <div style="font-weight: 600; color: #cbd5e1;">2.800.000.000 ₫</div>
+          </div>
+          <div class="bid-entry" style="opacity: 0.7; border-left-color: #64748b;">
+            <div>
+              <div class="bidder-tag">Bidder #339811</div>
+              <small style="color: var(--text-muted);">13:38:50</small>
+            </div>
+            <div style="font-weight: 600; color: #cbd5e1;">2.750.000.000 ₫</div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    let currentPrice = 2850000000;
+    const stepPrice = 50000000;
+
+    function formatVND(n) {
+      return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(n);
+    }
+
+    function placeQuickBid(steps) {
+      const newPrice = currentPrice + (steps * stepPrice);
+      addBid(newPrice);
+    }
+
+    function placeCustomBid() {
+      const val = parseInt(document.getElementById('customBidInput').value);
+      if (!val || val < currentPrice + stepPrice) {
+        alert("Mức giá trả phải lớn hơn hoặc bằng giá hiện tại cộng bước giá tối thiểu (" + formatVND(currentPrice + stepPrice) + ")");
+        return;
+      }
+      addBid(val);
+      document.getElementById('customBidInput').value = '';
+    }
+
+    function addBid(price) {
+      currentPrice = price;
+      document.getElementById('currentPriceDisplay').innerText = formatVND(currentPrice);
+
+      const stream = document.getElementById('bidLogStream');
+      const randomCode = Math.floor(100000 + Math.random() * 900000);
+      const timeStr = new Date().toLocaleTimeString('vi-VN');
+
+      const entry = document.createElement('div');
+      entry.className = 'bid-entry';
+      entry.innerHTML = `
+        <div>
+          <div class="bidder-tag">Bidder #${randomCode} (Bạn - Dẫn đầu)</div>
+          <small style="color: var(--text-muted);">${timeStr} • Server Clock</small>
+        </div>
+        <div style="font-weight: 700; color: var(--gold-light);">${formatVND(price)}</div>
+      `;
+      stream.insertBefore(entry, stream.firstChild);
+    }
+
+    // Simple countdown
+    let seconds = 2692;
+    setInterval(() => {
+      if (seconds > 0) seconds--;
+      const m = Math.floor(seconds / 60);
+      const s = seconds % 60;
+      document.getElementById('countdownTimer').innerText = 
+        String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+    }, 1000);
+  </script>
+</body>
+</html>

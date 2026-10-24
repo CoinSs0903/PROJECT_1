@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cổng Người Bán (Seller Portal) – Online Auction System</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="seller.css">
+</head>
+<body>
+
+  <nav class="navbar">
+    <a href="../index.html" class="brand">
+      <span>🏛️ AUCTION HOUSE</span>
+      <span class="brand-badge" style="background: #3b82f6; color: #fff;">Seller Portal</span>
+    </a>
+    <div class="portal-nav">
+      <a href="../index.html" class="btn btn-outline">🌐 Xem Sàn Đấu Giá</a>
+      <a href="../admin/index.html" class="btn btn-outline">🛡️ Cổng Admin</a>
+    </div>
+  </nav>
+
+  <main class="container">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+      <div>
+        <h2>Quản Lý Tài Sản & Phiên Đấu Giá (Seller)</h2>
+        <p style="color: var(--text-muted);">Đăng ký tài sản, thiết lập thông số đấu giá và theo dõi kết quả phiên.</p>
+      </div>
+      <button class="btn btn-gold" onclick="openCreateModal()">➕ Đăng Bán Tài Sản Mới</button>
+    </div>
+
+    <!-- Stats Overview -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-num">5</div>
+        <div class="stat-label">Tổng tài sản đã đăng</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" style="color: #10b981;">2</div>
+        <div class="stat-label">Phiên đang diễn ra</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" style="color: #f59e0b;">1</div>
+        <div class="stat-label">Chờ Admin phê duyệt</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" style="color: #3b82f6;">94.050.000.000 ₫</div>
+        <div class="stat-label">Tổng giá trị niêm yết</div>
+      </div>
+    </div>
+
+    <!-- Seller Assets Table -->
+    <div class="seller-table-container">
+      <h3 style="margin-bottom: 1rem;">Danh Sách Phiên Đấu Giá Của Tôi</h3>
+      <table class="seller-table">
+        <thead>
+          <tr>
+            <th>Mã Phiên</th>
+            <th>Tên Tài Sản</th>
+            <th>Loại</th>
+            <th>Phương Thức</th>
+            <th>Giá Khởi Điểm</th>
+            <th>Trạng Thái</th>
+            <th>Thao Tác</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>#AUC-2026-0891</code></td>
+            <td><b>Xe Ô tô Cổ Mercedes-Benz 280SL</b></td>
+            <td>Động sản</td>
+            <td>Tăng dần</td>
+            <td>2.500.000.000 ₫</td>
+            <td><span class="badge badge-success">Đang diễn ra</span></td>
+            <td><a href="../auction-room.html?id=1" class="btn-sm btn-outline">Xem Live</a></td>
+          </tr>
+          <tr>
+            <td><code>#AUC-2026-0892</code></td>
+            <td><b>Biệt thự Ven Sông Thảo Điền</b></td>
+            <td>Bất động sản</td>
+            <td>Tăng dần</td>
+            <td>85.000.000.000 ₫</td>
+            <td><span class="badge badge-success">Đang diễn ra</span></td>
+            <td><a href="../auction-room.html?id=2" class="btn-sm btn-outline">Xem Live</a></td>
+          </tr>
+          <tr>
+            <td><code>#AUC-2026-0895</code></td>
+            <td><b>Lô Đất Nghỉ Dưỡng Đà Lạt (1.200m²)</b></td>
+            <td>Bất động sản</td>
+            <td>Tăng dần</td>
+            <td>18.000.000.000 ₫</td>
+            <td><span class="badge badge-warning">Chờ Admin duyệt</span></td>
+            <td><button class="btn-sm btn-outline" disabled>Chờ duyệt</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <script src="seller.js"></script>
+</body>
+</html>

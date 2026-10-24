@@ -1,95 +1,99 @@
-# Hệ Thống Đấu Giá Trực Tuyến (Online Auction System)
+# 🏛️ HỆ THỐNG ĐẤU GIÁ TRỰC TUYẾN (ONLINE AUCTION SYSTEM)
 
-Dự án môn học: **Phát Triển Phần Mềm Hướng Đối Tượng (PTPMHĐT)**
-
-Hệ thống đấu giá trực tuyến hỗ trợ hai phương thức: **đấu giá tăng dần (trả giá lên)** và **đấu giá giảm dần (đặt giá xuống)**, tuân thủ Luật Đấu giá tài sản.
+> **Môn học:** Phát Triển Phần Mềm Hướng Đối Tượng (OOAD / PTPMHĐT)  
+> **Tác giả:** CoinSs0903  
+> **Ngôn ngữ & Công nghệ:** Java 17, Spring Boot, MySQL (XAMPP), Flyway, WebSocket (STOMP), HTML5/CSS3/JavaScript (Single Page Application - SPA)  
+> **Phạm vi nền tảng:** Web Platform duy nhất (Bao gồm Cổng Khách Hàng, Cổng Người Bán và Cổng Quản Trị Viên)
 
 ---
 
-## 📂 Cấu Trúc Dự Án (Project Structure)
+## 🌟 TỔNG QUAN HỆ THỐNG
+
+Hệ thống cung cấp sàn đấu giá trực tuyến minh bạch, cạnh tranh theo thời gian thực tuân thủ **Luật Đấu giá tài sản số 01/2016/QH14** và các luật sửa đổi bổ sung. Hệ thống phục vụ 3 phân hệ người dùng chính:
+
+1. **Khách hàng / Đấu giá viên (User / Bidder):** Tìm kiếm và lọc danh sách tài sản (động sản & bất động sản), đăng ký tham gia, nộp tiền đặt trước từ ví ký quỹ, nhận Mã ẩn danh (Anonymous Code) và tham gia phòng đấu giá thời gian thực.
+2. **Người bán (Seller):** Đăng ký hồ sơ người bán, gửi tài sản, thiết lập thông số đấu giá:
+   - **Đấu giá tăng dần (trả giá lên):** Giá khởi điểm, bước giá bắt buộc, thời gian mở và kết thúc.
+   - **Đấu giá giảm dần (đặt giá xuống):** Giá khởi điểm, bước giảm, khoảng thời gian giữa các lần giảm và giá sàn.
+3. **Quản trị viên (Admin):** Phê duyệt hồ sơ người bán, thẩm định và duyệt niêm yết phiên đấu giá, xét duyệt hồ sơ người tham gia, giám sát phòng đấu giá trực tiếp, giải quyết khiếu nại và trích xuất biên bản điện tử.
+
+---
+
+## 📂 CẤU TRÚC THƯ MỤC DỰ ÁN (PROJECT STRUCTURE)
+
+Cấu trúc chuẩn hóa phân tách rõ ràng giữa Dịch vụ máy chủ (Backend), Giao diện Web (Frontend), Tài liệu kỹ thuật (Docs) và Tài nguyên thiết kế (Design):
 
 ```text
 PROJECT_1/
-├── backend/                  # Mã nguồn ứng dụng Spring Boot
+├── 📁 backend/               # Dịch vụ máy chủ Spring Boot (REST API & WebSocket STOMP)
 │   ├── .mvn/                 # Cấu hình Maven Wrapper
-│   ├── src/                  # Mã nguồn Java & tài nguyên giao diện/cấu hình
-│   │   ├── main/
-│   │   │   ├── java/com/auction/AuctionApplication.java
-│   │   │   └── resources/application.properties
-│   │   └── test/
-│   ├── mvnw / mvnw.cmd       # Maven Wrapper script
-│   └── pom.xml               # Khai báo thư viện & dependencies
-├── docs/                     # Toàn bộ tài liệu đặc tả, kế hoạch & quy ước
-│   ├── SRS.md                # Đặc tả yêu cầu phần mềm (35 BR, FR, UC, NFR)
+│   ├── src/                  # Mã nguồn Java (Domain, Service, Repository, Facade)
+│   ├── mvnw / mvnw.cmd       # Công cụ chạy build độc lập
+│   ├── pom.xml               # Quản lý thư viện phụ thuộc
+│   └── README.md             # Hướng dẫn chi tiết phân hệ Backend
+│
+├── 📁 design/                # Tài nguyên đồ họa, bảng màu FinTech & Wireframe
+│   └── README.md             # Hướng dẫn hệ thống thiết kế (Design System & Color Palette)
+│
+├── 📁 docs/                  # Toàn bộ tài liệu đặc tả, kế hoạch & quy ước
+│   ├── SRS.md                # Đặc tả yêu cầu phần mềm (35 Quy tắc BR-01..BR-35, FR, UC, NFR)
 │   ├── PLAN.md               # Kế hoạch chi tiết 26 ngày thực hiện
 │   ├── PROJECT_CONTEXT.md    # Ngữ cảnh kỹ thuật & quy ước AI
-│   └── PROGRESS_LOG.md       # Nhật ký tiến độ & nợ kỹ thuật
-└── README.md                 # Giới thiệu tổng quan & hướng dẫn khởi chạy
+│   ├── PROGRESS_LOG.md       # Nhật ký tiến độ & nợ kỹ thuật
+│   └── README.md             # Mục lục tài liệu
+│
+├── 📁 frontend/              # Giao diện người dùng Web Client
+│   ├── web_app/              # Ứng dụng Web Đa Cổng
+│   │   ├── index.html        # Cổng Khách Hàng / Đấu Giá Viên
+│   │   ├── auction-room.html # Phòng Đấu Giá Trực Tuyến Live
+│   │   ├── style.css         # Hệ thống giao diện Dark Navy & Luxury Gold
+│   │   ├── app.js            # Logic xử lý client & WebSocket
+│   │   ├── seller/           # Cổng Dành Cho Người Bán (index.html, seller.js, seller.css)
+│   │   └── admin/            # Cổng Dành Cho Quản Trị Viên (index.html, admin.js, admin.css)
+│   └── README.md             # Hướng dẫn phân hệ Frontend
+│
+├── 📄 run_all.bat            # Script 1-click khởi chạy toàn bộ hệ thống
+├── 📄 .gitignore             # Bộ lọc mã nguồn Git
+└── 📄 README.md              # Trang chủ dự án
 ```
 
 ---
 
-## 📚 Danh Mục Tài Liệu (`docs/`)
+## 👥 TÀI KHOẢN TRUY CẬP MẪU
 
-| Tài liệu | Mô tả |
-| :--- | :--- |
-| 📖 [**docs/SRS.md**](./docs/SRS.md) | **Đặc tả yêu cầu phần mềm:** Phạm vi, vai trò, 35 quy tắc nghiệp vụ (BR-01..BR-35), use cases, thực thể CSDL và NFR. |
-| 🗺️ [**docs/PLAN.md**](./docs/PLAN.md) | **Kế hoạch thực hiện theo ngày:** Lộ trình 26 ngày từ thiết kế, phát triển module đến kiểm thử & bàn giao. |
-| 📋 [**docs/PROJECT_CONTEXT.md**](./docs/PROJECT_CONTEXT.md) | **Sổ tay kỹ thuật & Quy ước:** Kiến trúc, chuẩn đặt tên, cấu hình CSDL và quy tắc làm việc giữa lập trình viên và AI. |
-| 📝 [**docs/PROGRESS_LOG.md**](./docs/PROGRESS_LOG.md) | **Nhật ký tiến độ:** Trạng thái từng module, theo dõi nợ kỹ thuật (technical debt) và lịch sử từng phiên làm việc. |
-
----
-
-## 🛠️ Công Nghệ Sử Dụng
-
-- **Ngôn ngữ:** Java 17 (OpenJDK Temurin)
-- **Backend Framework:** Spring Boot 4.x (Spring Web MVC, Spring Data JPA, Spring Security, Spring WebSocket STOMP, Validation)
-- **Cơ sở dữ liệu:** MySQL 8.x (chạy qua XAMPP, port 3306)
-- **Quản lý CSDL:** Flyway Database Migration
-- **Frontend:** Thymeleaf, Bootstrap 5 (CDN), Vanilla JavaScript
-- **Build tool:** Maven Wrapper (`mvnw`)
+| Vai trò | Tên đăng nhập | Mật khẩu | Chức năng chính | Cổng truy cập |
+| :--- | :--- | :--- | :--- | :--- |
+| **Đấu giá viên (Bidder)** | `bidder1` | `bidder123` | Đặt trước, trả giá live, theo dõi kết quả | `frontend/web_app/index.html` |
+| **Người bán (Seller)** | `seller1` | `seller123` | Đăng tài sản, tạo phiên, nhận tiền cọc | `frontend/web_app/seller/index.html` |
+| **Quản trị viên (Admin)** | `admin` | `admin123` | Duyệt hồ sơ, duyệt phiên, điều hành | `frontend/web_app/admin/index.html` |
 
 ---
 
-## 🚀 Hướng Dẫn Cài Đặt & Khởi Chạy
+## 🚀 HƯỚNG DẪN KHỞI CHẠY DỰ ÁN
 
-### 1. Yêu cầu môi trường
+### Cách 1: Khởi chạy 1-Click bằng file Script (Khuyên dùng)
+1. Đảm bảo đã bật **MySQL** trên **XAMPP Control Panel** (cổng `3306`).
+2. Nhấp đúp chuột vào file:
+   ```cmd
+   run_all.bat
+   ```
+   Hệ thống sẽ tự động kiểm tra cổng 3306, mở giao diện Web App trên trình duyệt và khởi chạy Spring Boot Backend trên cổng `8080`.
 
-- Đã cài đặt **JDK 17** và **Git**.
-- Đã cài đặt **XAMPP** và khởi động dịch vụ **MySQL** (cổng 3306).
+---
 
-### 2. Thiết lập cơ sở dữ liệu
+### Cách 2: Khởi chạy thủ công từng phân hệ
 
-Khởi tạo cơ sở dữ liệu trong MySQL (hoặc phpMyAdmin):
-
-```sql
-CREATE DATABASE auction_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-CREATE DATABASE auction_test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-CREATE USER 'auction'@'localhost' IDENTIFIED BY 'auction';
-GRANT ALL PRIVILEGES ON auction_db.* TO 'auction'@'localhost';
-GRANT ALL PRIVILEGES ON auction_test.* TO 'auction'@'localhost';
-FLUSH PRIVILEGES;
-```
-
-### 3. Chạy ứng dụng Backend
-
-Mở terminal, chuyển vào thư mục `backend` và chạy:
-
+#### 1. Khởi chạy Backend:
 ```powershell
-# Chuyển vào thư mục backend
 cd backend
-
-# Chạy ứng dụng trên Windows
 .\mvnw.cmd spring-boot:run
-
-# Hoặc trên Linux/macOS
-./mvnw spring-boot:run
 ```
+Backend API & WebSocket sẵn sàng tại: <http://localhost:8080>
 
-Truy cập hệ thống tại: <http://localhost:8080>
+#### 2. Khởi chạy Frontend:
+Mở trực tiếp file `frontend/web_app/index.html` trên trình duyệt (hoặc dùng tiện ích Live Server trong IDE).
 
-### 4. Chạy kiểm thử tự động
-
+#### 3. Chạy kiểm thử tự động Backend:
 ```powershell
 cd backend
 .\mvnw.cmd test
@@ -97,7 +101,16 @@ cd backend
 
 ---
 
-## 👥 Nhóm Tác Giả & Phân Quyền
+## 📚 DANH MỤC TÀI LIỆU CHI TIẾT (`docs/`)
 
-- **Repository:** [https://github.com/CoinSs0903/PROJECT_1](https://github.com/CoinSs0903/PROJECT_1)
-- **Chủ sở hữu:** CoinSs0903
+- 📖 [**Đặc tả yêu cầu phần mềm (docs/SRS.md)**](./docs/SRS.md)
+- 🗺️ [**Kế hoạch thực hiện theo từng ngày (docs/PLAN.md)**](./docs/PLAN.md)
+- 📋 [**Sổ tay kỹ thuật & Quy ước AI (docs/PROJECT_CONTEXT.md)**](./docs/PROJECT_CONTEXT.md)
+- 📝 [**Nhật ký tiến độ dự án (docs/PROGRESS_LOG.md)**](./docs/PROGRESS_LOG.md)
+- 🎨 [**Tài nguyên thiết kế giao diện (design/README.md)**](./design/README.md)
+
+---
+
+## 🌐 KHO LƯU TRỮ GITHUB
+- **URL Repository:** [https://github.com/CoinSs0903/PROJECT_1](https://github.com/CoinSs0903/PROJECT_1)
+- **Tác giả:** CoinSs0903

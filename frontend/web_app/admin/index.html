@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cổng Quản Trị Viên (Admin Portal) – Online Auction System</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+  <nav class="navbar">
+    <a href="../index.html" class="brand">
+      <span>🏛️ AUCTION HOUSE</span>
+      <span class="brand-badge" style="background: #ef4444; color: #fff;">Admin Console</span>
+    </a>
+    <div class="portal-nav">
+      <a href="../index.html" class="btn btn-outline">🌐 Xem Sàn Đấu Giá</a>
+      <a href="../seller/index.html" class="btn btn-outline">💼 Cổng Seller</a>
+    </div>
+  </nav>
+
+  <main class="container">
+    <div style="margin-bottom: 2rem;">
+      <h2>Bảng Điều Khiển Quản Trị Hệ Thống (Admin)</h2>
+      <p style="color: var(--text-muted);">Xét duyệt tài sản, hồ sơ người bán, giám sát phiên đấu giá và giải quyết khiếu nại.</p>
+    </div>
+
+    <!-- Admin Metric Cards -->
+    <div class="admin-metrics">
+      <div class="metric-card">
+        <div class="metric-title">Hồ Sơ Seller Chờ Duyệt</div>
+        <div class="metric-value" style="color: #f59e0b;">3</div>
+        <small style="color: var(--text-muted);">FR-AD-01 • Thẩm định CCCD & Tài khoản</small>
+      </div>
+      <div class="metric-card">
+        <div class="metric-title">Phiên Đấu Giá Chờ Duyệt</div>
+        <div class="metric-value" style="color: #3b82f6;">2</div>
+        <small style="color: var(--text-muted);">FR-AD-02 • Kiểm tra giá & quy chế niêm yết</small>
+      </div>
+      <div class="metric-card">
+        <div class="metric-title">Khiếu Nại Đang Chờ</div>
+        <div class="metric-value" style="color: #ef4444;">1</div>
+        <small style="color: var(--text-muted);">FR-AD-10 • Thời hạn xử lý trong 7 ngày</small>
+      </div>
+      <div class="metric-card">
+        <div class="metric-title">Doanh Thu Phí Dịch Vụ</div>
+        <div class="metric-value" style="color: #10b981;">1.425.000.000 ₫</div>
+        <small style="color: var(--text-muted);">BR-29 • Tỷ lệ phí 5% vào ví hệ thống</small>
+      </div>
+    </div>
+
+    <!-- Approvals Section -->
+    <section class="admin-section">
+      <h3>📋 Hàng Đợi Duyệt Phiên Đấu Giá (FR-AD-02)</h3>
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Tài Sản</th>
+            <th>Người Bán</th>
+            <th>Loại</th>
+            <th>Giá Đề Xuất</th>
+            <th>Mức Đặt Trước</th>
+            <th>Thao Tác</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>Lô Đất Nghỉ Dưỡng Đà Lạt (1.200m²)</b></td>
+            <td>Nguyễn Văn A (CCCD: 079***)</td>
+            <td>Bất động sản</td>
+            <td>18.000.000.000 ₫</td>
+            <td>10% (1.800.000.000 ₫)</td>
+            <td>
+              <button class="btn-sm btn-gold" onclick="approveAuction(this)">Duyệt Niêm Yết</button>
+              <button class="btn-sm btn-outline" onclick="rejectAuction(this)">Từ Chối</button>
+            </td>
+          </tr>
+          <tr>
+            <td><b>Tranh Sơn Dầu Nghệ Thuật Cổ TK XIX</b></td>
+            <td>Trần Thị B (CCCD: 082***)</td>
+            <td>Động sản</td>
+            <td>850.000.000 ₫</td>
+            <td>15% (127.500.000 ₫)</td>
+            <td>
+              <button class="btn-sm btn-gold" onclick="approveAuction(this)">Duyệt Niêm Yết</button>
+              <button class="btn-sm btn-outline" onclick="rejectAuction(this)">Từ Chối</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <script src="admin.js"></script>
+</body>
+</html>
