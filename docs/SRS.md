@@ -6,8 +6,8 @@
 
 Đấu giá tăng dần (trả giá lên) và giảm dần (đặt giá xuống)
 
-|  |  |
-|----|----|
+| | |
+| ---- | ---- |
 | **Phiên bản** | 1.1 (bản nháp) |
 | **Ngày lập** | 16/10/2026 |
 | **Công nghệ** | Java |
@@ -83,7 +83,7 @@ không triển khai thực tế.
 1.3. Thuật ngữ
 
 | **Thuật ngữ** | **Giải thích** |
-|----|----|
+| ---- | ---- |
 | Phiên đấu giá | Một lần đấu giá một tài sản, có một phương thức đấu giá, thời gian mở và kết thúc. |
 | Seller (người bán) | Tương ứng “người có tài sản đấu giá”. Là User đã được Admin duyệt hồ sơ để đăng bán. |
 | Bidder (người mua) | Tương ứng “người tham gia đấu giá”. Là User đã đăng ký tham gia một phiên. |
@@ -114,7 +114,7 @@ xem các nghị định hướng dẫn. Cần soát lại với văn bản gốc
 2.1. Vai trò (actor)
 
 | **Actor** | **Mô tả** | **Ghi chú** |
-|----|----|----|
+| ---- | ---- | ---- |
 | Admin | Quản trị, đại diện tổ chức đấu giá. Duyệt hồ sơ, điều hành phiên, công bố người trúng, giữ và xử lý tiền đặt trước. | Kiêm vai trò đấu giá viên. Không được đăng ký tham gia phiên đấu giá. |
 | Guest (khách) | Người chưa đăng nhập, kể cả người đã có tài khoản nhưng chưa đăng nhập. Chỉ xem thông tin công khai. | Đăng ký hoặc đăng nhập để trở thành User. |
 | User | Người dùng đã đăng nhập. Chỉ trở thành User khi đã đăng nhập, chưa đăng nhập thì là Guest. Có thể đảm nhận đồng thời nhiều vai trò con. | Có nhóm chức năng chung. |
@@ -153,7 +153,7 @@ kế thừa chức năng xem của Guest.
 3.1. Admin
 
 | **Mã** | **Chức năng** | **Mô tả** |
-|----|----|----|
+| ---- | ---- | ---- |
 | FR-AD-01 | Duyệt hồ sơ Seller | Xem hồ sơ người bán đăng ký, duyệt hoặc từ chối kèm lý do. |
 | FR-AD-02 | Duyệt tài sản và phiên | Kiểm tra tài sản, giá khởi điểm, mức đặt trước, thời gian, phương thức; duyệt để niêm yết. Hệ thống sinh Quy chế phiên từ cấu hình và Admin xác nhận. |
 | FR-AD-03 | Xét duyệt hồ sơ tham gia | Xem hồ sơ đăng ký tham gia của Bidder, duyệt hoặc loại; thông báo kết quả chậm nhất 1 ngày làm việc trước ngày mở phiên. |
@@ -168,7 +168,7 @@ kế thừa chức năng xem của Guest.
 3.2. Guest
 
 | **Mã** | **Chức năng** | **Mô tả** |
-|----|----|----|
+| ---- | ---- | ---- |
 | FR-GU-01 | Xem danh sách phiên | Xem, tìm kiếm, lọc theo trạng thái, phương thức, loại tài sản. |
 | FR-GU-02 | Xem chi tiết phiên | Xem toàn bộ thông tin phiên: tài sản, Quy chế, giá hiện tại, lịch sử trả giá, người bán, danh sách Bidder (dưới mã ẩn danh) và trạng thái thanh toán của người trúng. Giá cập nhật real-time. |
 | FR-GU-03 | Đăng ký, đăng nhập | Tạo tài khoản hoặc đăng nhập để trở thành User. |
@@ -176,7 +176,7 @@ kế thừa chức năng xem của Guest.
 3.3. User (vai trò chung)
 
 | **Mã** | **Chức năng** | **Mô tả** |
-|----|----|----|
+| ---- | ---- | ---- |
 | FR-US-01 | Đăng xuất, đổi mật khẩu | Kết thúc phiên đăng nhập, đổi mật khẩu. |
 | FR-US-02 | Cập nhật thông tin cá nhân | Họ tên, CCCD, liên hệ, tài khoản ngân hàng. |
 | FR-US-03 | Xem danh sách và chi tiết phiên | Như Guest. |
@@ -190,7 +190,7 @@ kế thừa chức năng xem của Guest.
 3.4. Bidder (người mua)
 
 | **Mã** | **Chức năng** | **Mô tả** |
-|----|----|----|
+| ---- | ---- | ---- |
 | FR-BI-01 | Đăng ký tham gia phiên | Chọn phiên, cam kết không thuộc diện bị cấm, gửi hồ sơ tham gia. |
 | FR-BI-02 | Nộp tiền đặt trước | Nộp từ ví trong thời hạn quy định; tiền bị phong tỏa. |
 | FR-BI-03 | Từ chối tham gia khi có thay đổi niêm yết | Khi phiên thay đổi thông tin đã niêm yết, chọn tiếp tục hoặc từ chối và nhận lại tiền đặt trước. |
@@ -205,7 +205,7 @@ kế thừa chức năng xem của Guest.
 3.5. Seller (người bán)
 
 | **Mã** | **Chức năng** | **Mô tả** |
-|----|----|----|
+| ---- | ---- | ---- |
 | FR-SE-01 | Đăng ký hồ sơ Seller | Gửi hồ sơ (họ tên, CCCD, liên hệ, tài khoản ngân hàng), chờ Admin duyệt. |
 | FR-SE-02 | Đăng bán tài sản | Nhập thông tin tài sản (tên, mô tả, hình ảnh, loại động sản hoặc bất động sản) và tạo phiên đấu giá. |
 | FR-SE-03 | Thiết lập thông số phiên | Chọn phương thức; giá khởi điểm; bước giá (tăng dần) hoặc bước giảm, khoảng thời gian giữa các lần giảm và giá sàn (giảm dần); tỷ lệ đặt trước 5%–20%; thời gian mở và kết thúc. |
@@ -225,7 +225,7 @@ Cột “Căn cứ” cho biết điều luật tương ứng trong Luật Đấ
 4.1. Niêm yết và đăng ký tham gia
 
 | **Mã** | **Quy tắc** | **Căn cứ** |
-|----|----|----|
+| ---- | ---- | ---- |
 | BR-01 | Mỗi phiên gắn một tài sản và một phương thức (trả giá lên hoặc đặt giá xuống) do Seller chọn; hình thức và phương thức ghi trong Quy chế phiên và công bố công khai. | Điều 34, Điều 40 |
 | BR-02 | Chỉ tài sản pháp luật cho phép đấu giá mới được duyệt. Seller đề xuất giá khởi điểm, Admin duyệt. | Điều 4, Điều 8 |
 | BR-03 | Thời gian niêm yết tối thiểu 07 ngày làm việc (động sản) hoặc 15 ngày (bất động sản) trước ngày mở phiên. | Điều 35 |
@@ -236,7 +236,7 @@ Cột “Căn cứ” cho biết điều luật tương ứng trong Luật Đấ
 4.2. Tiền đặt trước
 
 | **Mã** | **Quy tắc** | **Căn cứ** |
-|----|----|----|
+| ---- | ---- | ---- |
 | BR-07 | Bidder phải nộp tiền đặt trước mới được tham gia. | Điều 39 khoản 1 |
 | BR-08 | Mức đặt trước từ 5% đến 20% giá khởi điểm, do Seller đề xuất và Admin duyệt. | Điều 39 khoản 1a |
 | BR-09 | Thời hạn nộp: từ ngày niêm yết đến trước ngày mở phiên 02 ngày làm việc. | Điều 39 khoản 2 |
@@ -249,7 +249,7 @@ Cột “Căn cứ” cho biết điều luật tương ứng trong Luật Đấ
 4.3. Đấu giá tăng dần (trả giá lên)
 
 | **Mã** | **Quy tắc** | **Căn cứ** |
-|----|----|----|
+| ---- | ---- | ---- |
 | BR-15 | Seller thiết lập giá khởi điểm, bước giá (bắt buộc trong hệ thống), thời gian mở và kết thúc. Lần trả giá đầu phải không thấp hơn giá khởi điểm; các lần sau phải không thấp hơn giá cao nhất hiện tại cộng bước giá. Lượt trả giá được xử lý theo thứ tự thời gian của server; hai lượt cùng một mức giá thì lượt đến trước được chấp nhận, lượt sau bị từ chối. | Điều 40; bước giá bắt buộc là Thiết kế |
 | BR-16 | Hết giờ, người trả giá cao nhất là người trúng. Không gia hạn thời gian. | Điều 41; không gia hạn là Thiết kế |
 | BR-17 | Nếu người trả giá cao nhất rút lại giá trước khi công bố người trúng, phiên tiếp tục từ mức giá của người trả giá liền kề; người rút bị truất quyền tham dự và mất tiền đặt trước. | Điều 50 khoản 1, 4 |
@@ -258,7 +258,7 @@ Cột “Căn cứ” cho biết điều luật tương ứng trong Luật Đấ
 4.4. Đấu giá giảm dần (đặt giá xuống)
 
 | **Mã** | **Quy tắc** | **Căn cứ** |
-|----|----|----|
+| ---- | ---- | ---- |
 | BR-19 | Seller thiết lập giá khởi điểm (cao nhất), bước giảm, khoảng thời gian giữa các lần giảm và giá sàn. Hệ thống tự giảm giá theo lịch, lấy giờ server làm chuẩn. | Điều 40 khoản 2; bước giảm, giá sàn là Thiết kế |
 | BR-20 | Người đầu tiên xác nhận chấp nhận mức giá hiện hành (theo thời gian server) là người trúng. Hệ thống dừng giảm giá và từ chối các yêu cầu đến sau. | Điều 40 khoản 2 |
 | BR-21 | Giá chạm giá sàn mà không ai chấp nhận thì phiên không thành. | Điều 52 khoản 1 |
@@ -267,14 +267,14 @@ Cột “Căn cứ” cho biết điều luật tương ứng trong Luật Đấ
 4.5. Chỉ có một người và đấu giá không thành
 
 | **Mã** | **Quy tắc** | **Căn cứ** |
-|----|----|----|
+| ---- | ---- | ---- |
 | BR-23 | Nếu chỉ có một người đăng ký, tham dự, trả giá hoặc chấp nhận giá thì vẫn bán cho người đó (tăng dần: giá không thấp hơn giá khởi điểm; giảm dần: có chấp nhận giá). Chỉ áp dụng khi đã hoàn tất thủ tục và không còn khiếu nại chưa giải quyết đến ngày mở phiên. | Điều 49 |
 | BR-24 | Phiên không thành khi: hết hạn đăng ký mà không có người đăng ký; tất cả người đăng ký hợp lệ không tham dự; không có người trả giá hoặc chấp nhận giá; hoặc không còn người kế tiếp sau khi người trúng từ chối (BR-18, BR-22). | Điều 52 khoản 1; phần cuối là Thiết kế |
 
 4.6. Kết thúc, thanh toán, phí và hiển thị
 
 | **Mã** | **Quy tắc** | **Căn cứ** |
-|----|----|----|
+| ---- | ---- | ---- |
 | BR-25 | Khi xác định có người trúng (hết giờ ở tăng dần, bấm chấp nhận ở giảm dần), hệ thống công bố và chuyển phiên sang “Chờ thanh toán”. Mọi người xem (kể cả Guest) thấy trạng thái “Người trúng đấu giá đang thanh toán” cùng mã ẩn danh và hạn thanh toán, cập nhật real-time. | Thiết kế |
 | BR-26 | Người trúng phải thanh toán ngay sau khi trúng: thanh toán phần còn lại (giá trúng trừ tiền đặt cọc) từ ví trong thời hạn ngắn do Admin cấu hình (mặc định 15 phút kể từ lúc công bố). Trong thời gian đó trạng thái “Chờ thanh toán” hiển thị cho mọi người. Thanh toán đủ thì phiên chuyển “Hoàn tất”, trạng thái “Đã thanh toán – phiên kết thúc” hiển thị công khai. | Thiết kế |
 | BR-27 | Người trúng hủy thanh toán hoặc hết hạn chưa thanh toán thì coi là từ chối kết quả: mất tiền đặt cọc (BR-14), trạng thái công khai cập nhật ngay, và áp dụng BR-18 (tăng dần) hoặc BR-22 (giảm dần). Phiên chỉ thật sự kết thúc khi có người thanh toán đủ hoặc phiên không thành. | Điều 51; phần còn lại là Thiết kế |
@@ -292,7 +292,7 @@ Cột “Căn cứ” cho biết điều luật tương ứng trong Luật Đấ
 5.1. Trạng thái phiên đấu giá
 
 | **Trạng thái** | **Ý nghĩa** |
-|----|----|
+| ---- | ---- |
 | Chờ duyệt | Seller đã gửi, Admin chưa duyệt. |
 | Bị từ chối | Admin từ chối kèm lý do; Seller chỉnh sửa và gửi lại. |
 | Đã niêm yết | Đã công khai; nhận đăng ký và tiền đặt trước. |
@@ -306,12 +306,12 @@ Cột “Căn cứ” cho biết điều luật tương ứng trong Luật Đấ
 5.2. Chuyển trạng thái phiên
 
 | **Từ** | **Sự kiện** | **Đến** | **Ghi chú** |
-|----|----|----|----|
-| Chờ duyệt | Admin duyệt | Đã niêm yết |  |
-| Chờ duyệt | Admin từ chối | Bị từ chối |  |
-| Bị từ chối | Seller sửa và gửi lại | Chờ duyệt |  |
+| ---- | ---- | ---- | ---- |
+| Chờ duyệt | Admin duyệt | Đã niêm yết | |
+| Chờ duyệt | Admin từ chối | Bị từ chối | |
+| Bị từ chối | Seller sửa và gửi lại | Chờ duyệt | |
 | Đã niêm yết | Hết hạn đăng ký | Chờ mở phiên | 02 ngày làm việc trước ngày mở |
-| Chờ mở phiên | Đến giờ mở | Đang diễn ra |  |
+| Chờ mở phiên | Đến giờ mở | Đang diễn ra | |
 | Chờ mở phiên | Không có đăng ký hợp lệ | Không thành | BR-24 |
 | Đang diễn ra | Có người trúng | Chờ thanh toán | Tăng dần: hết giờ. Giảm dần: có người chấp nhận. |
 | Đang diễn ra | Không ai trả giá, chấp nhận hoặc tham dự | Không thành | BR-21, BR-24 |
@@ -325,7 +325,7 @@ Cột “Căn cứ” cho biết điều luật tương ứng trong Luật Đấ
 5.3. Trạng thái tiền đặt trước
 
 | **Trạng thái** | **Ý nghĩa** | **Chuyển tiếp** |
-|----|----|----|
+| ---- | ---- | ---- |
 | Đã nộp (phong tỏa) | Tiền trừ từ số dư khả dụng, giữ trong ký quỹ. | Đã hoàn; Chuyển thành cọc; Bị giữ |
 | Đã hoàn | Hoàn vào ví trong 03 ngày làm việc kể từ khi phiên kết thúc (BR-12). | Trạng thái cuối |
 | Chuyển thành cọc | Của người trúng đấu giá (BR-13). | Đã chuyển cho Seller |
@@ -693,7 +693,7 @@ Bảng dưới là cơ sở để vẽ ERD hoặc sơ đồ lớp. Các thuộc 
 chính, sẽ chi tiết hóa khi thiết kế cơ sở dữ liệu.
 
 | **Thực thể** | **Thuộc tính chính** | **Quan hệ, ghi chú** |
-|----|----|----|
+| ---- | ---- | ---- |
 | User | id, tên đăng nhập, email, mật khẩu (băm), họ tên, CCCD, số điện thoại, tài khoản ngân hàng, vai trò hệ thống (User/Admin), trạng thái. | Một User có một Wallet; có thể là Seller và Bidder. |
 | SellerProfile | id, userId, thông tin hồ sơ, trạng thái duyệt, lý do từ chối, người duyệt, ngày duyệt. | Một User có tối đa một hồ sơ Seller. |
 | Asset | id, sellerId, tên, mô tả, hình ảnh, loại (động sản/bất động sản). | Mỗi Asset thuộc một Seller. |
@@ -712,7 +712,7 @@ chính, sẽ chi tiết hóa khi thiết kế cơ sở dữ liệu.
 8\. Yêu cầu phi chức năng
 
 | **Mã** | **Nhóm** | **Yêu cầu** |
-|----|----|----|
+| ---- | ---- | ---- |
 | NFR-01 | Thời gian thực | Giá, trạng thái phiên và đồng hồ đếm ngược cập nhật real-time cho mọi người xem (đề xuất dùng WebSocket). Mục tiêu độ trễ không quá 2 giây trong điều kiện bình thường; con số cần kiểm thử lại. |
 | NFR-02 | Đồng bộ thời gian | Server là nguồn thời gian duy nhất để xét thứ tự trả giá, chấp nhận giá và lịch giảm giá; đồng hồ phía client hiển thị theo giờ server. |
 | NFR-03 | Đồng thời | Xử lý trả giá và chấp nhận giá nguyên tử (giao dịch cơ sở dữ liệu hoặc khóa), bảo đảm không có hai người cùng thắng. |
@@ -728,7 +728,7 @@ chính, sẽ chi tiết hóa khi thiết kế cơ sở dữ liệu.
 9.1. Các quyết định đã chốt
 
 | **\#** | **Nội dung** | **Quyết định** | **Áp dụng tại** |
-|----|----|----|----|
+| ---- | ---- | ---- | ---- |
 | 1 | Phân biệt Guest và User | Guest là người chưa đăng nhập; chỉ trở thành User khi đã đăng nhập. | Mục 2.1 |
 | 2 | Hiển thị Bidder | Mã ẩn danh là dãy số, không có chữ. | BR-31 |
 | 3 | Thông báo | Chỉ trong ứng dụng. Lưu ý: Điều 43b khoản 5 nêu thêm việc gửi email; dự án chọn không gửi. | BR-33 |
@@ -758,7 +758,7 @@ chính, sẽ chi tiết hóa khi thiết kế cơ sở dữ liệu.
 9.3. Giả định mình đặt, cần bạn xác nhận
 
 | **\#** | **Giả định** | **Ghi chú** |
-|----|----|----|
+| ---- | ---- | ---- |
 | 1 | Bạn chọn “thanh toán ngay sau khi trúng” nhưng chưa nêu thời hạn cụ thể. SRS đặt mặc định **15 phút** kể từ lúc công bố, Admin cấu hình được. | BR-26. Có thể đổi thành số khác hoặc cho Seller chọn. |
 | 2 | Phần tiền còn lại chuyển cho Seller sau khi Bidder xác nhận đã nhận tài sản (hoặc Admin xác nhận). | BR-30. Bạn chưa trả lời mục này nên giữ mặc định. |
 | 3 | “100 người” được hiểu là số người đồng thời (xem và trả giá) trong một phiên. | NFR-09. |
