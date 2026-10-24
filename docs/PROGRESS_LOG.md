@@ -5,7 +5,7 @@
 | Module | Phụ Trách | Trạng Thái | Ngày Kế Hoạch | Ghi Chú |
 | :--- | :--- | :--- | :--- | :--- |
 | **môi trường** | Cài đặt JDK, XAMPP, IDE, cấu hình dự án | **Hoàn thành** | Ngày 0 | Đã sẵn sàng JDK 17, MySQL, Spring Boot, docs |
-| **docs / db** | SRS, ERD, V1 migration, DECISIONS | Chưa bắt đầu | Ngày 1 | Sắp thực hiện |
+| **docs / db** | SRS, ERD, V1 migration, DECISIONS | **Hoàn thành** | Ngày 1 | ERD 19 bảng, V1 migration chạy sạch |
 | **docs** | STATE_MACHINES, BUSINESS_RULES | Chưa bắt đầu | Ngày 2 | |
 | **docs** | SEQUENCES (UC-01 .. UC-04) | Chưa bắt đầu | Ngày 3 | |
 | **docs** | SEQUENCES (UC-05 .. UC-08), USE_CASES, ARCHITECTURE, API_MAP | Chưa bắt đầu | Ngày 4 | |
@@ -39,14 +39,27 @@
 ## 3. Nhật Ký Chi Tiết Theo Ngày
 
 ### Ngày 0 – Cài đặt môi trường & Khởi tạo dự án
+
 - **Ngày thực hiện:** 24/10/2026
 - **Kết quả đạt được:**
-  -  Kiểm tra và chuẩn bị JDK 17 (Temurin OpenJDK 17.0.20.1).
-  -  Cài đặt XAMPP 8.2 và khởi chạy dịch vụ MySQL trên cổng 3306.
-  -  Tạo 2 database: `auction_db` và `auction_test`; cấu hình tài khoản `auction` / `auction` với đầy đủ quyền hạn.
-  -  Cài đặt bộ extension Spring Boot (`vmware.vscode-boot-dev-pack`) và Database Client cho Antigravity IDE.
-  -  Cài đặt Pandoc và chuyển đổi tài liệu đặc tả sang `docs/SRS.md` nguyên vẹn 100% nội dung đặc tả.
-  -  Khởi tạo khung dự án Spring Boot (Maven Wrapper, Spring Web, Thymeleaf, Spring Data JPA, Flyway, Spring Security, Validation, WebSocket, MySQL Connector).
-  -  Cấu hình `application.properties` (kết nối `auction_db`) và `application-test.properties` (kết nối `auction_test`).
-  -  Tạo tài liệu `PROJECT_CONTEXT.md` và `docs/PROGRESS_LOG.md`.
-- **Ghi chú:** Sẵn sàng bước vào **Giai đoạn A – Ngày 1 (Tài liệu nền và ERD)**.
+  - Kiểm tra và chuẩn bị JDK 17 (Temurin OpenJDK 17.0.20.1).
+  - Cài đặt XAMPP 8.2 và khởi chạy dịch vụ MySQL trên cổng 3306.
+  - Tạo 2 database: `auction_db` và `auction_test`; cấu hình tài khoản `auction` / `auction` với đầy đủ quyền hạn.
+  - Cài đặt bộ extension Spring Boot (`vmware.vscode-boot-dev-pack`) và Database Client cho Antigravity IDE.
+  - Cài đặt Pandoc và chuyển đổi tài liệu đặc tả sang `docs/SRS.md` nguyên vẹn 100% nội dung đặc tả.
+  - Khởi tạo khung dự án Spring Boot (Maven Wrapper, Spring Web, Thymeleaf, Spring Data JPA, Flyway, Spring Security, Validation, WebSocket, MySQL Connector).
+  - Cấu hình `application.properties` (kết nối `auction_db`) và `application-test.properties` (kết nối `auction_test`).
+  - Tạo tài liệu `PROJECT_CONTEXT.md` và `docs/PROGRESS_LOG.md`.
+- **Ghi chú:** Đã hoàn thành toàn bộ môi trường và khởi tạo cây thư mục chuẩn.
+
+### Ngày 1 – Tài liệu nền và ERD
+
+- **Ngày thực hiện:** 24/10/2026
+- **Kết quả đạt được:**
+  - Soạn thảo tài liệu [docs/ERD.md](./ERD.md): Thiết kế 14 thực thể theo SRS Mục 7 và 5 bảng ngoài SRS phục vụ vận hành thực tế (tổng cộng 19 bảng).
+  - Soạn thảo tài liệu [docs/DECISIONS.md](./DECISIONS.md): Ghi nhận 13 quyết định nghiệp vụ và các quyết định kỹ thuật (tiền tệ VND, Server Clock, ví hệ thống, tính bất biến).
+  - Viết file migration [backend/src/main/resources/db/migration/V1__init.sql](../backend/src/main/resources/db/migration/V1__init.sql) khớp 100% từng cột, kiểu dữ liệu và ràng buộc CHECK với ERD.
+  - Flyway áp dụng migration V1 sạch sẽ vào MySQL `auction_db` (19 bảng khởi tạo thành công).
+  - Kiểm thử Spring Boot tự động xác nhận migration đạt **BUILD SUCCESS**.
+- **Ghi chú:** Sẵn sàng bước vào **Ngày 2 – Sơ đồ trạng thái và ma trận quy tắc nghiệp vụ (STATE_MACHINES & BUSINESS_RULES)**.
+
