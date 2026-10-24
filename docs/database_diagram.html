@@ -4,106 +4,406 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sơ Đồ Cơ Sở Dữ Liệu (Database Diagram) – Hệ Thống Đấu Giá Trực Tuyến</title>
-  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"></script>
   <style>
+    :root {
+      --bg-main: #0b0f19;
+      --bg-card: #111827;
+      --bg-card-hover: #1e293b;
+      --gold-primary: #f59e0b;
+      --gold-light: #fbbf24;
+      --gold-border: rgba(245, 158, 11, 0.3);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent-blue: #38bdf8;
+      --accent-green: #10b981;
+      --accent-purple: #c084fc;
+      --border-color: rgba(255, 255, 255, 0.1);
+    }
+
     * { margin: 0; padding: 0; box-sizing: border-box; }
+
     body {
-      background-color: #0b0f19;
-      color: #f8fafc;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       overflow: hidden;
       display: flex;
       flex-direction: column;
       height: 100vh;
     }
+
     header {
       background: rgba(17, 24, 39, 0.95);
-      border-bottom: 1px solid rgba(245, 158, 11, 0.3);
-      padding: 0.75rem 1.5rem;
+      border-bottom: 1px solid var(--gold-border);
+      padding: 0.6rem 1.25rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      z-index: 10;
+      z-index: 100;
+      backdrop-filter: blur(8px);
     }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
     h1 {
-      font-size: 1.25rem;
-      color: #f59e0b;
+      font-size: 1.15rem;
+      color: var(--gold-primary);
       display: flex;
       align-items: center;
       gap: 0.5rem;
-    }
-    .badge {
-      background: #10b981;
-      color: #000;
-      font-size: 0.75rem;
       font-weight: 700;
-      padding: 0.2rem 0.5rem;
+    }
+
+    .badge {
+      background: var(--accent-green);
+      color: #000;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.15rem 0.5rem;
       border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
-    .controls {
+
+    .tab-bar {
       display: flex;
-      gap: 0.5rem;
+      gap: 0.25rem;
+      background: #0f172a;
+      padding: 0.25rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
     }
-    button {
-      background: #1e293b;
-      color: #f8fafc;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      padding: 0.4rem 0.8rem;
+
+    .tab-btn {
+      background: transparent;
+      color: var(--text-muted);
+      border: none;
+      padding: 0.35rem 0.85rem;
       border-radius: 6px;
       cursor: pointer;
       font-size: 0.85rem;
       font-weight: 600;
-      transition: all 0.2s;
+      transition: all 0.2s ease;
     }
-    button:hover {
-      background: #f59e0b;
+
+    .tab-btn:hover {
+      color: var(--text-main);
+    }
+
+    .tab-btn.active {
+      background: var(--gold-primary);
       color: #000;
     }
-    #diagram-container {
-      flex: 1;
-      width: 100%;
-      height: 100%;
-      background: radial-gradient(circle at 50% 50%, #111827 0%, #0b0f19 100%);
+
+    .controls {
       display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .btn {
+      background: #1e293b;
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: all 0.2s;
+    }
+
+    .btn:hover {
+      background: var(--gold-primary);
+      color: #000;
+      border-color: var(--gold-primary);
+    }
+
+    .main-view {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      display: none;
+      width: 100%;
+      height: calc(100vh - 55px);
+    }
+
+    .main-view.active {
+      display: flex;
+    }
+
+    /* Tab 1: Mermaid Canvas */
+    #diagramView {
+      background: radial-gradient(circle at 50% 50%, #111827 0%, #0b0f19 100%);
+      cursor: grab;
       align-items: center;
       justify-content: center;
-      overflow: hidden;
-      cursor: grab;
     }
-    #diagram-container:active {
+
+    #diagramView:active {
       cursor: grabbing;
     }
-    .mermaid {
+
+    #mermaidGraph {
       width: 100%;
       height: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
+    }
+
+    /* Tab 2: Schema Explorer */
+    #explorerView {
+      background: var(--bg-main);
+      display: none;
+      overflow: hidden;
+    }
+
+    #explorerView.active {
+      display: flex;
+    }
+
+    .sidebar {
+      width: 320px;
+      background: var(--bg-card);
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .sidebar-header {
+      padding: 1rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .search-box {
+      width: 100%;
+      background: #0f172a;
+      border: 1px solid var(--border-color);
+      color: #fff;
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+    }
+
+    .search-box:focus {
+      outline: none;
+      border-color: var(--gold-primary);
+    }
+
+    .table-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0.5rem;
+    }
+
+    .table-group-title {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--gold-primary);
+      padding: 0.5rem 0.5rem 0.25rem;
+      font-weight: 700;
+    }
+
+    .table-item {
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      transition: all 0.15s;
+      margin-bottom: 2px;
+    }
+
+    .table-item:hover {
+      background: var(--bg-card-hover);
+      color: var(--text-main);
+    }
+
+    .table-item.active {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--gold-light);
+      font-weight: 600;
+      border-left: 3px solid var(--gold-primary);
+    }
+
+    .table-item .count-badge {
+      font-size: 0.7rem;
+      background: #1e293b;
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+    }
+
+    .content-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.5rem 2rem;
+    }
+
+    .table-detail-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    .table-detail-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .table-detail-title {
+      font-size: 1.5rem;
+      color: var(--gold-primary);
+      font-weight: 700;
+    }
+
+    .table-detail-desc {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-top: 0.25rem;
+    }
+
+    .schema-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+      font-size: 0.85rem;
+    }
+
+    .schema-table th {
+      background: #0f172a;
+      color: var(--gold-light);
+      text-align: left;
+      padding: 0.65rem 0.75rem;
+      border-bottom: 2px solid var(--gold-border);
+      font-weight: 600;
+    }
+
+    .schema-table td {
+      padding: 0.6rem 0.75rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: var(--text-main);
+    }
+
+    .schema-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .tag-pk {
+      background: #ef4444;
+      color: #fff;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 0.1rem 0.35rem;
+      border-radius: 3px;
+      margin-right: 0.3rem;
+    }
+
+    .tag-fk {
+      background: var(--accent-blue);
+      color: #000;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 0.1rem 0.35rem;
+      border-radius: 3px;
+      margin-right: 0.3rem;
+    }
+
+    .tag-uk {
+      background: var(--accent-purple);
+      color: #000;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 0.1rem 0.35rem;
+      border-radius: 3px;
+    }
+
+    .col-name {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-weight: 600;
+      color: #e2e8f0;
+    }
+
+    .col-type {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      color: #38bdf8;
+    }
+
+    .relation-card {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background: #0f172a;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+
+    .relation-card h4 {
+      font-size: 0.9rem;
+      color: var(--gold-light);
+      margin-bottom: 0.5rem;
+    }
+
+    .relation-list {
+      list-style: none;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .relation-list li strong {
+      color: var(--text-main);
     }
   </style>
 </head>
 <body>
+
   <header>
-    <h1>🏛️ DATABASE DIAGRAM (19 BẢNG) <span class="badge">MySQL V1__init.sql</span></h1>
-    <div class="controls">
-      <button onclick="panZoom.zoomIn()">➕ Phóng To</button>
-      <button onclick="panZoom.zoomOut()">➖ Thu Nhỏ</button>
-      <button onclick="panZoom.reset()">🔄 Mặc Định</button>
-      <button onclick="window.print()">🖨️ In / Xuất PDF</button>
+    <div class="header-left">
+      <h1>🏛️ DATABASE DIAGRAM <span class="badge">MySQL V1__init (19 Bảng)</span></h1>
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchTab('diagram')">🗺️ Sơ Đồ Trực Quan (ERD)</button>
+        <button class="tab-btn" onclick="switchTab('explorer')">📋 Tra Cứu 19 Bảng (Schema)</button>
+      </div>
+    </div>
+    <div class="controls" id="diagramControls">
+      <button class="btn" onclick="zoomIn()">➕ Phóng To</button>
+      <button class="btn" onclick="zoomOut()">➖ Thu Nhỏ</button>
+      <button class="btn" onclick="resetZoom()">🔄 Mặc Định</button>
+      <button class="btn" onclick="window.print()">🖨️ In / PDF</button>
     </div>
   </header>
 
-  <div id="diagram-container">
-    <div class="mermaid" id="mermaidGraph">
+  <!-- TAB 1: MERMAID ERD -->
+  <div id="diagramView" class="main-view active">
+    <div id="mermaidGraph" class="mermaid">
 erDiagram
     users {
         bigint id PK
-        varchar username UK
-        varchar email UK
+        varchar username "UK"
+        varchar email "UK"
         varchar password_hash
         varchar full_name
-        varchar citizen_id UK
+        varchar citizen_id "UK"
         varchar phone_number
         varchar bank_name
         varchar bank_account_number
@@ -115,7 +415,7 @@ erDiagram
 
     seller_profiles {
         bigint id PK
-        bigint user_id FK,UK
+        bigint user_id FK "UK"
         text profile_info
         varchar status
         text rejected_reason
@@ -146,7 +446,7 @@ erDiagram
 
     auctions {
         bigint id PK
-        bigint asset_id FK,UK
+        bigint asset_id FK "UK"
         varchar method
         bigint starting_price
         bigint step_price
@@ -181,7 +481,7 @@ erDiagram
 
     deposits {
         bigint id PK
-        bigint registration_id FK,UK
+        bigint registration_id FK "UK"
         bigint amount
         varchar status
         datetime refund_deadline
@@ -197,22 +497,19 @@ erDiagram
         bigint auction_id FK
         bigint bidder_id FK
         bigint amount
-        varchar bid_type
-        datetime server_time
-        boolean is_valid
-        varchar invalid_reason
-        datetime created_at
+        datetime bid_time
+        varchar ip_address
     }
 
     settlements {
         bigint id PK
-        bigint auction_id FK
-        bigint bidder_id FK
-        bigint winning_price
+        bigint auction_id FK "UK"
+        bigint winner_id FK
+        bigint final_price
         bigint deposit_deducted
         bigint remaining_amount
+        varchar payment_status
         datetime payment_deadline
-        varchar status
         datetime paid_at
         datetime created_at
         datetime updated_at
@@ -220,10 +517,10 @@ erDiagram
 
     wallets {
         bigint id PK
-        bigint user_id FK,UK
-        varchar wallet_type
-        bigint available_balance
-        bigint frozen_balance
+        bigint user_id FK "UK"
+        bigint balance
+        bigint locked_balance
+        varchar status
         datetime created_at
         datetime updated_at
     }
@@ -235,7 +532,6 @@ erDiagram
         bigint amount
         bigint balance_before
         bigint balance_after
-        varchar idempotency_key UK
         varchar reference_type
         bigint reference_id
         varchar description
@@ -245,9 +541,10 @@ erDiagram
     notifications {
         bigint id PK
         bigint user_id FK
-        varchar type
+        varchar title
         text content
-        varchar target_url
+        varchar type
+        bigint reference_id
         boolean is_read
         datetime created_at
     }
@@ -280,7 +577,7 @@ erDiagram
 
     system_configs {
         bigint id PK
-        varchar config_key UK
+        varchar config_key "UK"
         varchar config_value
         varchar description
         datetime updated_at
@@ -288,7 +585,7 @@ erDiagram
 
     holidays {
         bigint id PK
-        date holiday_date UK
+        date holiday_date "UK"
         varchar description
     }
 
@@ -301,7 +598,7 @@ erDiagram
 
     auction_minutes {
         bigint id PK
-        bigint auction_id FK,UK
+        bigint auction_id FK "UK"
         json snapshot_data
         datetime generated_at
     }
@@ -319,33 +616,425 @@ erDiagram
         datetime created_at
     }
 
-    %% Relationships
-    users ||--o| seller_profiles : "1 user có tối đa 1 hồ sơ"
+    %% Quan hệ
+    users ||--o| seller_profiles : "1 user có tối đa 1 hồ sơ bán"
     users ||--o| wallets : "1 user có 1 ví"
-    users ||--o{ assets : "người bán sở hữu tài sản"
+    users ||--o{ assets : "người bán sở hữu"
     users ||--o{ registrations : "đăng ký tham gia"
     users ||--o{ bids : "thực hiện trả giá"
     users ||--o{ settlements : "người trúng thanh toán"
     users ||--o{ notifications : "nhận thông báo"
     users ||--o{ complaints : "gửi khiếu nại"
-    users ||--o{ auction_follows : "theo dõi yêu thích"
+    users ||--o{ auction_follows : "theo dõi"
 
     assets ||--o| auctions : "1 tài sản gắn 1 phiên"
-    assets ||--o{ asset_images : "nhiều ảnh minh họa"
+    assets ||--o{ asset_images : "ảnh minh họa"
 
     auctions ||--o{ registrations : "tiếp nhận đăng ký"
-    auctions ||--o{ bids : "ghi nhận lịch sử giá"
-    auctions ||--o{ settlements : "kết quả trúng"
+    auctions ||--o{ bids : "lịch sử trả giá"
+    auctions ||--o{ settlements : "kết quả thanh toán"
     auctions ||--o{ complaints : "bị khiếu nại"
     auctions ||--o| auction_minutes : "lập biên bản kết thúc"
     auctions ||--o{ listing_change_requests : "yêu cầu sửa niêm yết"
 
-    registrations ||--|| deposits : "mỗi đăng ký có 1 khoản đặt trước"
-    wallets ||--o{ transactions : "biến động số dư bất biến"
+    registrations ||--|| deposits : "mỗi đăng ký có 1 cọc"
+    wallets ||--o{ transactions : "biến động số dư"
+    </div>
+  </div>
+
+  <!-- TAB 2: SCHEMA EXPLORER -->
+  <div id="explorerView" class="main-view">
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <input type="text" id="searchInput" class="search-box" placeholder="🔍 Tìm kiếm bảng hoặc cột..." onkeyup="filterTables()">
+      </div>
+      <div class="table-list" id="tableListContainer">
+        <!-- Render bằng Javascript -->
+      </div>
+    </div>
+    <div class="content-area" id="tableDetailContainer">
+      <!-- Render chi tiết bảng -->
     </div>
   </div>
 
   <script>
+    // Dữ liệu chi tiết 19 bảng cho Tab Tra cứu
+    const schemaData = [
+      {
+        name: "users",
+        group: "Tài Khoản & Người Dùng",
+        desc: "Lưu trữ tài khoản, thông tin định danh (CCCD), tài khoản ngân hàng và phân quyền hệ thống.",
+        columns: [
+          { name: "id", type: "BIGINT", pk: true, fk: false, uk: false, nullable: false, desc: "Khóa chính tự tăng" },
+          { name: "username", type: "VARCHAR(50)", pk: false, fk: false, uk: true, nullable: false, desc: "Tên đăng nhập duy nhất" },
+          { name: "email", type: "VARCHAR(100)", pk: false, fk: false, uk: true, nullable: false, desc: "Email nhận thông báo" },
+          { name: "password_hash", type: "VARCHAR(255)", pk: false, fk: false, uk: false, nullable: false, desc: "Mật khẩu mã hóa BCrypt" },
+          { name: "full_name", type: "VARCHAR(100)", pk: false, fk: false, uk: false, nullable: false, desc: "Họ và tên thật" },
+          { name: "citizen_id", type: "VARCHAR(20)", pk: false, fk: false, uk: true, nullable: true, desc: "Số CCCD/CMND định danh" },
+          { name: "phone_number", type: "VARCHAR(20)", pk: false, fk: false, uk: false, nullable: true, desc: "Số điện thoại liên hệ" },
+          { name: "bank_name", type: "VARCHAR(100)", pk: false, fk: false, uk: false, nullable: true, desc: "Tên ngân hàng thụ hưởng" },
+          { name: "bank_account_number", type: "VARCHAR(50)", pk: false, fk: false, uk: false, nullable: true, desc: "Số tài khoản ngân hàng" },
+          { name: "role", type: "VARCHAR(20)", pk: false, fk: false, uk: false, nullable: false, desc: "ADMIN, SELLER, BIDDER, USER" },
+          { name: "status", type: "VARCHAR(20)", pk: false, fk: false, uk: false, nullable: false, desc: "ACTIVE, LOCKED, INACTIVE" },
+          { name: "created_at", type: "DATETIME(3)", pk: false, fk: false, uk: false, nullable: false, desc: "Thời điểm tạo tài khoản" },
+          { name: "updated_at", type: "DATETIME(3)", pk: false, fk: false, uk: false, nullable: false, desc: "Thời điểm cập nhật cuối" }
+        ],
+        relations: [
+          "1-1 với <code>seller_profiles</code>: Hồ sơ người bán được duyệt",
+          "1-1 với <code>wallets</code>: Ví tiền điện tử",
+          "1-N với <code>assets</code>: Danh sách tài sản do user đăng tải",
+          "1-N với <code>registrations</code>: Lượt đăng ký đấu giá",
+          "1-N với <code>bids</code>: Các lượt trả giá trong phòng đấu giá",
+          "1-N với <code>settlements</code>: Kết quả trúng đấu giá cần thanh toán",
+          "1-N với <code>notifications</code>: Hộp thư thông báo"
+        ]
+      },
+      {
+        name: "seller_profiles",
+        group: "Tài Khoản & Người Dùng",
+        desc: "Hồ sơ đăng ký nâng cấp lên quyền Người Bán (SELLER), chờ Admin duyệt.",
+        columns: [
+          { name: "id", type: "BIGINT", pk: true, fk: false, uk: false, nullable: false, desc: "Khóa chính" },
+          { name: "user_id", type: "BIGINT", pk: false, fk: true, uk: true, nullable: false, desc: "FK -> users(id)" },
+          { name: "profile_info", type: "TEXT", pk: false, fk: false, uk: false, nullable: true, desc: "Thông tin giấy tờ, pháp nhân" },
+          { name: "status", type: "VARCHAR(30)", pk: false, fk: false, uk: false, nullable: false, desc: "PENDING, APPROVED, REJECTED" },
+          { name: "rejected_reason", type: "TEXT", pk: false, fk: false, uk: false, nullable: true, desc: "Lý do từ chối nếu có" },
+          { name: "reviewed_by", type: "BIGINT", pk: false, fk: true, uk: false, nullable: true, desc: "FK -> users(id) - Admin duyệt" },
+          { name: "reviewed_at", type: "DATETIME(3)", pk: false, fk: false, uk: false, nullable: true, desc: "Thời điểm duyệt" },
+          { name: "created_at", type: "DATETIME(3)", pk: false, fk: false, uk: false, nullable: false, desc: "Ngày gửi yêu cầu" },
+          { name: "updated_at", type: "DATETIME(3)", pk: false, fk: false, uk: false, nullable: false, desc: "Ngày cập nhật" }
+        ],
+        relations: [
+          "N-1 với <code>users</code> (user_id): Chủ sở hữu hồ sơ",
+          "N-1 với <code>users</code> (reviewed_by): Admin thẩm định hồ sơ"
+        ]
+      },
+      {
+        name: "assets",
+        group: "Tài Sản & Phiên Đấu Giá",
+        desc: "Thông tin danh mục tài sản do Người bán đăng tải trước khi tạo phiên.",
+        columns: [
+          { name: "id", type: "BIGINT", pk: true, fk: false, uk: false, nullable: false, desc: "Khóa chính" },
+          { name: "seller_id", type: "BIGINT", pk: false, fk: true, uk: false, nullable: false, desc: "FK -> users(id) - Người bán" },
+          { name: "name", type: "VARCHAR(255)", pk: false, fk: false, uk: false, nullable: false, desc: "Tên tài sản đấu giá" },
+          { name: "description", type: "TEXT", pk: false, fk: false, uk: false, nullable: true, desc: "Mô tả đặc tính, hiện trạng" },
+          { name: "asset_type", type: "VARCHAR(30)", pk: false, fk: false, uk: false, nullable: false, desc: "BẤT ĐỘNG SẢN, XE CỘ, ĐỒ CỔ..." },
+          { name: "main_image_url", type: "VARCHAR(500)", pk: false, fk: false, uk: false, nullable: true, desc: "Ảnh đại diện chính" },
+          { name: "created_at", type: "DATETIME(3)", pk: false, fk: false, uk: false, nullable: false, desc: "Ngày tạo" },
+          { name: "updated_at", type: "DATETIME(3)", pk: false, fk: false, uk: false, nullable: false, desc: "Ngày cập nhật" }
+        ],
+        relations: [
+          "N-1 với <code>users</code> (seller_id): Người bán sở hữu",
+          "1-1 với <code>auctions</code>: Phiên đấu giá gắn liền",
+          "1-N với <code>asset_images</code>: Bộ sưu tập ảnh chi tiết"
+        ]
+      },
+      {
+        name: "asset_images",
+        group: "Tài Sản & Phiên Đấu Giá",
+        desc: "Các hình ảnh phụ, giấy chứng nhận kiểm định của tài sản.",
+        columns: [
+          { name: "id", type: "BIGINT", pk: true, fk: false, uk: false, nullable: false, desc: "Khóa chính" },
+          { name: "asset_id", type: "BIGINT", pk: false, fk: true, uk: false, nullable: false, desc: "FK -> assets(id)" },
+          { name: "image_url", type: "VARCHAR(500)", pk: false, fk: false, uk: false, nullable: false, desc: "Đường dẫn ảnh" },
+          { name: "display_order", type: "INT", pk: false, fk: false, uk: false, nullable: false, desc: "Thứ tự sắp xếp hiển thị" },
+          { name: "created_at", type: "DATETIME(3)", pk: false, fk: false, uk: false, nullable: false, desc: "Ngày tải lên" }
+        ],
+        relations: [
+          "N-1 với <code>assets</code> (asset_id): Thuộc về tài sản"
+        ]
+      },
+      {
+        name: "auctions",
+        group: "Tài Sản & Phiên Đấu Giá",
+        desc: "Trọng tâm của hệ thống: Quản lý thông số phiên, phương thức (Lên/Xuống), tiền cọc và thời gian đấu giá.",
+        columns: [
+          { name: "id", type: "BIGINT", pk: true, fk: false, uk: false, nullable: false, desc: "Khóa chính phiên" },
+          { name: "asset_id", type: "BIGINT", pk: false, fk: true, uk: true, nullable: false, desc: "FK -> assets(id) - Duy nhất 1 phiên/tài sản" },
+          { name: "method", type: "VARCHAR(30)", pk: false, fk: false, uk: false, nullable: false, desc: "ASCENDING (Trả giá lên), DESCENDING (Đặt giá xuống)" },
+          { name: "starting_price", type: "BIGINT", pk: false, fk: false, uk: false, nullable: false, desc: "Giá khởi điểm (VND)" },
+          { name: "step_price", type: "BIGINT", pk: false, fk: false, uk: false, nullable: true, desc: "Bước giá áp dụng khi đấu giá lên" },
+          { name: "price_reduction_interval_seconds", type: "INT", pk: false, fk: false, uk: false, nullable: true, desc: "Khoảng thời gian giảm giá (Đấu giá xuống)" },
+          { name: "floor_price", type: "BIGINT", pk: false, fk: false, uk: false, nullable: true, desc: "Giá sàn tối thiểu (Đấu giá xuống)" },
+          { name: "deposit_percent", type: "DECIMAL(5,2)", pk: false, fk: false, uk: false, nullable: false, desc: "Tỷ lệ cọc 5% - 20%" },
+          { name: "deposit_amount", type: "BIGINT", pk: false, fk: false, uk: false, nullable: false, desc: "Tiền cọc cố định (VND)" },
+          { name: "terms_and_conditions", type: "TEXT", pk: false, fk: false, uk: false, nullable: true, desc: "Quy chế phiên đấu giá" },
+          { name: "listing_at", type: "DATETIME(3)", pk: false, fk: false, uk: false, nullable: true, desc: "Thời điểm niêm yết công khai" },
+          { name: "registration_deadline", type: "DATETIME(3)", pk: false, fk: false, uk: false, nullable: true, desc: "Hạn chót đăng ký & nộp tiền cọc" },
+          { name: "start_time", type: "DATETIME(3)", pk: false, fk: false, uk: false, nullable: false, desc: "Thời điểm bắt đầu phiên" },
+          { name: "end_time", type: "DATETIME(3)", pk: false, fk: false, uk: false, nullable: false, desc: "Thời điểm kết thúc phiên" },
+          { name: "status", type: "VARCHAR(30)", pk: false, fk: false, uk: false, nullable: false, desc: "PENDING_APPROVAL, UPCOMING, ACTIVE, COMPLETED, CANCELLED..." },
+          { name: "current_price", type: "BIGINT", pk: false, fk: false, uk: false, nullable: true, desc: "Giá hiện tại trong phiên" },
+          { name: "highest_bidder_id", type: "BIGINT", pk: false, fk: true, uk: false, nullable: true, desc: "FK -> users(id) - Người đang giữ giá cao nhất" },
+          { name: "rejection_reason", type: "TEXT", pk: false, fk: false, uk: false, nullable: true, desc: "Lý do Admin từ chối phê duyệt" },
+          { name: "created_at", type: "DATETIME(3)", pk: false, fk: false, uk: false, nullable: false, desc: "Ngày tạo phiên" },
+          { name: "updated_at", type: "DATETIME(3)", pk: false, fk: false, uk: false, nullable: false, desc: "Ngày cập nhật" }
+        ],
+        relations: [
+          "1-1 với <code>assets</code> (asset_id): Tài sản đấu giá",
+          "N-1 với <code>users</code> (highest_bidder_id): Người giữ giá trúng",
+          "1-N với <code>registrations</code>: Danh sách hồ sơ đăng ký tham gia",
+          "1-N với <code>bids</code>: Toàn bộ lịch sử trả giá",
+          "1-1 với <code>settlements</code>: Kết quả thanh toán khi kết thúc phiên",
+          "1-1 với <code>auction_minutes</code>: Biên bản điện tử phiên đấu giá"
+        ]
+      },
+      {
+        name: "registrations",
+        group: "Đăng Ký & Đặt Cọc",
+        desc: "Đăng ký tham gia đấu giá của bidder, quản lý mã ẩn danh (Anonymous Code) và cam kết quy chế.",
+        columns: [
+          { name: "id", type: "BIGINT", pk: true, fk: false, uk: false, nullable: false, desc: "Khóa chính" },
+          { name: "auction_id", type: "BIGINT", pk: false, fk: true, uk: false, nullable: false, desc: "FK -> auctions(id)" },
+          { name: "bidder_id", type: "BIGINT", pk: false, fk: true, uk: false, nullable: false, desc: "FK -> users(id)" },
+          { name: "anonymous_code", type: "VARCHAR(20)", pk: false, fk: false, uk: false, nullable: false, desc: "Mã ẩn danh duy nhất trong phiên (vd: BID-001)" },
+          { name: "status", type: "VARCHAR(30)", pk: false, fk: false, uk: false, nullable: false, desc: "PENDING_APPROVAL, VALID, REJECTED, CANCELLED" },
+          { name: "rejection_reason", type: "TEXT", pk: false, fk: false, uk: false, nullable: true, desc: "Lý do từ chối hồ sơ" },
+          { name: "terms_committed_at", type: "DATETIME(3)", pk: false, fk: false, uk: false, nullable: false, desc: "Thời điểm bấm cam kết quy chế" },
+          { name: "decision_on_listing_change", type: "VARCHAR(20)", pk: false, fk: false, uk: false, nullable: true, desc: "CONTINUE hoặc WITHDRAW khi có đổi niêm yết" },
+          { name: "registered_at", type: "DATETIME(3)", pk: false, fk: false, uk: false, nullable: false, desc: "Thời điểm đăng ký" }
+        ],
+        relations: [
+          "N-1 với <code>auctions</code>: Thuộc phiên đấu giá",
+          "N-1 với <code>users</code> (bidder_id): Người đăng ký",
+          "1-1 với <code>deposits</code>: Khoản tiền đặt trước tương ứng"
+        ]
+      },
+      {
+        name: "deposits",
+        group: "Đăng Ký & Đặt Cọc",
+        desc: "Quản lý phong tỏa/giữ tiền cọc, hoàn tiền cho người trượt, hoặc chuyển cọc cho người bán khi vi phạm.",
+        columns: [
+          { name: "id", type: "BIGINT", pk: true, fk: false, uk: false, nullable: false, desc: "Khóa chính" },
+          { name: "registration_id", type: "BIGINT", pk: false, fk: true, uk: true, nullable: false, desc: "FK -> registrations(id) - 1:1" },
+          { name: "amount", type: "BIGINT", pk: false, fk: false, uk: false, nullable: false, desc: "Số tiền đặt trước (VND)" },
+          { name: "status", type: "VARCHAR(30)", pk: false, fk: false, uk: false, nullable: false, desc: "HELD, REFUNDED, TRANSFERRED_TO_SELLER, FORFEITED" },
+          { name: "refund_deadline", type: "DATETIME(3)", pk: false, fk: false, uk: false, nullable: true, desc: "Hạn chót hoàn cọc (3 ngày làm việc)" },
+          { name: "transfer_deadline", type: "DATETIME(3)", pk: false, fk: false, uk: false, nullable: true, desc: "Hạn chót chuyển cọc" },
+          { name: "refunded_at", type: "DATETIME(3)", pk: false, fk: false, uk: false, nullable: true, desc: "Thời điểm hoàn cọc thành công" },
+          { name: "transferred_to_seller_at", type: "DATETIME(3)", pk: false, fk: false, uk: false, nullable: true, desc: "Thời điểm chuyển tiền cho Seller" },
+          { name: "created_at", type: "DATETIME(3)", pk: false, fk: false, uk: false, nullable: false, desc: "Thời điểm nộp cọc" },
+          { name: "updated_at", type: "DATETIME(3)", pk: false, fk: false, uk: false, nullable: false, desc: "Cập nhật trạng thái" }
+        ],
+        relations: [
+          "1-1 với <code>registrations</code>: Gắn liền với lượt đăng ký"
+        ]
+      },
+      {
+        name: "bids",
+        group: "Đấu Giá & Trả Giá",
+        desc: "Sổ cái ghi nhận lượt trả giá trong phòng đấu giá (Bất biến - Append only, không update/delete).",
+        columns: [
+          { name: "id", type: "BIGINT", pk: true, fk: false, uk: false, nullable: false, desc: "Khóa chính tự tăng" },
+          { name: "auction_id", type: "BIGINT", pk: false, fk: true, uk: false, nullable: false, desc: "FK -> auctions(id)" },
+          { name: "bidder_id", type: "BIGINT", pk: false, fk: true, uk: false, nullable: false, desc: "FK -> users(id)" },
+          { name: "amount", type: "BIGINT", pk: false, fk: false, uk: false, nullable: false, desc: "Số tiền trả giá hợp lệ (VND)" },
+          { name: "bid_time", type: "DATETIME(3)", pk: false, fk: false, uk: false, nullable: false, desc: "Thời điểm đặt giá (chính xác ms)" },
+          { name: "ip_address", type: "VARCHAR(50)", pk: false, fk: false, uk: false, nullable: true, desc: "Địa chỉ IP phục vụ giám sát" }
+        ],
+        relations: [
+          "N-1 với <code>auctions</code>: Phiên đấu giá",
+          "N-1 với <code>users</code>: Người trả giá"
+        ]
+      },
+      {
+        name: "settlements",
+        group: "Thanh Toán & Quyết Toán",
+        desc: "Bản ghi thanh toán của người trúng đấu giá, khấu trừ tiền cọc và theo dõi hạn nộp tiền (15 phút).",
+        columns: [
+          { name: "id", type: "BIGINT", pk: true, fk: false, uk: false, nullable: false, desc: "Khóa chính" },
+          { name: "auction_id", type: "BIGINT", pk: false, fk: true, uk: true, nullable: false, desc: "FK -> auctions(id) - Duy nhất 1 kết quả" },
+          { name: "winner_id", type: "BIGINT", pk: false, fk: true, uk: false, nullable: false, desc: "FK -> users(id) - Người thắng cuộc" },
+          { name: "final_price", type: "BIGINT", pk: false, fk: false, uk: false, nullable: false, desc: "Giá trúng đấu giá cuối cùng (VND)" },
+          { name: "deposit_deducted", type: "BIGINT", pk: false, fk: false, uk: false, nullable: false, desc: "Tiền cọc được khấu trừ vào đơn hàng" },
+          { name: "remaining_amount", type: "BIGINT", pk: false, fk: false, uk: false, nullable: false, desc: "Số tiền còn lại phải thanh toán" },
+          { name: "payment_status", type: "VARCHAR(30)", pk: false, fk: false, uk: false, nullable: false, desc: "PENDING, PAID, OVERDUE, FORFEITED" },
+          { name: "payment_deadline", type: "DATETIME(3)", pk: false, fk: false, uk: false, nullable: false, desc: "Hạn chót thanh toán (mặc định 15 phút)" },
+          { name: "paid_at", type: "DATETIME(3)", pk: false, fk: false, uk: false, nullable: true, desc: "Thời điểm thanh toán thành công" },
+          { name: "created_at", type: "DATETIME(3)", pk: false, fk: false, uk: false, nullable: false, desc: "Thời điểm tạo quyết toán" },
+          { name: "updated_at", type: "DATETIME(3)", pk: false, fk: false, uk: false, nullable: false, desc: "Thời điểm cập nhật" }
+        ],
+        relations: [
+          "1-1 với <code>auctions</code>: Kết quả của phiên",
+          "N-1 với <code>users</code>: Người trúng phiên"
+        ]
+      },
+      {
+        name: "wallets",
+        group: "Ví Tiền & Giao Dịch",
+        desc: "Ví điện tử cá nhân của User và ví tổng hệ thống (SYSTEM_ESCROW, SYSTEM_REVENUE).",
+        columns: [
+          { name: "id", type: "BIGINT", pk: true, fk: false, uk: false, nullable: false, desc: "Khóa chính ví" },
+          { name: "user_id", type: "BIGINT", pk: false, fk: true, uk: true, nullable: true, desc: "FK -> users(id) - NULL đối với ví hệ thống" },
+          { name: "balance", type: "BIGINT", pk: false, fk: false, uk: false, nullable: false, desc: "Số dư khả dụng (VND)" },
+          { name: "locked_balance", type: "BIGINT", pk: false, fk: false, uk: false, nullable: false, desc: "Số dư đang bị phong tỏa (đặt cọc)" },
+          { name: "status", type: "VARCHAR(20)", pk: false, fk: false, uk: false, nullable: false, desc: "ACTIVE, FROZEN, CLOSED" },
+          { name: "created_at", type: "DATETIME(3)", pk: false, fk: false, uk: false, nullable: false, desc: "Ngày mở ví" },
+          { name: "updated_at", type: "DATETIME(3)", pk: false, fk: false, uk: false, nullable: false, desc: "Ngày biến động cuối" }
+        ],
+        relations: [
+          "1-1 với <code>users</code>: Chủ ví",
+          "1-N với <code>transactions</code>: Lịch sử biến động số dư"
+        ]
+      },
+      {
+        name: "transactions",
+        group: "Ví Tiền & Giao Dịch",
+        desc: "Sổ cái tài chính kép (Double-entry / Audit Trail), ghi nhận mọi giao dịch nạp, rút, khóa cọc, hoàn tiền.",
+        columns: [
+          { name: "id", type: "BIGINT", pk: true, fk: false, uk: false, nullable: false, desc: "Khóa chính giao dịch" },
+          { name: "wallet_id", type: "BIGINT", pk: false, fk: true, uk: false, nullable: false, desc: "FK -> wallets(id)" },
+          { name: "transaction_type", type: "VARCHAR(30)", pk: false, fk: false, uk: false, nullable: false, desc: "DEPOSIT_HOLD, REFUND, TOPUP, WITHDRAW, PAYMENT..." },
+          { name: "amount", type: "BIGINT", pk: false, fk: false, uk: false, nullable: false, desc: "Giá trị biến động" },
+          { name: "balance_before", type: "BIGINT", pk: false, fk: false, uk: false, nullable: false, desc: "Số dư trước giao dịch" },
+          { name: "balance_after", type: "BIGINT", pk: false, fk: false, uk: false, nullable: false, desc: "Số dư sau giao dịch" },
+          { name: "reference_type", type: "VARCHAR(50)", pk: false, fk: false, uk: false, nullable: true, desc: "Tên bảng liên quan (AUCTION, DEPOSIT...)" },
+          { name: "reference_id", type: "BIGINT", pk: false, fk: false, uk: false, nullable: true, desc: "ID bản ghi liên quan" },
+          { name: "description", type: "VARCHAR(255)", pk: false, fk: false, uk: false, nullable: true, desc: "Nội dung giải thích biến động" },
+          { name: "created_at", type: "DATETIME(3)", pk: false, fk: false, uk: false, nullable: false, desc: "Thời điểm ghi sổ cái" }
+        ],
+        relations: [
+          "N-1 với <code>wallets</code>: Ví thực hiện giao dịch"
+        ]
+      },
+      {
+        name: "notifications",
+        group: "Vận Hành & Giám Sát",
+        desc: "Hệ thống thông báo đẩy (In-app notification) cho người dùng.",
+        columns: [
+          { name: "id", type: "BIGINT", pk: true, fk: false, uk: false, nullable: false, desc: "Khóa chính" },
+          { name: "user_id", type: "BIGINT", pk: false, fk: true, uk: false, nullable: false, desc: "FK -> users(id)" },
+          { name: "title", type: "VARCHAR(255)", pk: false, fk: false, uk: false, nullable: false, desc: "Tiêu đề thông báo" },
+          { name: "content", type: "TEXT", pk: false, fk: false, uk: false, nullable: false, desc: "Nội dung chi tiết" },
+          { name: "type", type: "VARCHAR(50)", pk: false, fk: false, uk: false, nullable: false, desc: "AUCTION, SYSTEM, WALLET" },
+          { name: "reference_id", type: "BIGINT", pk: false, fk: false, uk: false, nullable: true, desc: "Mã phiên hoặc mã giao dịch" },
+          { name: "is_read", type: "BOOLEAN", pk: false, fk: false, uk: false, nullable: false, desc: "Trạng thái đã đọc (true/false)" },
+          { name: "created_at", type: "DATETIME(3)", pk: false, fk: false, uk: false, nullable: false, desc: "Thời điểm gửi" }
+        ],
+        relations: [
+          "N-1 với <code>users</code>: Người nhận thông báo"
+        ]
+      },
+      {
+        name: "audit_logs",
+        group: "Vận Hành & Giám Sát",
+        desc: "Nhật ký kiểm toán an ninh bảo mật hệ thống, lưu vết thay đổi dữ liệu (Snapshot Before/After).",
+        columns: [
+          { name: "id", type: "BIGINT", pk: true, fk: false, uk: false, nullable: false, desc: "Khóa chính log" },
+          { name: "entity_type", type: "VARCHAR(50)", pk: false, fk: false, uk: false, nullable: false, desc: "Tên thực thể (AUCTION, USER, WALLET...)" },
+          { name: "entity_id", type: "BIGINT", pk: false, fk: false, uk: false, nullable: false, desc: "ID thực thể bị tác động" },
+          { name: "action", type: "VARCHAR(50)", pk: false, fk: false, uk: false, nullable: false, desc: "INSERT, UPDATE, DELETE, APPROVE, REJECT" },
+          { name: "performed_by", type: "BIGINT", pk: false, fk: true, uk: false, nullable: true, desc: "FK -> users(id) - Người thực hiện" },
+          { name: "data_before", type: "JSON", pk: false, fk: false, uk: false, nullable: true, desc: "Snapshot dữ liệu trước thay đổi" },
+          { name: "data_after", type: "JSON", pk: false, fk: false, uk: false, nullable: true, desc: "Snapshot dữ liệu sau thay đổi" },
+          { name: "ip_address", type: "VARCHAR(50)", pk: false, fk: false, uk: false, nullable: true, desc: "IP thực hiện" },
+          { name: "created_at", type: "DATETIME(3)", pk: false, fk: false, uk: false, nullable: false, desc: "Thời điểm ghi log" }
+        ],
+        relations: [
+          "N-1 với <code>users</code> (performed_by): Người gây ra hành vi"
+        ]
+      },
+      {
+        name: "complaints",
+        group: "Khiếu Nại & Tranh Chấp",
+        desc: "Tiếp nhận và giải quyết khiếu nại của người tham gia về kết quả phiên đấu giá.",
+        columns: [
+          { name: "id", type: "BIGINT", pk: true, fk: false, uk: false, nullable: false, desc: "Khóa chính khiếu nại" },
+          { name: "auction_id", type: "BIGINT", pk: false, fk: true, uk: false, nullable: false, desc: "FK -> auctions(id)" },
+          { name: "user_id", type: "BIGINT", pk: false, fk: true, uk: false, nullable: false, desc: "FK -> users(id) - Người khiếu nại" },
+          { name: "content", type: "TEXT", pk: false, fk: false, uk: false, nullable: false, desc: "Nội dung khiếu nại" },
+          { name: "evidence_url", type: "VARCHAR(500)", pk: false, fk: false, uk: false, nullable: true, desc: "Bằng chứng kèm theo (ảnh, video)" },
+          { name: "status", type: "VARCHAR(30)", pk: false, fk: false, uk: false, nullable: false, desc: "PENDING, INVESTIGATING, RESOLVED, REJECTED" },
+          { name: "resolution_note", type: "TEXT", pk: false, fk: false, uk: false, nullable: true, desc: "Kết luận xử lý của Admin" },
+          { name: "resolved_by", type: "BIGINT", pk: false, fk: true, uk: false, nullable: true, desc: "FK -> users(id) - Admin xử lý" },
+          { name: "resolved_at", type: "DATETIME(3)", pk: false, fk: false, uk: false, nullable: true, desc: "Thời điểm giải quyết" },
+          { name: "created_at", type: "DATETIME(3)", pk: false, fk: false, uk: false, nullable: false, desc: "Thời điểm gửi đơn" },
+          { name: "updated_at", type: "DATETIME(3)", pk: false, fk: false, uk: false, nullable: false, desc: "Thời điểm cập nhật" }
+        ],
+        relations: [
+          "N-1 với <code>auctions</code>: Phiên đấu giá bị khiếu nại",
+          "N-1 với <code>users</code> (user_id): Người nộp khiếu nại",
+          "N-1 với <code>users</code> (resolved_by): Admin giải quyết"
+        ]
+      },
+      {
+        name: "system_configs",
+        group: "Hệ Thống",
+        desc: "Cấu hình tham số động của hệ thống (phí sàn, thời gian hoàn cọc, hạn thanh toán...).",
+        columns: [
+          { name: "id", type: "BIGINT", pk: true, fk: false, uk: false, nullable: false, desc: "Khóa chính" },
+          { name: "config_key", type: "VARCHAR(100)", pk: false, fk: false, uk: true, nullable: false, desc: "Khóa cấu hình duy nhất" },
+          { name: "config_value", type: "VARCHAR(255)", pk: false, fk: false, uk: false, nullable: false, desc: "Giá trị cấu hình" },
+          { name: "description", type: "VARCHAR(255)", pk: false, fk: false, uk: false, nullable: true, desc: "Giải thích ý nghĩa" },
+          { name: "updated_at", type: "DATETIME(3)", pk: false, fk: false, uk: false, nullable: false, desc: "Thời điểm cập nhật" }
+        ],
+        relations: ["Bảng cấu hình độc lập"]
+      },
+      {
+        name: "holidays",
+        group: "Hệ Thống",
+        desc: "Danh mục ngày nghỉ lễ theo Luật Lao động Việt Nam để tính thời hạn ngày làm việc.",
+        columns: [
+          { name: "id", type: "BIGINT", pk: true, fk: false, uk: false, nullable: false, desc: "Khóa chính" },
+          { name: "holiday_date", type: "DATE", pk: false, fk: false, uk: true, nullable: false, desc: "Ngày nghỉ lễ (YYYY-MM-DD)" },
+          { name: "description", type: "VARCHAR(255)", pk: false, fk: false, uk: false, nullable: true, desc: "Tên ngày lễ (Tết, 30/4, 2/9...)" }
+        ],
+        relations: ["Phục vụ module tính hạn hoàn cọc (3 ngày làm việc)"]
+      },
+      {
+        name: "auction_follows",
+        group: "Vận Hành & Giám Sát",
+        desc: "Theo dõi phiên đấu giá yêu thích của người dùng.",
+        columns: [
+          { name: "id", type: "BIGINT", pk: true, fk: false, uk: false, nullable: false, desc: "Khóa chính" },
+          { name: "user_id", type: "BIGINT", pk: false, fk: true, uk: false, nullable: false, desc: "FK -> users(id)" },
+          { name: "auction_id", type: "BIGINT", pk: false, fk: true, uk: false, nullable: false, desc: "FK -> auctions(id)" },
+          { name: "created_at", type: "DATETIME(3)", pk: false, fk: false, uk: false, nullable: false, desc: "Thời điểm bấm theo dõi" }
+        ],
+        relations: [
+          "N-1 với <code>users</code>: Người theo dõi",
+          "N-1 với <code>auctions</code>: Phiên được theo dõi"
+        ]
+      },
+      {
+        name: "auction_minutes",
+        group: "Tài Sản & Phiên Đấu Giá",
+        desc: "Biên bản số ghi nhận kết quả đấu giá ngay khi phiên kết thúc.",
+        columns: [
+          { name: "id", type: "BIGINT", pk: true, fk: false, uk: false, nullable: false, desc: "Khóa chính" },
+          { name: "auction_id", type: "BIGINT", pk: false, fk: true, uk: true, nullable: false, desc: "FK -> auctions(id) - Duy nhất 1 biên bản/phiên" },
+          { name: "snapshot_data", type: "JSON", pk: false, fk: false, uk: false, nullable: false, desc: "Dữ liệu đóng băng toàn bộ diễn biến phiên" },
+          { name: "generated_at", type: "DATETIME(3)", pk: false, fk: false, uk: false, nullable: false, desc: "Thời điểm lập biên bản" }
+        ],
+        relations: [
+          "1-1 với <code>auctions</code>: Biên bản chính thức của phiên"
+        ]
+      },
+      {
+        name: "listing_change_requests",
+        group: "Tài Sản & Phiên Đấu Giá",
+        desc: "Yêu cầu thay đổi thông tin niêm yết của Người bán và thẩm định của Quản trị viên.",
+        columns: [
+          { name: "id", type: "BIGINT", pk: true, fk: false, uk: false, nullable: false, desc: "Khóa chính" },
+          { name: "auction_id", type: "BIGINT", pk: false, fk: true, uk: false, nullable: false, desc: "FK -> auctions(id)" },
+          { name: "seller_id", type: "BIGINT", pk: false, fk: true, uk: false, nullable: false, desc: "FK -> users(id)" },
+          { name: "change_summary", type: "TEXT", pk: false, fk: false, uk: false, nullable: false, desc: "Nội dung tóm tắt thay đổi" },
+          { name: "old_values", type: "JSON", pk: false, fk: false, uk: false, nullable: true, desc: "Thông tin cũ" },
+          { name: "new_values", type: "JSON", pk: false, fk: false, uk: false, nullable: true, desc: "Thông tin mới yêu cầu sửa" },
+          { name: "status", type: "VARCHAR(30)", pk: false, fk: false, uk: false, nullable: false, desc: "PENDING, APPROVED, REJECTED" },
+          { name: "reviewed_by", type: "BIGINT", pk: false, fk: true, uk: false, nullable: true, desc: "FK -> users(id) - Admin duyệt" },
+          { name: "reviewed_at", type: "DATETIME(3)", pk: false, fk: false, uk: false, nullable: true, desc: "Thời điểm duyệt" },
+          { name: "created_at", type: "DATETIME(3)", pk: false, fk: false, uk: false, nullable: false, desc: "Thời điểm gửi yêu cầu" }
+        ],
+        relations: [
+          "N-1 với <code>auctions</code>: Phiên có yêu cầu đổi",
+          "N-1 với <code>users</code> (seller_id): Người bán yêu cầu",
+          "N-1 với <code>users</code> (reviewed_by): Admin duyệt"
+        ]
+      }
+    ];
+
+    // Khởi tạo Mermaid
     mermaid.initialize({
       startOnLoad: true,
       theme: 'dark',
@@ -361,14 +1050,15 @@ erDiagram
       }
     });
 
-    let panZoom;
+    let panZoomInstance;
     window.addEventListener('load', () => {
+      // Khởi tạo Zoom/Pan sau khi Mermaid vẽ xong
       setTimeout(() => {
         const svg = document.querySelector('#mermaidGraph svg');
         if (svg) {
           svg.style.width = '100%';
           svg.style.height = '100%';
-          panZoom = svgPanZoom(svg, {
+          panZoomInstance = svgPanZoom(svg, {
             zoomEnabled: true,
             controlIconsEnabled: false,
             fit: true,
@@ -377,8 +1067,137 @@ erDiagram
             maxZoom: 10
           });
         }
-      }, 500);
+      }, 600);
+
+      renderTableList();
+      showTableDetail(schemaData[0].name);
     });
+
+    function zoomIn() { if (panZoomInstance) panZoomInstance.zoomIn(); }
+    function zoomOut() { if (panZoomInstance) panZoomInstance.zoomOut(); }
+    function resetZoom() { if (panZoomInstance) panZoomInstance.reset(); }
+
+    function switchTab(tab) {
+      const diagramView = document.getElementById('diagramView');
+      const explorerView = document.getElementById('explorerView');
+      const diagramControls = document.getElementById('diagramControls');
+      const buttons = document.querySelectorAll('.tab-btn');
+
+      if (tab === 'diagram') {
+        diagramView.classList.add('active');
+        explorerView.classList.remove('active');
+        diagramControls.style.display = 'flex';
+        buttons[0].classList.add('active');
+        buttons[1].classList.remove('active');
+      } else {
+        diagramView.classList.remove('active');
+        explorerView.classList.add('active');
+        diagramControls.style.display = 'none';
+        buttons[0].classList.remove('active');
+        buttons[1].classList.add('active');
+      }
+    }
+
+    function renderTableList() {
+      const container = document.getElementById('tableListContainer');
+      const groups = {};
+
+      schemaData.forEach(t => {
+        if (!groups[t.group]) groups[t.group] = [];
+        groups[t.group].push(t);
+      });
+
+      let html = '';
+      for (const groupName in groups) {
+        html += `<div class="table-group-title">${groupName}</div>`;
+        groups[groupName].forEach(t => {
+          html += `
+            <div class="table-item" id="item-${t.name}" onclick="showTableDetail('${t.name}')">
+              <span>📄 ${t.name}</span>
+              <span class="count-badge">${t.columns.length} cột</span>
+            </div>
+          `;
+        });
+      }
+      container.innerHTML = html;
+    }
+
+    function showTableDetail(tableName) {
+      document.querySelectorAll('.table-item').forEach(el => el.classList.remove('active'));
+      const activeItem = document.getElementById(`item-${tableName}`);
+      if (activeItem) activeItem.classList.add('active');
+
+      const table = schemaData.find(t => t.name === tableName);
+      if (!table) return;
+
+      const container = document.getElementById('tableDetailContainer');
+      let colHtml = '';
+      table.columns.forEach(c => {
+        let tags = '';
+        if (c.pk) tags += '<span class="tag-pk">PK</span>';
+        if (c.fk) tags += '<span class="tag-fk">FK</span>';
+        if (c.uk) tags += '<span class="tag-uk">UK</span>';
+
+        colHtml += `
+          <tr>
+            <td>${tags}</td>
+            <td class="col-name">${c.name}</td>
+            <td class="col-type">${c.type}</td>
+            <td>${c.nullable ? '<span style="color:#94a3b8">YES</span>' : '<span style="color:#ef4444">NOT NULL</span>'}</td>
+            <td>${c.desc}</td>
+          </tr>
+        `;
+      });
+
+      let relHtml = '';
+      if (table.relations && table.relations.length > 0) {
+        relHtml = `
+          <div class="relation-card">
+            <h4>🔗 Mối Quan Hệ Liên Kết:</h4>
+            <ul class="relation-list">
+              ${table.relations.map(r => `<li>• ${r}</li>`).join('')}
+            </ul>
+          </div>
+        `;
+      }
+
+      container.innerHTML = `
+        <div class="table-detail-card">
+          <div class="table-detail-header">
+            <div>
+              <div class="table-detail-title">Bảng: ${table.name}</div>
+              <div class="table-detail-desc">${table.desc}</div>
+            </div>
+            <span class="badge">${table.group}</span>
+          </div>
+
+          <table class="schema-table">
+            <thead>
+              <tr>
+                <th style="width: 70px;">Khóa</th>
+                <th style="width: 200px;">Tên Cột</th>
+                <th style="width: 150px;">Kiểu Dữ Liệu</th>
+                <th style="width: 110px;">Cho Phép Null</th>
+                <th>Ý Nghĩa Nghiệp Vụ</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${colHtml}
+            </tbody>
+          </table>
+
+          ${relHtml}
+        </div>
+      `;
+    }
+
+    function filterTables() {
+      const q = document.getElementById('searchInput').value.toLowerCase();
+      document.querySelectorAll('.table-item').forEach(el => {
+        const text = el.innerText.toLowerCase();
+        el.style.display = text.includes(q) ? 'flex' : 'none';
+      });
+    }
   </script>
 </body>
 </html>

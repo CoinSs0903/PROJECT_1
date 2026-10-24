@@ -33,11 +33,11 @@
 erDiagram
     users {
         bigint id PK
-        varchar username UK
-        varchar email UK
+        varchar username "UK"
+        varchar email "UK"
         varchar password_hash
         varchar full_name
-        varchar citizen_id UK
+        varchar citizen_id "UK"
         varchar phone_number
         varchar bank_name
         varchar bank_account_number
@@ -49,7 +49,7 @@ erDiagram
 
     seller_profiles {
         bigint id PK
-        bigint user_id FK,UK
+        bigint user_id FK "UK"
         text profile_info
         varchar status
         text rejected_reason
@@ -80,7 +80,7 @@ erDiagram
 
     auctions {
         bigint id PK
-        bigint asset_id FK,UK
+        bigint asset_id FK "UK"
         varchar method
         bigint starting_price
         bigint step_price
@@ -115,7 +115,7 @@ erDiagram
 
     deposits {
         bigint id PK
-        bigint registration_id FK,UK
+        bigint registration_id FK "UK"
         bigint amount
         varchar status
         datetime refund_deadline
@@ -154,7 +154,7 @@ erDiagram
 
     wallets {
         bigint id PK
-        bigint user_id FK,UK
+        bigint user_id FK "UK"
         varchar wallet_type
         bigint available_balance
         bigint frozen_balance
@@ -169,7 +169,7 @@ erDiagram
         bigint amount
         bigint balance_before
         bigint balance_after
-        varchar idempotency_key UK
+        varchar idempotency_key "UK"
         varchar reference_type
         bigint reference_id
         varchar description
@@ -214,7 +214,7 @@ erDiagram
 
     system_configs {
         bigint id PK
-        varchar config_key UK
+        varchar config_key "UK"
         varchar config_value
         varchar description
         datetime updated_at
@@ -222,7 +222,7 @@ erDiagram
 
     holidays {
         bigint id PK
-        date holiday_date UK
+        date holiday_date "UK"
         varchar description
     }
 
@@ -235,7 +235,7 @@ erDiagram
 
     auction_minutes {
         bigint id PK
-        bigint auction_id FK,UK
+        bigint auction_id FK "UK"
         json snapshot_data
         datetime generated_at
     }
