@@ -6,8 +6,8 @@
 | :--- | :--- | :--- | :--- | :--- |
 | **môi trường** | Cài đặt JDK, XAMPP, IDE, cấu hình dự án | **Hoàn thành** | Ngày 0 | Đã sẵn sàng JDK 17, MySQL, Spring Boot, docs |
 | **docs / db** | SRS, ERD, V1 migration, DECISIONS | **Hoàn thành** | Ngày 1 | ERD 19 bảng, V1 migration chạy sạch |
-| **docs** | STATE_MACHINES, BUSINESS_RULES | Chưa bắt đầu | Ngày 2 | |
-| **docs** | SEQUENCES (UC-01 .. UC-04) | Chưa bắt đầu | Ngày 3 | |
+| **docs** | STATE_MACHINES, BUSINESS_RULES | **Hoàn thành** | Ngày 2 | 6 state machines Mermaid, ma trận 35 BR, 7 scheduler tasks |
+| **docs** | SEQUENCES (UC-01 .. UC-04) | **Hoàn thành** | Ngày 3 | 5 sequence diagrams, ranh giới transaction, 2 ví dụ số BR-18 |
 | **docs** | SEQUENCES (UC-05 .. UC-08), USE_CASES, ARCHITECTURE, API_MAP | Chưa bắt đầu | Ngày 4 | |
 | **common** | Giờ server, tiền VND, Exception, layout nền | Chưa bắt đầu | Ngày 5 | |
 | **user** | Tài khoản, đăng nhập, phân quyền, hồ sơ cá nhân | Chưa bắt đầu | Ngày 6, 25 | |
@@ -24,7 +24,7 @@
 | **payout** | Hoàn tiền, chuyển cọc, nhận tài sản, phí dịch vụ | Chưa bắt đầu | Ngày 23 | |
 | **complaint** | Tiếp nhận và xử lý khiếu nại | Chưa bắt đầu | Ngày 24 | |
 | **admin** | Quản trị tổng hợp, thống kê, điều hành phiên | Chưa bắt đầu | Ngày 23, 24, 25 | |
-| **toàn hệ thống**| Rà soát bảo mật, demo data, nghiệm thu | Chưa bắt đầu | Ngày 26 | |
+| **toàn hệ thống** | Rà soát bảo mật, demo data, nghiệm thu | Chưa bắt đầu | Ngày 26 | |
 
 ---
 
@@ -63,3 +63,21 @@
   - Kiểm thử Spring Boot tự động xác nhận migration đạt **BUILD SUCCESS**.
 - **Ghi chú:** Sẵn sàng bước vào **Ngày 2 – Sơ đồ trạng thái và ma trận quy tắc nghiệp vụ (STATE_MACHINES & BUSINESS_RULES)**.
 
+### Ngày 2 – Sơ đồ trạng thái và ma trận quy tắc nghiệp vụ
+
+- **Ngày thực hiện:** 27/10/2026
+- **Kết quả đạt được:**
+  - Soạn thảo tài liệu [docs/STATE_MACHINES.md](./STATE_MACHINES.md): Thiết kế 6 máy trạng thái bằng Mermaid `stateDiagram-v2` (`auctions`, `deposits`, `settlements`, `registrations`, `seller_profiles`, `complaints`), chuẩn hóa danh mục enum tiếng Anh và sự kiện/tác nhân kích hoạt.
+  - Soạn thảo tài liệu [docs/BUSINESS_RULES.md](./BUSINESS_RULES.md): Lập ma trận ánh xạ 35 quy tắc nghiệp vụ BR-01..BR-35 sang các module và ngày thực hiện, thiết kế bảng 7 tác vụ tự động ngầm của Scheduler (đóng đăng ký, mở phiên, giảm giá, hết giờ, hạn thanh toán, hoàn tiền, chuyển cọc).
+  - Bổ sung tài liệu [docs/DECISIONS.md](./DECISIONS.md): Ghi nhận 4 điểm chuyển trạng thái SRS chưa nêu rõ (quy tắc hủy, xử lý lùi giá khi rút giá BR-17, giới hạn 1 lượt người liền kề BR-18, trạng thái đăng ký khi hủy phiên).
+- **Ghi chú:** Đã hoàn thành 100% mục tiêu Ngày 2. Sẵn sàng cho **Ngày 3 – Sequence diagram: đăng ký, trả giá, chấp nhận giá, thanh toán (UC-01 .. UC-04)**.
+
+### Ngày 3 – Sequence diagram: đăng ký, trả giá, chấp nhận giá, thanh toán
+
+- **Ngày thực hiện:** 27/10/2026
+- **Kết quả đạt được:**
+  - Soạn thảo tài liệu [docs/SEQUENCES.md](./SEQUENCES.md) (Phần 1): Thiết kế 5 sơ đồ tuần tự Mermaid `sequenceDiagram` chi tiết cho 4 ca sử dụng trọng tâm (UC-01 Đăng ký & phong tỏa cọc + xét duyệt Admin, UC-02 Trả giá tăng dần + Rút giá người dẫn đầu BR-17, UC-03 Chấp nhận giá giảm dần tức thì, UC-04 Thanh toán kết quả 15 phút + Quá hạn phạt cọc và xét người liền kề BR-18 / tiếp tục giảm dần BR-22).
+  - Xác định ranh giới giao dịch cơ sở dữ liệu (`@Transactional`) và điểm khóa dòng Concurrency (`SELECT ... FOR UPDATE` Pessimistic Lock theo NFR-03).
+  - Chốt chi tiết 4 giao dịch nhạy cảm nhất (`placeBid`, `acceptPrice`, `determineWinner`, `settlePayment`).
+  - Xây dựng 2 ví dụ số học chuẩn xác cho quy tắc người liền kề theo Điều 51 khoản 1 Luật Đấu giá tài sản (BR-18): 1 ca hợp lệ và 1 ca không hợp lệ làm dữ liệu kiểm thử.
+- **Ghi chú:** Đã hoàn thành 100% mục tiêu Ngày 3. Sẵn sàng cho **Ngày 4 – Sequence còn lại (UC-05..08), Use Cases, Kiến trúc Module Facade và Bản đồ API**.

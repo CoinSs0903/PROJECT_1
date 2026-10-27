@@ -1,0 +1,314 @@
+\documentclass[a4paper]{article}
+\usepackage[utf8]{vntex}
+\usepackage{indentfirst}
+\usepackage{a4wide,amssymb,latexsym,multicol,array,hhline,fancyhdr,url}
+\usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm,headheight=26pt]{geometry}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{lastpage}
+\usepackage{color,xcolor}
+\usepackage{graphicx}
+\usepackage{longtable,tabularx,caption,multirow,booktabs}
+\usepackage{tikz}
+\usetikzlibrary{arrows,backgrounds}
+\usepackage{hyperref}
+\hypersetup{urlcolor=blue,linkcolor=black,citecolor=black,colorlinks=true}
+
+% Cấu hình Header & Footer chuẩn mẫu Đại học KHTN
+\fancyhead{}
+\fancyhead[L]{
+  \begin{tabular}{rl}
+	\begin{picture}(25,15)(0,0)
+	\put(0,-8){\includegraphics[width=8mm, height=8mm]{hcmus.png}}
+	\end{picture}&
+	\begin{tabular}{l}
+		\textbf{\ttfamily Trường Đại Học Khoa Học Tự Nhiên Tp.Hồ Chí Minh}\\
+		\textbf{\ttfamily Khoa Toán - Tin học / Bộ môn Công nghệ Phần mềm}
+	\end{tabular} 	
+  \end{tabular}
+}
+\fancyhead[R]{
+	\begin{tabular}{r}
+		\scriptsize \textbf{\ttfamily PROJECT 1: ONLINE AUCTION}\\
+		\tiny \textit{Phát triển Phần mềm Hướng đối tượng}
+	\end{tabular}
+}
+\fancyfoot{}
+\fancyfoot[L]{\scriptsize \ttfamily Báo cáo tiến độ dự án (Giai đoạn A: Thiết kế nền tảng)}
+\fancyfoot[R]{\scriptsize \ttfamily Trang {\thepage}/\pageref{LastPage}}
+\renewcommand{\headrulewidth}{0.3pt}
+\renewcommand{\footrulewidth}{0.3pt}
+
+% Đánh số mục 4 cấp
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{3}
+\makeatletter
+\newcounter {subsubsubsection}[subsubsection]
+\renewcommand\thesubsubsubsection{\thesubsubsection .\@alph\c@subsubsubsection}
+\newcommand\subsubsubsection{\@startsection{subsubsubsection}{4}{\z@}%
+	{-3.25ex\@plus -1ex \@minus -.2ex}%
+	{1.5ex \@plus .2ex}%
+	{\normalfont\normalsize\bfseries}}
+\newcommand*\l@subsubsubsection{\@dottedtocline{3}{10.0em}{4.1em}}
+\newcommand*{\subsubsubsectionmark}[1]{}
+\makeatother
+
+\captionsetup[figure]{labelfont={small,bf},textfont={small,it},belowskip=-1pt,aboveskip=-9pt}
+\captionsetup[table]{labelfont={small,bf},textfont={small,it},belowskip=-1pt,aboveskip=7pt}
+
+\setlength{\parindent}{15pt}
+\setlength{\parskip}{4pt}
+
+\begin{document}
+
+% ==================== TRANG BÌA KHUNG KÉP NGHỆ THUẬT ====================
+\begin{titlepage}
+	\begin{tikzpicture}[remember picture,overlay,inner sep=0,outer sep=0]
+	\draw[black!70!black,line width=3pt] ([xshift=-1.75cm,yshift=-1.75cm]current page.north east) coordinate (A)--([xshift=1.75cm,yshift=-1.75cm]current page.north west) coordinate(B)--([xshift=1.75cm,yshift=1.75cm]current page.south west) coordinate (C)--([xshift=-1.75cm,yshift=1.75cm]current page.south east) coordinate(D)--cycle;
+	
+	\draw [blue!70!black,line width=2pt]([yshift=0.4cm,xshift=-0.4cm]A)-- ([yshift=0.4cm,xshift=0.4cm]B)--
+	([yshift=-0.4cm,xshift=0.4cm]B) --([yshift=-0.4cm,xshift=-0.4cm]B)--([yshift=0.4cm,xshift=-0.4cm]C)--([yshift=0.4cm,xshift=0.4cm]C)--([yshift=-0.4cm,xshift=0.4cm]C)-- ([yshift=-0.4cm,xshift=-0.4cm]D)--([yshift=0.4cm,xshift=-0.4cm]D)--([yshift=0.4cm,xshift=0.4cm]D)--([yshift=-0.4cm,xshift=0.4cm]A)--([yshift=-0.4cm,xshift=-0.4cm]A)--([yshift=0.4cm,xshift=-0.4cm]A);
+	\end{tikzpicture}
+	
+	\begin{center}
+		\textbf{ {\Large ĐẠI HỌC QUỐC GIA THÀNH PHỐ HỒ CHÍ MINH \\
+				TRƯỜNG ĐẠI HỌC KHOA HỌC TỰ NHIÊN \\ \underline{\color[named]{blue} Khoa Toán - Tin học / Bộ môn Công nghệ Phần mềm }} \\ 
+		}
+	\end{center}
+	\vspace{0.6cm}
+	\begin{figure}[h!]
+		\begin{center}
+			\includegraphics[width=3.5cm]{hcmus.png}
+		\end{center}
+	\end{figure}
+	\vspace{0.3cm}
+	
+	\begin{center}
+	\begin{tabular}{c}
+		\hline
+		\\
+		\textbf{{\huge BÁO CÁO TIẾN ĐỘ DỰ ÁN}}\\\\\\
+		\textbf{{\LARGE HỆ THỐNG ĐẤU GIÁ TRỰC TUYẾN}}\\\\
+		\textbf{{\large (ONLINE AUCTION SYSTEM -- PROJECT 1)}}\\\\
+		\hline
+	\end{tabular}
+	\end{center}
+
+	\vspace{1cm}
+		
+	\begin{center}
+	\renewcommand{\arraystretch}{1.3}
+	\begin{tabular}{rll}
+		\textbf{\large MÔN HỌC:} & \large\textcolor{blue}{Phát Triển Phần Mềm Hướng Đối Tượng (OOAD)} & \\
+		\textbf{\large LỚP:} & \large\textcolor{blue}{24TTH2} & \\
+		\textbf{\large SVTH:} & \large\textcolor{blue}{Nguyễn Gia Bảo} & \large\textcolor{blue}{-- 24110129} \\
+		& \large\textcolor{blue}{Nhóm Phát Triển Dự Án} & \\
+		\textbf{\large GITHUB:} & \multicolumn{2}{l}{\large\textcolor{blue}{\url{https://github.com/CoinSs0903/PROJECT_1}}} \\
+	\end{tabular}
+	\end{center}
+	
+	\vfill
+	\begin{center}
+		\textbf{{\large TP. HỒ CHÍ MINH, THÁNG 10/2026}}\\
+	\end{center}
+\end{titlepage}
+
+% ==================== MỤC LỤC ====================
+\tableofcontents
+\newpage
+\pagestyle{fancy}
+
+% ==================== NỘI DUNG ====================
+
+\section{Tổng Quan Đề Tài \& Mục Tiêu Dự Án}
+
+\subsection{Giới thiệu đề tài}
+Hệ thống Đấu giá Trực tuyến (\textbf{Online Auction System}) là nền tảng thương mại điện tử chuyên biệt hỗ trợ tổ chức, vận hành và giám sát các phiên đấu giá tài sản theo thời gian thực. Hệ thống đáp ứng đầy đủ các quy định nghiệp vụ nghiêm ngặt về pháp lý đấu giá, bảo đảm tính minh bạch, cạnh tranh công bằng, bảo mật danh tính người tham gia và an toàn toàn vẹn dòng tiền.
+
+\subsection{Căn cứ pháp lý \& Phạm vi nghiệp vụ}
+Hệ thống được thiết kế tuân thủ nghiêm ngặt theo:
+\begin{itemize}
+    \item \textbf{Luật Đấu giá tài sản số 01/2016/QH14}, bản hợp nhất đã được sửa đổi, bổ sung bởi Luật Giá số 16/2023/QH15, Luật số 37/2024/QH15 và Luật số 142/2025/QH15.
+    \item Hỗ trợ 2 phương thức đấu giá:
+    \begin{enumerate}
+        \item \textbf{Đấu giá tăng dần (trả giá lên - English Auction):} Người tham gia đặt mức giá tăng dần theo bước giá quy định. Lần trả giá đầu phải không thấp hơn giá khởi điểm; các lần sau phải cao hơn giá dẫn đầu hiện tại ít nhất 1 bước giá. Hết giờ, người trả giá cao nhất là người trúng.
+        \item \textbf{Đấu giá giảm dần (đặt giá xuống - Dutch Auction):} Hệ thống tự động giảm giá từ mức giá khởi điểm cao nhất theo bước giảm và chu kỳ thời gian. Người đầu tiên xác nhận chấp nhận mức giá hiện hành (theo giờ máy chủ) sẽ trúng đấu giá ngay lập tức.
+    \end{enumerate}
+    \item Áp dụng đấu giá cho cả \textbf{Động sản} (niêm yết tối thiểu 7 ngày làm việc) và \textbf{Bất động sản} (niêm yết tối thiểu 15 ngày).
+\end{itemize}
+
+\subsection{Ngăn xếp công nghệ cốt lõi (Tech Stack)}
+\begin{itemize}
+    \item \textbf{Ngôn ngữ \& Nền tảng máy chủ:} Java 17 (OpenJDK Temurin 17.0.20.1), Spring Boot 3.x.
+    \item \textbf{Lớp dữ liệu \& ORM:} Spring Data JPA / Hibernate, cơ sở dữ liệu MySQL 8.x (chạy qua XAMPP trên cổng 3306).
+    \item \textbf{Quản lý phiên bản Database:} Flyway Migration (\texttt{classpath:db/migration}).
+    \item \textbf{Bảo mật \& Xác thực:} Spring Security, thuật toán mã hóa mật khẩu BCrypt, phân quyền theo vai trò (\texttt{USER}, \texttt{ADMIN}).
+    \item \textbf{Giao tiếp thời gian thực:} WebSocket chuẩn giao thức STOMP hỗ trợ cập nhật bước giá tức thời đến mili-giây.
+    \item \textbf{Kiến trúc tổng thể:} Modular Monolith (phân rã module theo nghiệp vụ, giao tiếp nội bộ duy nhất qua Facade Interface).
+\end{itemize}
+
+---
+
+\section{Nhật Ký Quá Trình Triển Khai (Development Journey)}
+
+\subsection{Ngày 0: Cài đặt môi trường, phân chia thư mục \& Khởi tạo dự án}
+\begin{itemize}
+    \item \textbf{Chuẩn bị môi trường máy chủ:} Thiết lập JDK 17, kiểm tra tương thích Maven Wrapper (\texttt{mvnw}, \texttt{mvnw.cmd}). Khởi động dịch vụ MySQL trên XAMPP.
+    \item \textbf{Cơ sở dữ liệu cục bộ:} Tạo sẵn hai database độc lập:
+    \begin{itemize}
+        \item \texttt{auction\_db}: Dành cho môi trường phát triển chính (Development).
+        \item \texttt{auction\_test}: Dành cho kiểm thử tự động (Unit Test \& Integration Test).
+    \end{itemize}
+    Cấu hình tài khoản người dùng chuyên trách \texttt{auction}/\texttt{auction} với toàn quyền thao tác.
+    \item \textbf{Quy hoạch cấu trúc thư mục dự án:} Tổ chức mã nguồn chuẩn mực:
+    \begin{itemize}
+        \item \texttt{backend/}: Chứa toàn bộ mã nguồn Java Spring Boot, controller, service, entity, migration.
+        \item \texttt{frontend/}: Giao diện người dùng Web Client (Cổng Bidder, Cổng Seller, Cổng Admin).
+        \item \texttt{docs/}: Toàn bộ hồ sơ phân tích đặc tả, kiến trúc, ERD, máy trạng thái, nhật ký tiến độ.
+        \item \texttt{design/}: Tài nguyên đồ họa, bảng màu và wireframe thiết kế.
+        \item \texttt{run\_all.bat}: Script 1-click kiểm tra cổng 3306, mở trình duyệt và kích hoạt backend.
+    \end{itemize}
+    \item \textbf{Số hóa đặc tả yêu cầu:} Chuyển đổi toàn bộ hồ sơ đặc tả sang \texttt{docs/SRS.md}, bảo đảm bảo lưu nguyên vẹn 100\% các mã quy tắc nghiệp vụ (\texttt{BR-01} đến \texttt{BR-35}), yêu cầu chức năng (\texttt{FR}), phi chức năng (\texttt{NFR}) và use case (\texttt{UC}).
+\end{itemize}
+
+\subsection{Ngày 1: Thiết kế Cơ sở Dữ liệu chi tiết \& Flyway Migration Script}
+\begin{itemize}
+    \item \textbf{Thiết kế mô hình dữ liệu 19 bảng (\texttt{docs/ERD.md}):}
+    \begin{itemize}
+        \item \textit{14 thực thể cốt lõi theo SRS Mục 7:} \texttt{users}, \texttt{seller\_profiles}, \texttt{assets}, \texttt{auctions}, \texttt{registrations}, \texttt{deposits}, \texttt{bids}, \texttt{settlements}, \texttt{wallets}, \texttt{transactions}, \texttt{notifications}, \texttt{audit\_logs}, \texttt{complaints}, \texttt{system\_configs}.
+        \item \textit{5 bảng bổ sung ngoài SRS phục vụ vận hành thực tế:} \texttt{holidays} (danh mục ngày lễ để tính ngày làm việc theo luật), \texttt{auction\_follows} (theo dõi phiên yêu thích), \texttt{asset\_images} (quản lý nhiều ảnh tài sản), \texttt{auction\_minutes} (lập biên bản điện tử đóng băng kết quả), \texttt{listing\_change\_requests} (xử lý yêu cầu đổi thông số niêm yết của Seller).
+    \end{itemize}
+    \item \textbf{Thiết lập các quy ước thiết kế bất biến:}
+    \begin{itemize}
+        \item \textit{Tiền tệ:} Toàn bộ số tiền đều dùng \texttt{BIGINT} đơn vị VND, tuyệt đối không dùng số thực để triệt tiêu lỗi làm tròn dấu phẩy động. Có ràng buộc \texttt{CHECK (amount >= 0)}.
+        \item \textit{Thời gian chuẩn:} Thống nhất lưu theo múi giờ chuẩn \texttt{Asia/Ho\_Chi\_Minh} với độ chính xác đến mili-giây (\texttt{DATETIME(3)}).
+        \item \textit{Toàn vẹn kiểm toán:} Các bảng \texttt{transactions}, \texttt{bids}, \texttt{audit\_logs} tuân thủ mô hình \textbf{Chỉ ghi thêm (Append-only)}, cấm sửa hoặc xóa dữ liệu hồi tố.
+        \item \textit{Ví hệ thống tách biệt:} Tạo sẵn \texttt{SYSTEM\_ESCROW} (ví giữ tiền cọc trung gian độc lập theo BR-10) và \texttt{SYSTEM\_REVENUE} (ví thu phí dịch vụ 5\%).
+    \end{itemize}
+    \item \textbf{Hiện thực hóa qua Flyway Migration:} Viết file \texttt{V1\_\_init.sql} chứa trọn vẹn 19 bảng với khóa ngoại, chỉ mục INDEX và ràng buộc CHECK. Chạy lệnh kiểm thử tự động đạt \textbf{BUILD SUCCESS}, 19 bảng được tự động khởi tạo chuẩn xác trong \texttt{auction\_db}.
+    \item \textbf{Ban hành tài liệu quyết định thiết kế (\texttt{docs/DECISIONS.md}):} Ghi nhận 13 quyết định thiết kế ban đầu về thời hạn thanh toán (15 phút), quy tắc người dẫn đầu không được tự trả giá, xử lý chạm sàn,...
+\end{itemize}
+
+\subsection{Ngày 2: Sơ đồ Máy Trạng thái \& Ma trận Quy tắc Nghiệp vụ}
+\begin{itemize}
+    \item \textbf{Xây dựng Sơ đồ Máy Trạng thái (\texttt{docs/STATE\_MACHINES.md}):}
+    Thiết kế hoàn chỉnh 6 sơ đồ máy trạng thái bằng Mermaid \texttt{stateDiagram-v2} kèm bảng chuẩn hóa Enum tiếng Anh, sự kiện kích hoạt và tác nhân kích hoạt:
+    \begin{enumerate}
+        \item \textbf{Phiên đấu giá (\texttt{auctions} -- 9 trạng thái):} \texttt{PENDING\_APPROVAL} $\rightarrow$ \texttt{LISTED} $\rightarrow$ \texttt{WAITING\_FOR\_OPENING} $\rightarrow$ \texttt{IN\_PROGRESS} $\rightarrow$ \texttt{WAITING\_FOR\_PAYMENT} $\rightarrow$ \texttt{COMPLETED} (hoặc \texttt{FAILED}, \texttt{CANCELED}, \texttt{REJECTED}). Xử lý đầy đủ trường hợp người trúng từ chối $\rightarrow$ chuyển người liền kề (BR-18) hoặc tiếp tục giảm giá (BR-22).
+        \item \textbf{Tiền đặt trước (\texttt{deposits}):} \texttt{SUBMITTED} $\rightarrow$ \texttt{REFUNDED} (hoàn tiền), \texttt{CONVERTED\_TO\_DEPOSIT} (chuyển thành cọc), \texttt{FORFEITED} (mất cọc vi phạm) $\rightarrow$ \texttt{TRANSFERRED\_TO\_SELLER}.
+        \item \textbf{Thanh toán kết quả (\texttt{settlements}):} \texttt{WAITING\_FOR\_PAYMENT} $\rightarrow$ \texttt{PAID}, \texttt{CANCELED\_BY\_BUYER}, \texttt{EXPIRED}.
+        \item \textbf{Hồ sơ đăng ký (\texttt{registrations}):} \texttt{PENDING\_REVIEW} $\rightarrow$ \texttt{VALID} (cấp mã ẩn danh), \texttt{REJECTED}, \texttt{WITHDRAWN} (rút do đổi niêm yết BR-11), \texttt{DISQUALIFIED} (truất quyền do vi phạm).
+        \item \textbf{Hồ sơ người bán (\texttt{seller\_profiles}):} \texttt{PENDING} $\rightarrow$ \texttt{APPROVED}, \texttt{REJECTED} (cho phép gửi lại sau khi bổ sung hồ sơ).
+        \item \textbf{Khiếu nại (\texttt{complaints}):} \texttt{NEW} $\rightarrow$ \texttt{PROCESSING} $\rightarrow$ \texttt{RESOLVED}, \texttt{REJECTED}.
+    \end{enumerate}
+    
+    \item \textbf{Ma trận Quy tắc Nghiệp vụ \& Bộ lập lịch (\texttt{docs/BUSINESS\_RULES.md}):}
+    \begin{itemize}
+        \item Lập bảng phân rã và định tuyến chính xác toàn bộ \textbf{35 quy tắc nghiệp vụ (BR-01 đến BR-35)} vào từng module Backend chịu trách nhiệm cùng ngày kế hoạch triển khai.
+        \item Thiết kế chi tiết \textbf{7 tác vụ tự động ngầm của Scheduler}:
+        \begin{enumerate}
+            \item \texttt{CloseRegistrationTask}: Đóng cổng đăng ký trước ngày mở phiên 2 ngày làm việc.
+            \item \texttt{OpenAuctionTask}: Khai mạc phiên và phát thông báo WebSocket khi đến \texttt{start\_time}.
+            \item \texttt{PriceReductionTask}: Tự động giảm giá theo chu kỳ giây ở đấu giá giảm dần.
+            \item \texttt{EndAuctionTimerTask}: Hết giờ tăng dần, tự động chốt người trả giá cao nhất.
+            \item \texttt{PaymentTimeoutTask}: Quá hạn thanh toán 15 phút, tự phạt cọc và kích hoạt BR-18 / BR-22.
+            \item \texttt{AutoRefundDepositTask}: Tự động hoàn tiền cọc trong 3 ngày làm việc sau khi phiên kết thúc.
+            \item \texttt{AutoTransferDepositTask}: Tự động chuyển tiền cọc cho Seller trong 3 ngày làm việc.
+        \end{enumerate}
+    \end{itemize}
+    
+    \item \textbf{Cập nhật bổ sung \texttt{docs/DECISIONS.md}:} Chốt thêm 4 quyết định chuyển trạng thái (không dùng trạng thái tạm dừng \texttt{PAUSED}, chỉ xét duy nhất 01 người liền kề xếp thứ 2 theo BR-18, cơ chế lùi giá khi người dẫn đầu rút giá theo BR-17).
+\end{itemize}
+
+\subsection{Ngày 3: Thiết kế Sơ đồ Tuần tự (Sequence Diagrams) \& Ranh giới Giao dịch}
+\begin{itemize}
+    \item \textbf{Xây dựng 5 sơ đồ tuần tự chi tiết (\texttt{docs/SEQUENCES.md}):}
+    \begin{enumerate}
+        \item \textbf{UC-01 (Đăng ký \& Nộp cọc):} Luồng kiểm tra hạn 2 ngày LV (BR-09), kiểm tra tư cách qua \texttt{RegistrationService}, phong tỏa ví qua \texttt{WalletFacade} với khóa dòng \texttt{PESSIMISTIC\_WRITE}, cấp mã ẩn danh duy nhất và quy trình Admin duyệt hồ sơ (BR-05).
+        \item \textbf{UC-02 (Trả giá tăng dần):} Luồng concurrency lock trên \texttt{auctions} chống tranh chấp mức giá (NFR-03), kiểm tra bước giá (BR-15), chống tự đẩy giá (DECISION-3), ghi lượt trả giá append-only, broadcast WebSocket \texttt{/topic/auctions/\{id\}} và luồng người dẫn đầu rút giá (BR-17).
+        \item \textbf{UC-03 (Chấp nhận giá giảm dần):} Luồng khóa bi quan độc quyền xử lý người đầu tiên chấp nhận giá (BR-20), dừng chu kỳ đếm ngược, chuyển phiên sang \texttt{WAITING\_FOR\_PAYMENT} và khởi tạo bản ghi \texttt{settlements} hạn 15 phút.
+        \item \textbf{UC-04 (Thanh toán kết quả trúng):} Luồng người trúng thanh toán đủ trong 15 phút chuyển phiên sang \texttt{COMPLETED} (BR-26); luồng Scheduler phát hiện quá hạn thanh toán $\rightarrow$ phạt cọc \texttt{FORFEITED} và tự động xét người liền kề theo BR-18 (tăng dần) hoặc tiếp tục giảm giá (giảm dần BR-22).
+    \end{enumerate}
+    \item \textbf{Chốt ranh giới giao dịch cơ sở dữ liệu (ACID):} Định nghĩa ranh giới \texttt{@Transactional} và cơ chế khóa dòng cho 4 nghiệp vụ nhạy cảm: \texttt{placeBid}, \texttt{acceptPrice}, \texttt{determineWinner}, \texttt{settlePayment}.
+    \item \textbf{Xây dựng bộ dữ liệu kiểm thử số học cho quy tắc BR-18:} Lập 2 test case chuẩn hóa (1 ca hợp lệ thỏa mãn điều kiện $P_{\text{liền kề}} + \text{Cọc} \ge P_{\text{trúng cũ}}$ và 1 ca không hợp lệ) phục vụ kiểm thử tự động.
+\end{itemize}
+
+---
+
+\section{Bảng Theo Dõi Tiến Độ Chi Tiết Các Phân Hệ}
+
+Dưới đây là ma trận tiến độ tổng hợp phân định theo lộ trình 26 ngày của dự án:
+
+\begin{longtable}{|p{2.6cm}|p{5.5cm}|p{2.3cm}|p{1.6cm}|p{3.2cm}|}
+\hline
+\textbf{Phân Hệ} & \textbf{Trách Nhiệm Chính} & \textbf{Trạng Thái} & \textbf{Ngày} & \textbf{Ghi Chú} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Phân Hệ} & \textbf{Trách Nhiệm Chính} & \textbf{Trạng Thái} & \textbf{Ngày} & \textbf{Ghi Chú} \\
+\hline
+\endhead
+
+\textbf{Môi trường} & JDK 17, XAMPP MySQL, IDE, Spring Boot & \textcolor{blue}{\textbf{Hoàn thành}} & Ngày 0 & Đã sẵn sàng \\
+\hline
+\textbf{Tài liệu \& DB} & SRS, ERD 19 bảng, Flyway V1, DECISIONS & \textcolor{blue}{\textbf{Hoàn thành}} & Ngày 1 & Chạy sạch 100\% \\
+\hline
+\textbf{Trạng thái \& Quy tắc} & STATE\_MACHINES (6 sơ đồ), BUSINESS\_RULES (35 BR, 7 Schedulers) & \textcolor{blue}{\textbf{Hoàn thành}} & Ngày 2 & Đã nghiệm thu \\
+\hline
+\textbf{Sequence (P1)} & Sơ đồ tuần tự UC-01 đến UC-04 (Đăng ký, trả giá, thanh toán) & \textcolor{blue}{\textbf{Hoàn thành}} & Ngày 3 & 5 sơ đồ Mermaid \\
+\hline
+\textbf{Kiến trúc \& API} & Sơ đồ UC-05..08, Kiến trúc module Facade, Bản đồ API & \textbf{Chưa làm} & Ngày 4 & Nhiệm vụ tiếp theo \\
+\hline
+\textbf{Common Lõi} & Giờ server, tiền VND, xử lý lỗi toàn cục, layout nền & Chưa làm & Ngày 5 & \\
+\hline
+\textbf{User \& Auth} & Tài khoản, đăng nhập, Spring Security, phân quyền & Chưa làm & Ngày 6, 25 & \\
+\hline
+\textbf{Ví điện tử} & Số dư, nạp/rút, đóng băng cọc, đối soát dòng tiền bất biến & Chưa làm & Ngày 7 & \\
+\hline
+\textbf{System \& Audit} & Cấu hình, ngày lễ, nhật ký kiểm toán append-only & Chưa làm & Ngày 8, 25 & \\
+\hline
+\textbf{Notification} & Thông báo trong ứng dụng cho người tham gia & Chưa làm & Ngày 9 & \\
+\hline
+\textbf{Seller} & Đăng ký hồ sơ người bán, duyệt hồ sơ & Chưa làm & Ngày 10 & \\
+\hline
+\textbf{Auction Core} & Đăng tài sản, tạo phiên, duyệt niêm yết, hủy phiên & Chưa làm & Ngày 11, 12, 14, 15 & Trọng tâm nghiệp vụ \\
+\hline
+\textbf{Registration} & Đăng ký tham gia, đặt trước, duyệt hồ sơ, mã ẩn danh & Chưa làm & Ngày 13, 14, 15 & \\
+\hline
+\textbf{Bidding Core} & Trả giá tăng dần, chấp nhận giá giảm dần, rút giá & Chưa làm & Ngày 16, 17, 18 & Concurrency Lock \\
+\hline
+\textbf{Settlement} & Công bố người trúng, thanh toán, người kế tiếp, biên bản & Chưa làm & Ngày 18, 19, 20 & \\
+\hline
+\textbf{Realtime STOMP} & WebSocket STOMP, đồng bộ giờ, phòng đấu giá trực tiếp & Chưa làm & Ngày 21, 22 & Độ trễ < 500ms \\
+\hline
+\textbf{Payout} & Hoàn tiền cọc, chuyển cọc Seller, khấu trừ 5\% phí sàn & Chưa làm & Ngày 23 & Tự động ngầm \\
+\hline
+\textbf{Complaint} & Tiếp nhận và giải quyết khiếu nại & Chưa làm & Ngày 24 & \\
+\hline
+\textbf{Admin Portal} & Quản trị tổng hợp, thống kê, điều hành phiên trực tiếp & Chưa làm & Ngày 23, 24, 25 & \\
+\hline
+\textbf{Nghiệm thu} & Rà soát bảo mật, dữ liệu mẫu, nghiệm thu toàn diện & Chưa làm & Ngày 26 & Hoàn tất dự án \\
+\hline
+\end{longtable}
+
+---
+
+\section{Kế Hoạch Cho Các Giai Đoạn Tiếp Theo}
+
+\subsection{Hoàn tất Giai đoạn A: Thiết kế kỹ thuật chi tiết (Ngày 4)}
+\begin{enumerate}
+    \item \textbf{Ngày 4 -- Sequence còn lại, Thiết kế Kiến trúc Module \& Bản đồ API:}
+    Xây dựng các sơ đồ tuần tự cho UC-05..08 (Tạo phiên \& duyệt tài sản, xử lý sau phiên, đổi niêm yết, khiếu nại), định nghĩa giao tiếp Facade Interface giữa các module và lập bản đồ các endpoint REST API/WebSocket. Đọc và duyệt toàn bộ hồ sơ thiết kế \texttt{docs/} trước khi chuyển sang giai đoạn code.
+\end{enumerate}
+
+\subsection{Giai đoạn B: Lập trình nghiệp vụ \& Kiểm thử tự động (Ngày 5 -- Ngày 26)}
+\begin{itemize}
+    \item Áp dụng triệt để nguyên tắc lập trình hướng đối tượng (OOAD), Design Patterns (State Pattern cho máy trạng thái, Facade Pattern cho phân rã module, Strategy Pattern cho thuật toán tính giá tăng/giảm).
+    \item Viết Unit Test và Integration Test với Testcontainers/H2/MySQL cho mọi quy tắc nghiệp vụ tài chính trước khi bàn giao.
+\end{itemize}
+
+---
+
+\section{Kết Luận}
+Giai đoạn chuẩn bị môi trường và phân tích thiết kế hệ thống (từ Ngày 0 đến Ngày 3) đã được thực hiện vô cùng chuẩn mực, chuyên nghiệp và bám sát tuyệt đối các yêu cầu kỹ thuật và pháp lý của đồ án. Bộ hồ sơ thiết kế gồm ERD 19 bảng, 6 máy trạng thái, ma trận 35 quy tắc nghiệp vụ, 5 sơ đồ tuần tự chi tiết và script Flyway V1 đã hoàn thiện, tạo nền tảng vững chắc để tiếp tục hoàn tất Giai đoạn A và bước vào giai đoạn lập trình chức năng.
+
+\end{document}

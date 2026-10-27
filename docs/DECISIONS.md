@@ -33,3 +33,14 @@
    - `SYSTEM_ESCROW`: Ví giữ tiền ký quỹ và tiền cọc trung gian.
    - `SYSTEM_REVENUE`: Ví thu phí dịch vụ đấu giá của hệ thống.
 4. **An toàn giao dịch tiền tệ:** Mỗi thao tác biến động ví bắt buộc có một bản ghi `transactions` đi kèm với `idempotency_key` để chống gọi trùng lặp (Double-Spending).
+
+---
+
+## 3. CÁC ĐIỂM TRẠNG THÁI SRS CHƯA NÊU RÕ & ĐỀ XUẤT XỬ LÝ (NGÀY 2)
+
+| # | Điểm chưa rõ trong SRS | Hiện tượng / Xung đột | Đề xuất giải pháp thiết kế | Trạng thái duyệt |
+| :-: | :--- | :--- | :--- | :---: |
+| **14** | **Trạng thái "Tạm dừng phiên" (FR-AD-06)** | FR-AD-06 có nút tạm dừng nhưng Mục 5.1 chỉ có 9 trạng thái (không có `PAUSED`). BR-16 cấm gia hạn thời gian. | Không thêm trạng thái `PAUSED` vào DB. Nếu xảy ra sự cố kỹ thuật bất khả kháng, Admin sử dụng chức năng Hủy phiên (`CANCELED`) để bảo vệ tiền cọc cho người tham gia. | Đã ghi nhận (Khớp Quyết định 9) |
+| **15** | **Số lượt xét người trúng liền kề (BR-18)** | Luật chỉ nêu xét "người trả giá liền kề". Nếu người thứ 2 từ chối/không đủ điều kiện thì có xét tiếp người thứ 3 không? | Chỉ xét **duy nhất 01 người** trả giá cao liền kề (người xếp thứ 2). Nếu người thứ 2 không đủ điều kiện (giá liền kề + cọc < giá trúng) hoặc từ chối mua trong 15 phút, phiên lập tức chuyển sang `FAILED` (Không thành). | Chờ duyệt |
+| **16** | **Trạng thái của hồ sơ đăng ký (`registrations`) khi phiên bị Hủy (`CANCELED`)** | SRS chưa nêu trạng thái của `registrations` khi phiên bị hủy. | Giữ trạng thái hồ sơ `VALID`, hệ thống kích hoạt hoàn tiền tự động (`deposits.status = 'REFUNDED'`) ngay lập tức để giải phóng ví cho người dùng. | Chờ duyệt |
+| **17** | **Cơ chế lùi giá khi người dẫn đầu rút giá (BR-17)** | Khi người trả giá cao nhất rút lại giá trước khi công bố người trúng ở phiên tăng dần. | Hệ thống chuyển người rút sang `DISQUALIFIED`, phạt cọc `FORFEITED`. Giá hiện hành `current_price` và `highest_bidder_id` được tự động rollback về lượt trả giá hợp lệ liền kề ngay trước đó trong bảng `bids`. Phiên tiếp tục giữ `IN_PROGRESS`. | Chờ duyệt |

@@ -52,6 +52,10 @@ PROJECT_1/
 │   │   └── admin/            # Cổng Dành Cho Quản Trị Viên (index.html, admin.js, admin.css)
 │   └── README.md             # Hướng dẫn phân hệ Frontend
 │
+├── 📁 report/                # Báo cáo tiến độ và tổng kết dự án bằng LaTeX
+│   ├── PROJECT_REPORT.tex    # Mã nguồn LaTeX báo cáo tiến độ (Buổi 0 & 1, Kế hoạch tiếp theo)
+│   └── PROJECT_REPORT.pdf    # Bản PDF xuất bản chính thức (7 trang)
+│
 ├── 📄 run_all.bat            # Script 1-click khởi chạy toàn bộ hệ thống
 ├── 📄 .gitignore             # Bộ lọc mã nguồn Git
 └── 📄 README.md              # Trang chủ dự án
