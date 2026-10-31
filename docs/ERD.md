@@ -1,29 +1,28 @@
-# 📐 TÀI LIỆU THIẾT KẾ CƠ SỞ DỮ LIỆU (ERD)
+# TÀI LIỆU THIẾT KẾ CƠ SỞ DỮ LIỆU (ERD) — HỆ THỐNG ĐẤU GIÁ TỰ ĐỘNG
 
 > **Dự án:** Hệ Thống Đấu Giá Trực Tuyến (Online Auction System)  
-> **Căn cứ:** docs/SRS.md (Mục 5, Mục 7, Mục 8) và docs/PLAN.md (Ngày 1)
+> **Căn cứ:** `docs/PLAN.md` (Ngày 1) và `docs/SRS.md`  
+> **Định hướng:** Tập trung duy nhất vào cơ chế đấu giá thương mại trực tuyến (Listing, Proxy Bidding, Reserve Price, Buy It Now, Relist, Order sau khi thắng).
 
 ---
 
-## 1. QUY ƯỚC THIẾT KẾ (DATABASE CONVENTIONS)
+## 1. NGUYÊN TẮC THIẾT KẾ CỐT LÕI (DATABASE CONVENTIONS)
 
-1. **Đặt tên bảng & cột:**
-   - Tên bảng: `snake_case` số nhiều (`users`, `auctions`, `wallets`,...).
-   - Tránh từ khóa bảo lưu SQL (dùng `users` thay vì `user`).
-   - Khóa chính luôn là `id BIGINT AUTO_INCREMENT PRIMARY KEY`.
-   - Khóa ngoại có dạng `<tên_thực_thể_số_ít>_id` (ví dụ: `auction_id`, `bidder_id`).
-2. **Kiểu dữ liệu tiền tệ:**
-   - Sử dụng `BIGINT` đơn vị Việt Nam Đồng (VND), không dùng số thực để tránh lỗi sai số dấu phẩy động.
-   - Có ràng buộc `CHECK (amount >= 0)` và số dư ví không bao giờ âm.
-3. **Kiểu dữ liệu thời gian:**
-   - Sử dụng `DATETIME(3)` (độ chính xác mili-giây) theo một múi giờ chuẩn duy nhất: `Asia/Ho_Chi_Minh`.
-4. **Trạng thái (Enum):**
-   - Lưu dạng `VARCHAR` chứa tên mã Enum bằng tiếng Anh (ví dụ: `PENDING_APPROVAL`, `IN_PROGRESS`, `COMPLETED`).
-5. **Tính bất biến & Toàn vẹn:**
-   - Các bảng ghi nhận dòng tiền và lịch sử đấu giá (`transactions`, `bids`, `audit_logs`) là bảng **Chỉ ghi thêm (Append-only)**, không cập nhật hoặc xóa.
-   - Mỗi người dùng chỉ có tối đa một ví (`UNIQUE(user_id)`).
-   - Mỗi người dùng chỉ đăng ký một lần cho mỗi phiên (`UNIQUE(auction_id, bidder_id)`).
-   - Mã ẩn danh duy nhất trong mỗi phiên (`UNIQUE(auction_id, anonymous_code)`).
+1. **Quy ước đặt tên (Naming Conventions):**
+   * Tên bảng dùng `snake_case` số nhiều (`users`, `categories`, `items`, `auctions`, `orders`,...). Tránh từ khóa SQL (dùng `users` thay vì `user`).
+   * Khóa chính chuẩn hóa: `id BIGINT AUTO_INCREMENT PRIMARY KEY`.
+   * Khóa ngoại theo định dạng: `<tên_thực_thể_số_ít>_id` (ví dụ: `seller_id`, `category_id`, `auction_id`, `buyer_id`).
+2. **Tiền tệ chính xác tuyệt đối (Financial Precision):**
+   * Sử dụng kiểu `BIGINT` đơn vị đồng (VNĐ). Tuyệt đối không dùng số thực (`FLOAT`/`DOUBLE`) để tránh sai số dấu phẩy động.
+   * Ràng buộc: `CHECK (amount >= 0)` trên các cột giá và số dư ví `available_balance >= 0`.
+3. **Độ chính xác thời gian mili-giây (Timestamp Precision):**
+   * Sử dụng `DATETIME(3)` theo múi giờ chuẩn duy nhất `Asia/Ho_Chi_Minh`. Giúp phân định thứ tự đặt giá công bằng ở các mili-giây cuối phiên.
+4. **Trạng thái & Phân loại (Enums):**
+   * Lưu dạng `VARCHAR` chứa mã Enum tiếng Anh (ví dụ: `ACTIVE`, `ENDED_SOLD`, `ENDED_UNSOLD`, `AWAITING_PAYMENT`, `PAID`).
+5. **Tính bất biến (Append-only Auditability):**
+   * Các bảng ghi nhận dòng tiền và lịch sử đấu giá (`transactions`, `bids`, `audit_logs`) là bảng **Chỉ ghi thêm (Append-only)**, không bao giờ `UPDATE` hay `DELETE`.
+6. **Bảo mật giá trần tự động (Proxy Bidding Privacy):**
+   * Cột `max_amount` trong bảng `proxy_bids` là giá trần bí mật tối đa của bidder, chỉ lưu và xử lý ở phía server, không trả ra API công khai cho người khác.
 
 ---
 
@@ -31,48 +30,50 @@
 
 ```mermaid
 erDiagram
-    users {
+    users ||--o{ items : "đăng bán"
+    users ||--o{ proxy_bids : "cài đặt giá trần"
+    users ||--o{ bids : "lịch sử bước giá"
+    users ||--o{ orders : "mua / bán"
+    users ||--o| wallets : "sở hữu ví"
+    users ||--o{ notifications : "nhận thông báo"
+    users ||--o{ reviews : "đánh giá uy tín"
+
+    categories ||--o{ categories : "danh mục cha - con"
+    categories ||--o{ items : "phân loại"
+    items ||--o{ item_images : "album ảnh"
+    items ||--o{ auctions : "được đấu giá (1-N hỗ trợ Relist)"
+
+    auctions ||--o{ proxy_bids : "nhận mức giá trần"
+    auctions ||--o{ bids : "ghi nhận bước giá"
+    auctions ||--o| orders : "chốt đơn hàng (1-1)"
+    auctions ||--o{ complaints : "bị khiếu nại"
+
+    orders ||--o{ reviews : "đánh giá đơn hàng"
+    wallets ||--o{ transactions : "biến động số dư"
+
+    categories {
         bigint id PK
-        varchar username "UK"
-        varchar email "UK"
-        varchar password_hash
-        varchar full_name
-        varchar citizen_id "UK"
-        varchar phone_number
-        varchar bank_name
-        varchar bank_account_number
-        varchar role
-        varchar status
-        datetime created_at
-        datetime updated_at
+        bigint parent_id FK "NULL nếu là danh mục gốc"
+        varchar name "Tên danh mục"
+        varchar slug "UK"
+        int display_order
     }
 
-    seller_profiles {
+    items {
         bigint id PK
-        bigint user_id FK "UK"
-        text profile_info
-        varchar status
-        text rejected_reason
-        bigint reviewed_by FK
-        datetime reviewed_at
-        datetime created_at
-        datetime updated_at
-    }
-
-    assets {
-        bigint id PK
-        bigint seller_id FK
-        varchar name
-        text description
-        varchar asset_type
+        bigint seller_id FK "Tham chiếu users(id)"
+        bigint category_id FK "Tham chiếu categories(id)"
+        varchar title "Tên món hàng"
+        text description "Mô tả chi tiết"
+        varchar item_condition "NEW, LIKE_NEW, USED, FOR_PARTS"
         varchar main_image_url
         datetime created_at
         datetime updated_at
     }
 
-    asset_images {
+    item_images {
         bigint id PK
-        bigint asset_id FK
+        bigint item_id FK
         varchar image_url
         int display_order
         datetime created_at
@@ -80,48 +81,27 @@ erDiagram
 
     auctions {
         bigint id PK
-        bigint asset_id FK "UK"
-        varchar method
-        bigint starting_price
-        bigint step_price
-        int price_reduction_interval_seconds
-        bigint floor_price
-        decimal deposit_percent
-        bigint deposit_amount
-        text terms_and_conditions
-        datetime listing_at
-        datetime registration_deadline
-        datetime start_time
-        datetime end_time
-        varchar status
-        bigint current_price
-        bigint highest_bidder_id FK
-        text rejection_reason
+        bigint item_id FK "Bỏ UNIQUE để 1 Item có thể Relist nhiều lần"
+        bigint starting_price "Giá khởi điểm"
+        bigint step_price "Bước giá tối thiểu"
+        bigint reserve_price "Giá sàn ẩn (NULL nếu không đặt)"
+        bigint buy_it_now_price "Giá mua đứt ngay (NULL nếu không có)"
+        boolean is_reserve_met "Đã chạm giá sàn chưa"
+        bigint current_price "Giá công khai hiện tại"
+        bigint highest_bidder_id FK "Người đang dẫn đầu"
+        int bid_count "Số lượt bid"
+        datetime start_time "Giờ bắt đầu"
+        datetime end_time "Giờ kết thúc (Hard-close)"
+        varchar status "SCHEDULED, ACTIVE, ENDED_SOLD, ENDED_UNSOLD, CANCELED"
         datetime created_at
         datetime updated_at
     }
 
-    registrations {
+    proxy_bids {
         bigint id PK
-        bigint auction_id FK
-        bigint bidder_id FK
-        varchar anonymous_code
-        varchar status
-        text rejection_reason
-        datetime terms_committed_at
-        varchar decision_on_listing_change
-        datetime registered_at
-    }
-
-    deposits {
-        bigint id PK
-        bigint registration_id FK "UK"
-        bigint amount
-        varchar status
-        datetime refund_deadline
-        datetime transfer_deadline
-        datetime refunded_at
-        datetime transferred_to_seller_at
+        bigint auction_id FK "UK (auction_id, bidder_id)"
+        bigint bidder_id FK "UK (auction_id, bidder_id)"
+        bigint max_amount "Giá trần tối đa bí mật"
         datetime created_at
         datetime updated_at
     }
@@ -130,34 +110,32 @@ erDiagram
         bigint id PK
         bigint auction_id FK
         bigint bidder_id FK
-        bigint amount
-        varchar bid_type
-        datetime server_time
-        boolean is_valid
-        varchar invalid_reason
-        datetime created_at
+        bigint bid_amount "Mức giá công khai tại thời điểm này"
+        boolean is_auto_bid "TRUE: hệ thống Proxy tự nhảy, FALSE: đặt thủ công"
+        datetime bid_time "Thời điểm ghi nhận mili-giây"
     }
 
-    settlements {
+    orders {
         bigint id PK
-        bigint auction_id FK
-        bigint bidder_id FK
-        bigint winning_price
-        bigint deposit_deducted
-        bigint remaining_amount
-        datetime payment_deadline
-        varchar status
-        datetime paid_at
+        bigint auction_id FK "UK - Mỗi phiên chỉ sinh 1 đơn hàng"
+        bigint buyer_id FK
+        bigint seller_id FK
+        varchar purchase_type "AUCTION_WIN, BUY_IT_NOW"
+        bigint final_price "Giá chốt món hàng"
+        bigint shipping_fee "Phí vận chuyển"
+        bigint total_amount "final_price + shipping_fee"
+        text shipping_address "Địa chỉ nhận hàng"
+        varchar status "AWAITING_PAYMENT, PAID, COMPLETED, CANCELLED_UNPAID"
+        datetime payment_deadline "Hạn chót thanh toán (mặc định 72h)"
         datetime created_at
         datetime updated_at
     }
 
     wallets {
         bigint id PK
-        bigint user_id FK "UK"
-        varchar wallet_type
-        bigint available_balance
-        bigint frozen_balance
+        bigint user_id FK "UK (NULL với ví hệ thống)"
+        varchar wallet_type "USER, SYSTEM_REVENUE"
+        bigint available_balance "Số dư khả dụng (CHECK >= 0)"
         datetime created_at
         datetime updated_at
     }
@@ -165,334 +143,102 @@ erDiagram
     transactions {
         bigint id PK
         bigint wallet_id FK
-        varchar transaction_type
-        bigint amount
+        varchar transaction_type "TOPUP, WITHDRAW, PAYMENT, PAYOUT, SERVICE_FEE"
+        bigint amount "Số tiền biến động"
         bigint balance_before
         bigint balance_after
-        varchar idempotency_key "UK"
-        varchar reference_type
+        varchar reference_type "ORDER, TOPUP, WITHDRAW"
         bigint reference_id
-        varchar description
+        varchar idempotency_key "UK - Chống lặp giao dịch"
+        datetime created_at
+    }
+
+    reviews {
+        bigint id PK
+        bigint order_id FK "UK (order_id, reviewer_id)"
+        bigint reviewer_id FK
+        bigint reviewee_id FK
+        int rating "1 - 5 sao"
+        text comment
         datetime created_at
     }
 
     notifications {
         bigint id PK
         bigint user_id FK
-        varchar type
+        varchar notification_type "OUTBID, AUCTION_ENDING, AUCTION_WON, ITEM_SOLD"
+        varchar title
         text content
-        varchar target_url
+        varchar action_url
         boolean is_read
-        datetime created_at
-    }
-
-    audit_logs {
-        bigint id PK
-        varchar entity_type
-        bigint entity_id
-        varchar action
-        bigint performed_by FK
-        json data_before
-        json data_after
-        varchar ip_address
         datetime created_at
     }
 
     complaints {
         bigint id PK
-        bigint auction_id FK
-        bigint user_id FK
-        text content
-        varchar evidence_url
-        varchar status
+        bigint order_id FK
+        bigint complainant_id FK
+        varchar complaint_type "ITEM_NOT_AS_DESCRIBED, ITEM_NOT_RECEIVED"
+        text reason
         text resolution_note
-        bigint resolved_by FK
-        datetime resolved_at
+        varchar status "PENDING, RESOLVED_REFUND, RESOLVED_PAYOUT, REJECTED"
         datetime created_at
-        datetime updated_at
+        datetime resolved_at
     }
 
     system_configs {
         bigint id PK
         varchar config_key "UK"
         varchar config_value
-        varchar description
+        text description
         datetime updated_at
     }
-
-    holidays {
-        bigint id PK
-        date holiday_date "UK"
-        varchar description
-    }
-
-    auction_follows {
-        bigint id PK
-        bigint user_id FK
-        bigint auction_id FK
-        datetime created_at
-    }
-
-    auction_minutes {
-        bigint id PK
-        bigint auction_id FK "UK"
-        json snapshot_data
-        datetime generated_at
-    }
-
-    listing_change_requests {
-        bigint id PK
-        bigint auction_id FK
-        bigint seller_id FK
-        text change_summary
-        json old_values
-        json new_values
-        varchar status
-        bigint reviewed_by FK
-        datetime reviewed_at
-        datetime created_at
-    }
-
-    %% Quan hệ
-    users ||--o| seller_profiles : "1 user có tối đa 1 hồ sơ"
-    users ||--o| wallets : "1 user sở hữu 1 ví"
-    users ||--o{ assets : "người bán sở hữu tài sản"
-    users ||--o{ registrations : "đăng ký tham gia"
-    users ||--o{ bids : "thực hiện trả giá"
-    users ||--o{ settlements : "người trúng thanh toán"
-    users ||--o{ notifications : "nhận thông báo"
-    users ||--o{ complaints : "gửi khiếu nại"
-    users ||--o{ auction_follows : "theo dõi yêu thích"
-
-    assets ||--o| auctions : "1 tài sản gắn với 1 phiên"
-    assets ||--o{ asset_images : "nhiều ảnh minh họa"
-
-    auctions ||--o{ registrations : "tiếp nhận đăng ký"
-    auctions ||--o{ bids : "ghi nhận lượt trả giá"
-    auctions ||--o{ settlements : "kết quả trúng"
-    auctions ||--o{ complaints : "bị khiếu nại"
-    auctions ||--o| auction_minutes : "lập biên bản kết thúc"
-    auctions ||--o{ listing_change_requests : "đề xuất thay đổi"
-
-    registrations ||--|| deposits : "mỗi đăng ký có 1 khoản đặt trước"
-    wallets ||--o{ transactions : "biến động số dư bất biến"
 ```
 
 ---
 
-## 3. CHI TIẾT CÁC BẢNG CỐT LÕI (14 THỰC THỂ SRS MỤC 7)
+## 3. GIẢI THÍCH CHI TIẾT 14 BẢNG THEO 5 PHÂN HỆ
 
-### 3.1. `users` (Tài khoản người dùng)
-| Tên cột | Kiểu dữ liệu | Ràng buộc | Diễn giải |
-| :--- | :--- | :--- | :--- |
-| `id` | BIGINT | PK, AUTO_INCREMENT | Mã định danh người dùng |
-| `username` | VARCHAR(50) | NOT NULL, UNIQUE | Tên đăng nhập |
-| `email` | VARCHAR(100) | NOT NULL, UNIQUE | Địa chỉ email |
-| `password_hash` | VARCHAR(255) | NOT NULL | Mật khẩu băm (BCrypt) |
-| `full_name` | VARCHAR(100) | NOT NULL | Họ và tên thật |
-| `citizen_id` | VARCHAR(20) | UNIQUE, NULLABLE | Số CCCD/Định danh cá nhân |
-| `phone_number` | VARCHAR(20) | NULLABLE | Số điện thoại liên hệ |
-| `bank_name` | VARCHAR(100) | NULLABLE | Tên ngân hàng thụ hưởng |
-| `bank_account_number` | VARCHAR(50) | NULLABLE | Số tài khoản ngân hàng |
-| `role` | VARCHAR(20) | NOT NULL, DEFAULT 'USER' | Vai trò hệ thống: `USER`, `ADMIN` |
-| `status` | VARCHAR(20) | NOT NULL, DEFAULT 'ACTIVE' | Trạng thái: `ACTIVE`, `LOCKED` |
-| `created_at` | DATETIME(3) | NOT NULL | Thời điểm tạo tài khoản |
-| `updated_at` | DATETIME(3) | NOT NULL | Thời điểm cập nhật cuối |
+### 3.1. Phân hệ Danh mục & Hàng hóa (`categories`, `items`, `item_images`)
+* **`categories`:** Hỗ trợ cấu trúc cây danh mục sản phẩm (ví dụ: Điện tử $\rightarrow$ Laptop $\rightarrow$ MacBook). Cột `parent_id` trỏ ngược về chính `categories(id)`.
+* **`items`:** Lưu món hàng mà người bán muốn đưa lên sàn. Phân loại tình trạng món hàng `item_condition` (`NEW`: Mới 100%, `LIKE_NEW`: Như mới 99%, `USED`: Đã qua sử dụng, `FOR_PARTS`: Lấy linh kiện).
+* **`item_images`:** Quản lý album ảnh của món hàng để hiển thị slider trên giao diện.
 
-### 3.2. `seller_profiles` (Hồ sơ người bán)
-| Tên cột | Kiểu dữ liệu | Ràng buộc | Diễn giải |
-| :--- | :--- | :--- | :--- |
-| `id` | BIGINT | PK, AUTO_INCREMENT | Mã hồ sơ người bán |
-| `user_id` | BIGINT | NOT NULL, UNIQUE, FK(users) | Khóa ngoại người dùng (1-1) |
-| `profile_info` | TEXT | NULLABLE | Thông tin giới thiệu / hồ sơ năng lực |
-| `status` | VARCHAR(30) | NOT NULL, DEFAULT 'PENDING' | `PENDING`, `APPROVED`, `REJECTED` |
-| `rejected_reason` | TEXT | NULLABLE | Lý do Admin từ chối hồ sơ |
-| `reviewed_by` | BIGINT | NULLABLE, FK(users) | Admin thẩm định và duyệt |
-| `reviewed_at` | DATETIME(3) | NULLABLE | Thời điểm xét duyệt |
-| `created_at` | DATETIME(3) | NOT NULL | Thời điểm gửi hồ sơ |
-| `updated_at` | DATETIME(3) | NOT NULL | Thời điểm cập nhật |
+### 3.2. Phân hệ Đấu giá cốt lõi (`auctions`, `proxy_bids`, `bids`)
+* **`auctions`:** 
+  * Lưu thông số phiên đấu giá: `starting_price`, `step_price`, `reserve_price` (giá sàn bảo lưu bí mật), `buy_it_now_price` (giá mua đứt ngay).
+  * **Đặc tính hỗ trợ Relist:** Bỏ ràng buộc `UNIQUE(item_id)` để 1 món hàng có thể tạo phiên đấu giá mới nếu phiên cũ kết thúc không thành công (`ENDED_UNSOLD`).
+  * Denormalization tối ưu hiệu năng: Cột `current_price` và `highest_bidder_id` được cập nhật liên tục để phòng đấu giá truy vấn $O(1)$ mà không cần chạy `SELECT MAX()` trên hàng ngàn bước giá.
+* **`proxy_bids`:** Trái tim của cơ chế đấu giá tự động. Lưu giá trần tối đa (`max_amount`) mà người dùng sẵn sàng chi trả. Ràng buộc `UNIQUE(auction_id, bidder_id)`.
+* **`bids`:** Bảng bất biến ghi lại lịch sử từng bước giá nhảy công khai. Cờ `is_auto_bid` phân biệt bước giá tự động sinh ra bởi Proxy Engine với bước giá do người dùng nhập.
 
-### 3.3. `assets` (Tài sản đấu giá)
-| Tên cột | Kiểu dữ liệu | Ràng buộc | Diễn giải |
-| :--- | :--- | :--- | :--- |
-| `id` | BIGINT | PK, AUTO_INCREMENT | Mã tài sản |
-| `seller_id` | BIGINT | NOT NULL, FK(users) | Người sở hữu tài sản (Seller) |
-| `name` | VARCHAR(255) | NOT NULL | Tên tài sản |
-| `description` | TEXT | NULLABLE | Mô tả chi tiết, hiện trạng, xuất xứ |
-| `asset_type` | VARCHAR(30) | NOT NULL | `MOVABLE` (Động sản), `IMMOVABLE` (Bất động sản) |
-| `main_image_url` | VARCHAR(500) | NULLABLE | Ảnh đại diện chính của tài sản |
-| `created_at` | DATETIME(3) | NOT NULL | Thời điểm đăng tài sản |
-| `updated_at` | DATETIME(3) | NOT NULL | Thời điểm cập nhật |
+### 3.3. Phân hệ Đơn hàng & Đánh giá (`orders`, `reviews`)
+* **`orders`:** Khi có người thắng phiên hoặc bấm Mua ngay, hệ thống tạo bản ghi `orders` với `status = 'AWAITING_PAYMENT'`. Người thắng có 72 giờ (`payment_deadline`) để thanh toán.
+* **`reviews`:** Hệ thống đánh giá uy tín 2 chiều giữa Người mua và Người bán sau khi hoàn tất đơn hàng, tạo nên thang điểm uy tín cho tài khoản.
 
-### 3.4. `auctions` (Phiên đấu giá)
-| Tên cột | Kiểu dữ liệu | Ràng buộc | Diễn giải |
-| :--- | :--- | :--- | :--- |
-| `id` | BIGINT | PK, AUTO_INCREMENT | Mã phiên đấu giá |
-| `asset_id` | BIGINT | NOT NULL, UNIQUE, FK(assets) | Tài sản gắn với phiên (1-1) |
-| `method` | VARCHAR(30) | NOT NULL | `ASCENDING` (Tăng dần), `DESCENDING` (Giảm dần) |
-| `starting_price` | BIGINT | NOT NULL, CHECK >= 0 | Giá khởi điểm (VND) |
-| `step_price` | BIGINT | NULLABLE, CHECK > 0 | Bước giá (tăng dần) hoặc bước giảm (giảm dần) |
-| `price_reduction_interval_seconds` | INT | NULLABLE | Khoảng thời gian giữa các lần giảm (giảm dần) |
-| `floor_price` | BIGINT | NULLABLE | Giá sàn tối thiểu (giảm dần, < starting_price) |
-| `deposit_percent` | DECIMAL(5,2) | NOT NULL, CHECK 5-20 | Tỷ lệ đặt trước (5.00% – 20.00%) |
-| `deposit_amount` | BIGINT | NOT NULL, CHECK > 0 | Số tiền đặt trước quy ra VND |
-| `terms_and_conditions` | TEXT | NULLABLE | Quy chế phiên đấu giá |
-| `listing_at` | DATETIME(3) | NULLABLE | Thời điểm chính thức niêm yết công khai |
-| `registration_deadline` | DATETIME(3) | NULLABLE | Hạn nộp hồ sơ & đặt trước (trước mở phiên 2 ngày làm việc) |
-| `start_time` | DATETIME(3) | NOT NULL | Thời điểm bắt đầu mở phiên |
-| `end_time` | DATETIME(3) | NOT NULL | Thời điểm kết thúc phiên |
-| `status` | VARCHAR(30) | NOT NULL | `PENDING_APPROVAL`, `REJECTED`, `LISTED`, `WAITING_FOR_OPENING`, `IN_PROGRESS`, `WAITING_FOR_PAYMENT`, `COMPLETED`, `FAILED`, `CANCELED` |
-| `current_price` | BIGINT | NULLABLE | Giá hiện hành cao nhất (hoặc giá đã giảm) |
-| `highest_bidder_id`| BIGINT | NULLABLE, FK(users) | Người đang dẫn đầu (hoặc người trúng) |
-| `rejection_reason` | TEXT | NULLABLE | Lý do Admin từ chối duyệt phiên |
-| `created_at` | DATETIME(3) | NOT NULL | Thời điểm tạo phiên |
-| `updated_at` | DATETIME(3) | NOT NULL | Thời điểm cập nhật |
+### 3.4. Phân hệ Ví & Dòng tiền (`wallets`, `transactions`)
+* **`wallets`:** Quản lý số dư khả dụng `available_balance`. Bỏ `frozen_balance` do không còn cơ chế giam cọc. Hệ thống gồm ví người dùng và ví doanh thu sàn `SYSTEM_REVENUE`.
+* **`transactions`:** Sổ cái ghi nhận mọi biến động tiền: nạp (`TOPUP`), rút (`WITHDRAW`), trả tiền đơn hàng (`PAYMENT`), giải ngân cho người bán (`PAYOUT`), thu phí hoa hồng sàn (`SERVICE_FEE`). Cột `idempotency_key` chống trừ tiền 2 lần.
 
-### 3.5. `registrations` (Đăng ký tham gia đấu giá)
-| Tên cột | Kiểu dữ liệu | Ràng buộc | Diễn giải |
-| :--- | :--- | :--- | :--- |
-| `id` | BIGINT | PK, AUTO_INCREMENT | Mã đăng ký |
-| `auction_id` | BIGINT | NOT NULL, FK(auctions) | Phiên đấu giá |
-| `bidder_id` | BIGINT | NOT NULL, FK(users) | Đấu giá viên đăng ký |
-| `anonymous_code` | VARCHAR(20) | NOT NULL | Mã ẩn danh duy nhất trong phiên (dãy 6 số ngẫu nhiên) |
-| `status` | VARCHAR(30) | NOT NULL | `PENDING_APPROVAL`, `APPROVED`, `REJECTED`, `REJECTED_BY_CHANGE` |
-| `rejection_reason` | TEXT | NULLABLE | Lý do loại hồ sơ |
-| `terms_committed_at`| DATETIME(3) | NOT NULL | Thời điểm cam kết không thuộc diện cấm |
-| `decision_on_listing_change` | VARCHAR(20) | DEFAULT 'CONTINUE' | `CONTINUE`, `DECLINE` (khi niêm yết thay đổi) |
-| `registered_at` | DATETIME(3) | NOT NULL | Thời điểm gửi đăng ký |
-| *Ràng buộc:* | `UNIQUE(auction_id, bidder_id)` | Mỗi người chỉ đăng ký 1 lần/phiên |
-| *Ràng buộc:* | `UNIQUE(auction_id, anonymous_code)` | Mã ẩn danh duy nhất trong mỗi phiên |
-
-### 3.6. `deposits` (Tiền đặt trước)
-| Tên cột | Kiểu dữ liệu | Ràng buộc | Diễn giải |
-| :--- | :--- | :--- | :--- |
-| `id` | BIGINT | PK, AUTO_INCREMENT | Mã khoản đặt trước |
-| `registration_id` | BIGINT | NOT NULL, UNIQUE, FK(registrations) | Gắn liền với 1 lượt đăng ký |
-| `amount` | BIGINT | NOT NULL, CHECK > 0 | Số tiền đặt trước (VND) |
-| `status` | VARCHAR(30) | NOT NULL | `HELD` (Phong tỏa), `REFUNDED` (Đã hoàn), `CONVERTED_TO_SELLER_DEPOSIT` (Chuyển thành cọc), `FORFEITED` (Bị giữ), `TRANSFERRED_TO_SELLER` (Đã chuyển cho Seller) |
-| `refund_deadline` | DATETIME(3) | NULLABLE | Hạn hoàn cọc (3 ngày làm việc sau phiên) |
-| `transfer_deadline` | DATETIME(3) | NULLABLE | Hạn chuyển tiền cho Seller |
-| `refunded_at` | DATETIME(3) | NULLABLE | Thời điểm hoàn tiền thành công |
-| `transferred_to_seller_at` | DATETIME(3) | NULLABLE | Thời điểm chuyển tiền cho Seller |
-| `created_at` | DATETIME(3) | NOT NULL | Thời điểm phong tỏa |
-| `updated_at` | DATETIME(3) | NOT NULL | Thời điểm cập nhật |
-
-### 3.7. `bids` (Lượt trả giá / Chấp nhận giá – Bất biến)
-| Tên cột | Kiểu dữ liệu | Ràng buộc | Diễn giải |
-| :--- | :--- | :--- | :--- |
-| `id` | BIGINT | PK, AUTO_INCREMENT | Mã lượt trả giá |
-| `auction_id` | BIGINT | NOT NULL, FK(auctions) | Phiên đấu giá |
-| `bidder_id` | BIGINT | NOT NULL, FK(users) | Người trả giá / chấp nhận giá |
-| `amount` | BIGINT | NOT NULL, CHECK > 0 | Mức giá đưa ra (VND) |
-| `bid_type` | VARCHAR(20) | NOT NULL | `INCREMENT` (Trả giá lên), `ACCEPT` (Chấp nhận giá xuống) |
-| `server_time` | DATETIME(3) | NOT NULL | Giờ server ghi nhận (chuẩn xét thứ tự) |
-| `is_valid` | BOOLEAN | NOT NULL, DEFAULT TRUE | Hợp lệ hay bị từ chối |
-| `invalid_reason` | VARCHAR(255) | NULLABLE | Lý do từ chối (bước giá thấp, đến sau,...) |
-| `created_at` | DATETIME(3) | NOT NULL | Thời điểm lưu bản ghi |
-
-### 3.8. `settlements` (Thanh toán của người trúng)
-| Tên cột | Kiểu dữ liệu | Ràng buộc | Diễn giải |
-| :--- | :--- | :--- | :--- |
-| `id` | BIGINT | PK, AUTO_INCREMENT | Mã bản thanh toán trúng đấu giá |
-| `auction_id` | BIGINT | NOT NULL, FK(auctions) | Phiên đấu giá |
-| `bidder_id` | BIGINT | NOT NULL, FK(users) | Người trúng đấu giá |
-| `winning_price` | BIGINT | NOT NULL | Mức giá trúng chính thức |
-| `deposit_deducted` | BIGINT | NOT NULL | Số tiền đặt trước khấu trừ thành cọc |
-| `remaining_amount` | BIGINT | NOT NULL | Phần tiền còn phải trả (`winning_price - deposit_deducted`) |
-| `payment_deadline` | DATETIME(3) | NOT NULL | Hạn thanh toán (mặc định 15 phút) |
-| `status` | VARCHAR(30) | NOT NULL | `WAITING_FOR_PAYMENT`, `PAID`, `CANCELED`, `OVERDUE` |
-| `paid_at` | DATETIME(3) | NULLABLE | Thời điểm thanh toán đủ |
-| `created_at` | DATETIME(3) | NOT NULL | Thời điểm công bố người trúng |
-| `updated_at` | DATETIME(3) | NOT NULL | Thời điểm cập nhật |
-
-### 3.9. `wallets` (Ví tiền)
-| Tên cột | Kiểu dữ liệu | Ràng buộc | Diễn giải |
-| :--- | :--- | :--- | :--- |
-| `id` | BIGINT | PK, AUTO_INCREMENT | Mã ví |
-| `user_id` | BIGINT | NULLABLE, UNIQUE, FK(users) | Khóa ngoại User (NULL nếu là ví hệ thống) |
-| `wallet_type` | VARCHAR(20) | NOT NULL | `USER` (Ví người dùng), `SYSTEM_ESCROW` (Ví ký quỹ hệ thống), `SYSTEM_REVENUE` (Ví doanh thu phí) |
-| `available_balance` | BIGINT | NOT NULL, DEFAULT 0, CHECK >= 0 | Số dư khả dụng |
-| `frozen_balance` | BIGINT | NOT NULL, DEFAULT 0, CHECK >= 0 | Số dư đang phong tỏa |
-| `created_at` | DATETIME(3) | NOT NULL | Thời điểm tạo ví |
-| `updated_at` | DATETIME(3) | NOT NULL | Thời điểm cập nhật |
-
-### 3.10. `transactions` (Lịch sử giao dịch tiền – Bất biến)
-| Tên cột | Kiểu dữ liệu | Ràng buộc | Diễn giải |
-| :--- | :--- | :--- | :--- |
-| `id` | BIGINT | PK, AUTO_INCREMENT | Mã giao dịch tiền |
-| `wallet_id` | BIGINT | NOT NULL, FK(wallets) | Ví thực hiện giao dịch |
-| `transaction_type` | VARCHAR(30) | NOT NULL | `TOPUP`, `WITHDRAW`, `FREEZE`, `UNFREEZE`, `CONVERT_DEPOSIT`, `PAYMENT`, `SERVICE_FEE`, `PAYOUT_TO_SELLER` |
-| `amount` | BIGINT | NOT NULL | Số tiền giao dịch |
-| `balance_before` | BIGINT | NOT NULL | Số dư khả dụng trước giao dịch |
-| `balance_after` | BIGINT | NOT NULL | Số dư khả dụng sau giao dịch |
-| `idempotency_key` | VARCHAR(100) | NOT NULL, UNIQUE | Khóa chống lặp giao dịch (Idempotent) |
-| `reference_type` | VARCHAR(50) | NULLABLE | Loại liên kết (`DEPOSIT`, `SETTLEMENT`,...) |
-| `reference_id` | BIGINT | NULLABLE | ID của bản ghi liên kết |
-| `description` | VARCHAR(255) | NULLABLE | Mô tả chi tiết giao dịch |
-| `created_at` | DATETIME(3) | NOT NULL | Thời điểm giao dịch |
-
-### 3.11. `notifications` (Thông báo trong ứng dụng)
-| Tên cột | Kiểu dữ liệu | Ràng buộc | Diễn giải |
-| :--- | :--- | :--- | :--- |
-| `id` | BIGINT | PK, AUTO_INCREMENT | Mã thông báo |
-| `user_id` | BIGINT | NOT NULL, FK(users) | Người nhận thông báo |
-| `type` | VARCHAR(50) | NOT NULL | Mã loại thông báo (`WINNER`, `PAYMENT_REMINDER`,...) |
-| `content` | TEXT | NOT NULL | Nội dung chi tiết thông báo |
-| `target_url` | VARCHAR(255) | NULLABLE | Đường dẫn điều hướng khi nhấp |
-| `is_read` | BOOLEAN | NOT NULL, DEFAULT FALSE | Đã đọc hay chưa |
-| `created_at` | DATETIME(3) | NOT NULL | Thời điểm phát thông báo |
-
-### 3.12. `audit_logs` (Nhật ký kiểm toán – Bất biến)
-| Tên cột | Kiểu dữ liệu | Ràng buộc | Diễn giải |
-| :--- | :--- | :--- | :--- |
-| `id` | BIGINT | PK, AUTO_INCREMENT | Mã nhật ký |
-| `entity_type` | VARCHAR(50) | NOT NULL | Tên thực thể thao tác (`AUCTION`, `BID`, `WALLET`,...) |
-| `entity_id` | BIGINT | NULLABLE | Khóa của thực thể |
-| `action` | VARCHAR(50) | NOT NULL | Hành động (`CREATE`, `UPDATE_STATUS`, `BID_SUBMIT`,...) |
-| `performed_by` | BIGINT | NULLABLE, FK(users) | Người thực hiện (hoặc NULL nếu hệ thống tự chạy) |
-| `data_before` | JSON | NULLABLE | Bản chụp dữ liệu trước thay đổi |
-| `data_after` | JSON | NULLABLE | Bản chụp dữ liệu sau thay đổi |
-| `ip_address` | VARCHAR(45) | NULLABLE | Địa chỉ IP người thực hiện |
-| `created_at` | DATETIME(3) | NOT NULL | Thời điểm ghi log |
-
-### 3.13. `complaints` (Khiếu nại)
-| Tên cột | Kiểu dữ liệu | Ràng buộc | Diễn giải |
-| :--- | :--- | :--- | :--- |
-| `id` | BIGINT | PK, AUTO_INCREMENT | Mã khiếu nại |
-| `auction_id` | BIGINT | NOT NULL, FK(auctions) | Phiên đấu giá phát sinh khiếu nại |
-| `user_id` | BIGINT | NOT NULL, FK(users) | Người khiếu nại (Bidder hợp lệ hoặc Seller) |
-| `content` | TEXT | NOT NULL | Chi tiết lý do khiếu nại |
-| `evidence_url` | VARCHAR(500) | NULLABLE | Đường dẫn tệp/ảnh bằng chứng |
-| `status` | VARCHAR(30) | NOT NULL, DEFAULT 'NEW' | `NEW`, `PROCESSING`, `RESOLVED`, `REJECTED` |
-| `resolution_note` | TEXT | NULLABLE | Kết luận xử lý của Admin |
-| `resolved_by` | BIGINT | NULLABLE, FK(users) | Admin thụ lý giải quyết |
-| `resolved_at` | DATETIME(3) | NULLABLE | Thời điểm giải quyết xong |
-| `created_at` | DATETIME(3) | NOT NULL | Thời điểm gửi khiếu nại |
-| `updated_at` | DATETIME(3) | NOT NULL | Thời điểm cập nhật |
-
-### 3.14. `system_configs` (Cấu hình hệ thống)
-| Tên cột | Kiểu dữ liệu | Ràng buộc | Diễn giải |
-| :--- | :--- | :--- | :--- |
-| `id` | BIGINT | PK, AUTO_INCREMENT | Mã cấu hình |
-| `config_key` | VARCHAR(100) | NOT NULL, UNIQUE | Khóa cấu hình (`SERVICE_FEE_PERCENT`, `DEFAULT_PAYMENT_TIMEOUT_MINUTES`,...) |
-| `config_value` | VARCHAR(255) | NOT NULL | Giá trị thiết lập |
-| `description` | VARCHAR(255) | NULLABLE | Mô tả mục đích tham số |
-| `updated_at` | DATETIME(3) | NOT NULL | Thời điểm cập nhật |
+### 3.5. Phân hệ Vận hành, Giám sát & Cấu hình (`notifications`, `audit_logs`, `complaints`, `system_configs`)
+* **`notifications`:** Bắn thông báo tức thời khi bị vượt giá (**Outbid Alert**), phiên sắp kết thúc trong 15 phút, báo thắng cuộc.
+* **`complaints`:** Quản lý khiếu nại món hàng không đúng mô tả hoặc không nhận được hàng.
+* **`audit_logs`:** Nhật ký kiểm toán bất biến phục vụ tra cứu bảo mật.
+* **`system_configs`:** Lưu bảng bước giá chuẩn, % phí sàn và thời hạn thanh toán đơn hàng.
 
 ---
 
-## 4. DANH SÁCH BẢNG NGOÀI SRS (ĐÃ BỔ SUNG & CẦN DUYỆT)
+## 4. BẢNG ĐỐI CHIẾU THAY ĐỔI SO VỚI MÔ HÌNH CŨ
 
-Để đáp ứng trọn vẹn nghiệp vụ thực tế và các yêu cầu trong PLAN, hệ thống bổ sung thêm 4 bảng hỗ trợ:
-
-1. **`holidays` (Ngày nghỉ lễ):**
-   - Lưu trữ các ngày nghỉ lễ theo lịch nhà nước.
-   - Phục vụ module `system` (BusinessCalendar) tính toán chính xác số ngày làm việc (7 ngày làm việc động sản, 2 ngày nộp tiền đặt trước, 3 ngày hoàn tiền).
-2. **`asset_images` (Thư viện hình ảnh tài sản):**
-   - Cho phép một tài sản có nhiều hình ảnh thẩm định chi tiết với thứ tự hiển thị `display_order`.
-3. **`auction_follows` (Theo dõi phiên đấu giá – FR-US-04):**
-   - Lưu trữ danh sách các phiên đấu giá yêu thích mà User đang quan tâm theo dõi.
-4. **`auction_minutes` (Biên bản điện tử – BR-32):**
-   - Tự động sinh khi phiên Hoàn tất hoặc Không thành. Lưu trữ bản chụp dữ liệu (JSON) kết quả toàn bộ phiên đấu giá có chữ ký điện tử/thời gian server.
-5. **`listing_change_requests` (Yêu cầu thay đổi niêm yết – UC-07):**
-   - Lưu trữ đề xuất thay đổi thông số niêm yết của Seller (giá, phương thức, thời gian) kèm bản chụp `old_values` và `new_values` để Admin duyệt và Bidder phản hồi.
+| Thao tác | Tên bảng | Lý do điều chỉnh |
+| :--- | :--- | :--- |
+| ❌ **Xóa bỏ** | `registrations`, `deposits` | Bỏ rào cản đăng ký trước và nộp tiền cọc (cho phép Instant Bidding). |
+| ❌ **Xóa bỏ** | `holidays` | Đồng hồ đếm ngược 24/7, không phụ thuộc ngày làm việc hay lễ tết. |
+| ❌ **Xóa bỏ** | `auction_minutes` | Bỏ biên bản đấu giá hành chính rườm rà. |
+| ❌ **Xóa bỏ** | `listing_change_requests` | Seller được phép tự chỉnh sửa thông tin mô tả khi chưa có ai bid. |
+| ❌ **Xóa bỏ** | `seller_profiles` | Tối giản; mọi User đã kích hoạt đều có quyền đăng bán món hàng. |
+| 🔄 **Đổi tên & Sửa** | `assets` $\rightarrow$ `items` | Đổi thành hàng hóa thương mại. Thêm `category_id`, `item_condition`. |
+| 🔄 **Sửa đổi** | `auctions` | Bỏ `deposit_*`, `registration_deadline`, bỏ `UNIQUE(item_id)`. Thêm `reserve_price`, `buy_it_now_price`, `is_reserve_met`, `bid_count`. |
+| ➕ **Thêm mới** | `categories` | Cây danh mục hàng hóa đa cấp. |
+| ➕ **Thêm mới** | `proxy_bids` | Lưu mức giá trần tối đa bí mật của từng bidder. |
+| 🔄 **Nâng cấp** | `settlements` $\rightarrow$ `orders` | Chuyển thành Đơn hàng thương mại: lưu địa chỉ giao nhận, phí ship, hạn thanh toán 72h. |
