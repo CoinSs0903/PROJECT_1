@@ -34,6 +34,8 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
                     "/",
+                    "/auctions",
+                    "/auctions/{id:[0-9]+}",
                     "/login",
                     "/register",
                     "/api/auth/**",

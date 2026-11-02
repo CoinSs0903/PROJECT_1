@@ -51,18 +51,81 @@
 
     <!-- Live & Upcoming Auctions Section -->
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4 class="fw-bold text-dark mb-0"><i class="bi bi-fire text-danger me-2"></i>Phiên Đấu Giá Nổi Bật</h4>
-        <a th:href="@{/items}" class="text-decoration-none fw-semibold">Xem tất cả <i class="bi bi-arrow-right"></i></a>
+        <h4 class="fw-bold text-dark mb-0"><i class="bi bi-fire text-danger me-2"></i>Phiên Đấu Giá Đang Diễn Ra</h4>
+        <a th:href="@{/auctions}" class="text-decoration-none fw-semibold">Xem tất cả <i class="bi bi-arrow-right"></i></a>
     </div>
 
-    <div class="row g-4" id="auctionList">
-        <div class="col-12 text-center py-5 bg-white rounded-3 shadow-sm">
-            <i class="bi bi-inbox fs-1 text-muted"></i>
-            <p class="text-muted mt-2">Đang tải danh sách các phiên đấu giá sôi nổi...</p>
-            <a th:href="@{/items/new}" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>Đăng món hàng mới ngay</a>
+    <!-- Empty state -->
+    <div th:if="${#lists.isEmpty(auctions)}" class="text-center py-5 bg-white rounded-3 shadow-sm mb-4">
+        <i class="bi bi-inbox fs-1 text-muted d-block mb-3"></i>
+        <h5 class="fw-bold text-dark">Chưa có phiên đấu giá nào đang diễn ra</h5>
+        <p class="text-muted small">Hãy đăng bán món hàng đầu tiên và mở phiên đấu giá để trải nghiệm hệ thống!</p>
+        <a th:href="@{/items/new}" class="btn btn-warning fw-bold px-4">
+            <i class="bi bi-plus-circle me-1"></i> Đăng Hàng Ngay
+        </a>
+    </div>
+
+    <!-- Auctions Grid -->
+    <div th:unless="${#lists.isEmpty(auctions)}" class="row g-4 mb-4">
+        <div class="col-md-6 col-lg-3" th:each="a : ${auctions}">
+            <div class="card h-100 border-0 shadow-sm auction-card overflow-hidden">
+                <div class="position-relative">
+                    <img th:src="${a.itemImageUrl}" class="card-img-top" style="height: 180px; object-fit: cover;" alt="Ảnh sản phẩm">
+                    <span class="position-absolute top-0 start-0 m-2 badge bg-success shadow-sm">
+                        <i class="bi bi-broadcast me-1"></i>ACTIVE
+                    </span>
+                    <span th:if="${a.buyItNowAvailable}" class="position-absolute top-0 end-0 m-2 badge bg-warning text-dark shadow-sm">
+                        <i class="bi bi-lightning-charge-fill me-1"></i>Mua Ngay
+                    </span>
+                </div>
+                <div class="card-body d-flex flex-column justify-content-between p-3">
+                    <div>
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="badge bg-secondary small" th:text="${a.categoryName}">Danh mục</span>
+                            <span class="small text-muted"><i class="bi bi-hammer me-1"></i><strong th:text="${a.bidCount}">0</strong> lượt</span>
+                        </div>
+                        <h6 class="card-title fw-bold text-truncate mb-2" th:title="${a.itemTitle}" th:text="${a.itemTitle}">Tên sản phẩm</h6>
+                        <div class="mb-2">
+                            <span class="text-muted small d-block">Giá hiện tại</span>
+                            <h5 class="fw-bold text-danger mb-0" th:text="${T(com.auction.common.util.MoneyUtil).formatVnd(a.currentPrice)}">100.000 ₫</h5>
+                        </div>
+                    </div>
+                    <div class="pt-2 border-top mt-2 d-flex justify-content-between align-items-center">
+                        <small class="text-muted countdown-item" th:data-endtime="${a.endTime}">
+                            <i class="bi bi-clock me-1"></i><span class="timer-text">Đang tính...</span>
+                        </small>
+                        <a th:href="@{'/auctions/' + ${a.id}}" class="btn btn-outline-primary btn-sm fw-semibold">
+                            Đấu Giá <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    function updateCountdowns() {
+        const now = new Date().getTime();
+        document.querySelectorAll(".countdown-item").forEach(function(el) {
+            const endStr = el.getAttribute("data-endtime");
+            if (!endStr) return;
+            const diff = new Date(endStr).getTime() - now;
+            const textEl = el.querySelector(".timer-text");
+            if (diff <= 0) {
+                textEl.innerText = "Hết giờ";
+            } else {
+                const hours = Math.floor(diff / (1000 * 60 * 60));
+                const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                textEl.innerText = hours + "h " + mins + "m";
+            }
+        });
+    }
+    updateCountdowns();
+    setInterval(updateCountdowns, 10000);
+});
+</script>
 </body>
 </html>
 

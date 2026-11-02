@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/main :: layout(~{::title}, ~{::content})}">
+<head>
+    <title>Tạo Phiên Đấu Giá - Sàn Đấu Giá</title>
+</head>
+<body>
+<div th:fragment="content" class="py-3">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+            <div class="card border-0 shadow-sm rounded-3 overflow-hidden">
+                <div class="card-header bg-primary text-white py-3">
+                    <h5 class="fw-bold mb-0"><i class="bi bi-hammer me-2"></i>Mở Phiên Đấu Giá Mới</h5>
+                </div>
+                <div class="card-body p-4">
+                    <!-- Item summary box -->
+                    <div class="d-flex align-items-center p-3 mb-4 bg-light rounded-3 border">
+                        <img th:src="${item.mainImageUrl}" alt="Ảnh sản phẩm" class="rounded me-3" style="width: 80px; height: 80px; object-fit: cover;">
+                        <div>
+                            <span class="badge bg-secondary mb-1" th:text="${item.categoryName}">Danh mục</span>
+                            <h5 class="fw-bold mb-1" th:text="${item.title}">Tên sản phẩm</h5>
+                            <small class="text-muted">Tình trạng: <strong th:text="${item.itemCondition.displayName}">Mới</strong></small>
+                        </div>
+                    </div>
+
+                    <form th:action="@{/auctions/create}" th:object="${auctionRequest}" method="post">
+                        <input type="hidden" th:field="*{itemId}">
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Giá khởi điểm (VNĐ) <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <input type="number" th:field="*{startingPrice}" class="form-control" placeholder="0" min="0" step="1000" required>
+                                    <span class="input-group-text">₫</span>
+                                </div>
+                                <div class="text-danger small" th:if="${#fields.hasErrors('startingPrice')}" th:errors="*{startingPrice}"></div>
+                                <small class="text-muted">Mức giá mở màn phiên đấu giá (có thể từ 0 đ).</small>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Bước giá tối thiểu (VNĐ) <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <input type="number" th:field="*{stepPrice}" class="form-control" placeholder="10000" min="1000" step="1000" required>
+                                    <span class="input-group-text">₫</span>
+                                </div>
+                                <div class="text-danger small" th:if="${#fields.hasErrors('stepPrice')}" th:errors="*{stepPrice}"></div>
+                                <small class="text-muted">Mỗi lượt đặt giá sau phải cao hơn giá trước ít nhất mức này.</small>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">
+                                    Giá sàn bí mật (Reserve Price)
+                                    <i class="bi bi-info-circle text-muted" data-bs-toggle="tooltip" title="Giá tối thiểu bạn đồng ý bán. Người mua sẽ không nhìn thấy con số này, chỉ biết đã đạt hay chưa."></i>
+                                </label>
+                                <div class="input-group">
+                                    <input type="number" th:field="*{reservePrice}" class="form-control" placeholder="Để trống nếu không áp dụng" min="0" step="1000">
+                                    <span class="input-group-text">₫</span>
+                                </div>
+                                <div class="text-danger small" th:if="${#fields.hasErrors('reservePrice')}" th:errors="*{reservePrice}"></div>
+                                <small class="text-muted">Chỉ bán nếu có người đặt giá đạt mức này trở lên.</small>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">
+                                    Giá mua ngay (Buy It Now)
+                                    <i class="bi bi-info-circle text-muted" data-bs-toggle="tooltip" title="Cho phép người mua chốt đơn lập tức và kết thúc phiên đấu giá. Sẽ tự động ẩn khi đạt giá sàn."></i>
+                                </label>
+                                <div class="input-group">
+                                    <input type="number" th:field="*{buyItNowPrice}" class="form-control" placeholder="Để trống nếu không cho mua ngay" min="0" step="1000">
+                                    <span class="input-group-text">₫</span>
+                                </div>
+                                <div class="text-danger small" th:if="${#fields.hasErrors('buyItNowPrice')}" th:errors="*{buyItNowPrice}"></div>
+                                <small class="text-muted">Phải cao hơn giá sàn và giá khởi điểm.</small>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Thời lượng phiên (ngày)</label>
+                                <select th:field="*{durationDays}" class="form-select">
+                                    <option value="1">1 ngày (24 giờ)</option>
+                                    <option value="3" selected>3 ngày (Mặc định)</option>
+                                    <option value="5">5 ngày</option>
+                                    <option value="7">7 ngày</option>
+                                    <option value="14">14 ngày</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Thời gian bắt đầu (Tuỳ chọn)</label>
+                                <input type="datetime-local" th:field="*{startTime}" class="form-control">
+                                <small class="text-muted">Để trống để kích hoạt phiên đấu giá ngay lập tức.</small>
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <div class="d-flex justify-content-between">
+                            <a th:href="@{'/items/' + ${item.id}}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-1"></i> Huỷ Bỏ
+                            </a>
+                            <button type="submit" class="btn btn-primary fw-bold px-4">
+                                <i class="bi bi-check2-circle me-1"></i> Bắt Đầu Đấu Giá
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

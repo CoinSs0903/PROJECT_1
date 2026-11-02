@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" th:replace="~{layout/main :: layout(~{::title}, ~{::content})}">
+<head>
+    <title th:text="${auction.itemTitle + ' - Chi Tiết Đấu Giá'}">Chi Tiết Đấu Giá</title>
+</head>
+<body>
+<div th:fragment="content" class="py-3">
+    <!-- Messages are rendered in layout/main via layout/messages -->
+
+    <div class="row g-4">
+        <!-- Left Column: Images -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm rounded-3 overflow-hidden sticky-top" style="top: 80px; z-index: 10;">
+                <div class="position-relative bg-light text-center p-3">
+                    <img id="mainImage" th:src="${auction.mainImageUrl}" class="img-fluid rounded" style="max-height: 440px; object-fit: contain;" alt="Ảnh sản phẩm">
+                    <span class="position-absolute top-0 start-0 m-3 badge"
+                          th:classappend="${auction.status.name() == 'ACTIVE'} ? 'bg-success' : (${auction.status.name() == 'ENDED_SOLD'} ? 'bg-primary' : 'bg-secondary')"
+                          th:text="${auction.status.name()}">ACTIVE</span>
+                </div>
+                <div class="card-body p-3 d-flex gap-2 overflow-auto" th:if="${not #lists.isEmpty(auction.imageUrls)}">
+                    <img th:src="${auction.mainImageUrl}" class="img-thumbnail cursor-pointer active-thumb" style="width: 70px; height: 70px; object-fit: cover;" onclick="document.getElementById('mainImage').src=this.src" alt="Thumbnail">
+                    <img th:each="img : ${auction.imageUrls}" th:src="${img}" class="img-thumbnail cursor-pointer" style="width: 70px; height: 70px; object-fit: cover;" onclick="document.getElementById('mainImage').src=this.src" alt="Thumbnail">
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Bidding Info & Actions -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm rounded-3 p-4">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="badge bg-primary" th:text="${auction.categoryName}">Danh mục</span>
+                    <span class="badge bg-secondary" th:text="${auction.itemCondition.displayName}">USED</span>
+                </div>
+                <h3 class="fw-bold mb-2" th:text="${auction.itemTitle}">Tên món hàng</h3>
+                <div class="text-muted small mb-3">
+                    <span>Người bán: <strong class="text-dark" th:text="${auction.sellerUsername}">seller</strong></span> |
+                    <span>Mã phiên: <strong class="text-dark" th:text="${'#' + auction.id}">#1</strong></span>
+                </div>
+
+                <!-- Price & Status Box -->
+                <div class="p-3 mb-4 rounded-3 bg-light border">
+                    <div class="row align-items-center">
+                        <div class="col-sm-7">
+                            <span class="text-muted small d-block">Giá hiện tại</span>
+                            <h2 class="fw-bold text-danger mb-0" th:text="${T(com.auction.common.util.MoneyUtil).formatVnd(auction.currentPrice)}">100.000 ₫</h2>
+                            <small class="text-muted">
+                                Khởi điểm: <span th:text="${T(com.auction.common.util.MoneyUtil).formatVnd(auction.startingPrice)}">0 ₫</span> |
+                                Bước giá: +<span th:text="${T(com.auction.common.util.MoneyUtil).formatVnd(auction.stepPrice)}">10.000 ₫</span>
+                            </small>
+                        </div>
+                        <div class="col-sm-5 text-sm-end mt-2 mt-sm-0">
+                            <!-- Reserve status badge: NEVER reveal secret reserve price -->
+                            <div th:if="${auction.reserveMet}" class="badge bg-success-subtle text-success border border-success px-2 py-1 mb-1">
+                                <i class="bi bi-shield-check me-1"></i>Đã đạt giá sàn
+                            </div>
+                            <div th:unless="${auction.reserveMet}" class="badge bg-secondary-subtle text-muted border px-2 py-1 mb-1">
+                                <i class="bi bi-shield-lock me-1"></i>Chưa đạt giá sàn
+                            </div>
+                            <div class="small text-muted">
+                                <i class="bi bi-person-fill"></i> Người dẫn đầu:
+                                <strong class="text-dark" th:text="${auction.highestBidderMasked != null ? auction.highestBidderMasked : 'Chưa có'}">u***1</strong>
+                            </div>
+                            <div class="small text-muted">
+                                <i class="bi bi-hammer"></i> Lượt trả: <strong class="text-dark" th:text="${auction.bidCount}">0</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Countdown Box -->
+                <div class="alert alert-warning d-flex align-items-center py-2 px-3 mb-4 rounded-3" role="alert" th:if="${auction.status.name() == 'ACTIVE'}">
+                    <i class="bi bi-stopwatch-fill fs-4 me-2 text-warning"></i>
+                    <div>
+                        <div class="small fw-bold">Thời gian còn lại:</div>
+                        <span id="countdownTimer" class="fs-5 fw-bold text-danger" th:data-endtime="${auction.endTime}">Đang tải...</span>
+                    </div>
+                </div>
+
+                <!-- Buy It Now Button Box (Task 15) -->
+                <div th:if="${auction.buyItNowAvailable}" class="p-3 mb-4 rounded-3 border border-warning bg-warning bg-opacity-10">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="badge bg-warning text-dark fw-bold mb-1"><i class="bi bi-lightning-charge-fill me-1"></i>Mua Ngay (Buy It Now)</span>
+                            <h4 class="fw-bold text-dark mb-0" th:text="${T(com.auction.common.util.MoneyUtil).formatVnd(auction.buyItNowPrice)}">500.000 ₫</h4>
+                            <small class="text-muted">Chốt đơn ngay mà không cần chờ đấu giá kết thúc</small>
+                        </div>
+                        <div sec:authorize="isAuthenticated()">
+                            <form th:if="${!auction.userIsSeller}" th:action="@{'/auctions/' + ${auction.id} + '/buy-it-now'}" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn mua ngay sản phẩm này với giá ' + [[${T(com.auction.common.util.MoneyUtil).formatVnd(auction.buyItNowPrice)}]] + ' không?');">
+                                <button type="submit" class="btn btn-warning fw-bold px-3 py-2 shadow-sm">
+                                    <i class="bi bi-cart-check-fill me-1"></i> Mua Ngay
+                                </button>
+                            </form>
+                            <span th:if="${auction.userIsSeller}" class="text-muted small fst-italic">Sản phẩm của bạn</span>
+                        </div>
+                        <div sec:authorize="!isAuthenticated()">
+                            <a th:href="@{/login}" class="btn btn-warning fw-bold px-3 py-2">Đăng Nhập Để Mua</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Proxy Bidding Form (Task 13) -->
+                <div th:if="${auction.status.name() == 'ACTIVE'}" class="card border border-primary p-3 mb-4 rounded-3">
+                    <h6 class="fw-bold text-primary mb-2"><i class="bi bi-robot me-1"></i> Đặt Giá Tự Động (Proxy Bidding)</h6>
+                    <p class="text-muted small mb-3">
+                        Hệ thống sẽ thay bạn tự động trả giá từng bước tối thiểu để dẫn đầu, không bao giờ vượt quá mức giá tối đa bạn cài đặt dưới đây.
+                    </p>
+
+                    <div sec:authorize="isAuthenticated()">
+                        <div th:if="${auction.userIsSeller}" class="alert alert-info py-2 mb-0 small">
+                            <i class="bi bi-info-circle me-1"></i> Bạn là người bán của sản phẩm này nên không thể tham gia đấu giá.
+                        </div>
+                        <div th:if="${!auction.userIsSeller}">
+                            <div th:if="${auction.userIsHighestBidder}" class="alert alert-success py-2 mb-3 small">
+                                <i class="bi bi-check-circle-fill me-1"></i> Bạn đang là người dẫn đầu phiên đấu giá này! Bạn có thể nâng mức giá tối đa để đảm bảo vị trí dẫn đầu.
+                            </div>
+                            <form th:action="@{'/auctions/' + ${auction.id} + '/bid'}" method="post" class="row g-2 align-items-end">
+                                <div class="col-sm-8">
+                                    <label class="form-label small fw-semibold">
+                                        Mức giá tối đa bạn sẵn sàng trả (VNĐ):
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <div class="input-group">
+                                        <input type="number" name="maxAmount" class="form-control"
+                                               th:min="${auction.bidCount == 0 ? auction.startingPrice : (auction.currentPrice + auction.stepPrice)}"
+                                               th:value="${auction.bidCount == 0 ? auction.startingPrice : (auction.currentPrice + auction.stepPrice)}"
+                                               step="${auction.stepPrice}" required>
+                                        <span class="input-group-text">₫</span>
+                                    </div>
+                                    <div class="form-text small">
+                                        Tối thiểu: <strong th:text="${T(com.auction.common.util.MoneyUtil).formatVnd(auction.bidCount == 0 ? auction.startingPrice : (auction.currentPrice + auction.stepPrice))}">110.000 ₫</strong>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <button type="submit" class="btn btn-primary w-100 fw-bold py-2 shadow-sm">
+                                        <i class="bi bi-arrow-up-circle-fill me-1"></i> Đặt Giá
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div sec:authorize="!isAuthenticated()" class="text-center py-2">
+                        <a th:href="@{/login}" class="btn btn-outline-primary fw-bold">
+                            <i class="bi bi-box-arrow-in-right me-1"></i> Đăng nhập để tham gia đấu giá
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Seller Actions: Cancel Auction (Task 15) -->
+                <div th:if="${auction.canCancel}" class="border-top pt-3">
+                    <form th:action="@{'/auctions/' + ${auction.id} + '/cancel'}" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn huỷ phiên đấu giá này không?');">
+                        <button type="submit" class="btn btn-outline-danger btn-sm">
+                            <i class="bi bi-x-circle me-1"></i> Huỷ Phiên Đấu Giá (Chưa có lượt đặt)
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Section: Item Description & Bid History Tabs -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm rounded-3">
+                <div class="card-header bg-white border-bottom">
+                    <ul class="nav nav-tabs card-header-tabs" id="auctionTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active fw-bold" id="desc-tab" data-bs-toggle="tab" data-bs-target="#desc" type="button" role="tab">
+                                <i class="bi bi-file-text me-1"></i> Chi Tiết Sản Phẩm
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link fw-bold" id="bids-tab" data-bs-toggle="tab" data-bs-target="#bids" type="button" role="tab">
+                                <i class="bi bi-clock-history me-1"></i> Lịch Sử Đặt Giá (<span th:text="${#lists.size(auction.bidHistory)}">0</span>)
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body p-4 tab-content" id="auctionTabsContent">
+                    <!-- Tab 1: Description -->
+                    <div class="tab-pane fade show active" id="desc" role="tabpanel">
+                        <h6 class="fw-bold mb-2">Mô tả từ người bán:</h6>
+                        <p class="text-muted" style="white-space: pre-line;" th:text="${auction.itemDescription}">Mô tả chi tiết...</p>
+                    </div>
+
+                    <!-- Tab 2: Bid History (Task 12) -->
+                    <div class="tab-pane fade" id="bids" role="tabpanel">
+                        <div th:if="${#lists.isEmpty(auction.bidHistory)}" class="text-center py-4 text-muted">
+                            <i class="bi bi-inbox fs-2 d-block mb-2"></i>
+                            Chưa có lượt đặt giá nào. Hãy là người đầu tiên trả giá!
+                        </div>
+                        <div th:unless="${#lists.isEmpty(auction.bidHistory)}" class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="table-light">
+                                <tr>
+                                    <th>Thời gian</th>
+                                    <th>Người đặt giá</th>
+                                    <th>Mức giá</th>
+                                    <th>Loại giá</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="b : ${auction.bidHistory}">
+                                    <td th:text="${T(com.auction.common.util.DateTimeUtil).formatDateTime(b.bidTime)}">01/01/2026 12:00</td>
+                                    <td>
+                                        <i class="bi bi-person-circle text-muted me-1"></i>
+                                        <strong th:text="${b.maskedBidderUsername}">u***1</strong>
+                                    </td>
+                                    <td>
+                                        <span class="fw-bold text-success" th:text="${T(com.auction.common.util.MoneyUtil).formatVnd(b.bidAmount)}">150.000 ₫</span>
+                                    </td>
+                                    <td>
+                                        <span th:if="${b.autoBid}" class="badge bg-secondary-subtle text-secondary border">
+                                            <i class="bi bi-robot me-1"></i>Tự động (Proxy)
+                                        </span>
+                                        <span th:unless="${b.autoBid}" class="badge bg-primary-subtle text-primary border">
+                                            <i class="bi bi-hand-index me-1"></i>Thủ công
+                                        </span>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Countdown Script -->
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const el = document.getElementById("countdownTimer");
+    if (!el) return;
+    const endTimeStr = el.getAttribute("data-endtime");
+    if (!endTimeStr) return;
+    const endTime = new Date(endTimeStr).getTime();
+
+    function updateTimer() {
+        const now = new Date().getTime();
+        const distance = endTime - now;
+
+        if (distance < 0) {
+            el.innerHTML = "<span class='text-muted'>Đã kết thúc</span>";
+            return;
+        }
+
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        let res = "";
+        if (days > 0) res += days + " ngày ";
+        res += String(hours).padStart(2, '0') + ":" +
+               String(minutes).padStart(2, '0') + ":" +
+               String(seconds).padStart(2, '0');
+        el.innerText = res;
+    }
+
+    updateTimer();
+    setInterval(updateTimer, 1000);
+});
+</script>
+</body>
+</html>

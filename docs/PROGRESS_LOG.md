@@ -16,8 +16,8 @@
 | **audit** | Nhật ký kiểm toán bất biến (append-only) | **Hoàn thành** | Ngày 8 | `AuditLog`, `V2__audit_logs.sql`, `AuditLogService` REQUIRES_NEW |
 | **notification** | Thông báo trong ứng dụng, chuông thông báo | **Hoàn thành** | Ngày 9 | `Notification`, `NotificationFacade`, UI bell dropdown Navbar |
 | **catalog** | Quản lý Danh mục (Categories) & Món hàng (Items) | **Hoàn thành** | Ngày 10 | `Category`, `Item`, `ItemImage`, `CatalogService`, UI quản lý món hàng |
-| **auction** | Đăng bán món hàng & Thiết lập thông số đấu giá | Chưa bắt đầu | Ngày 11, 12, 14, 15 | |
-| **proxy_bidding** | Bộ máy đấu giá tự động (Proxy Bidding Engine) | Chưa bắt đầu | Ngày 13, 16, 17, 18 | |
+| **auction** | Đăng bán món hàng & Thiết lập thông số đấu giá | **Hoàn thành** | Ngày 11, 12, 14, 15 | Tạo phiên, chi tiết, tìm kiếm, Scheduler, Buy It Now, Huỷ |
+| **proxy_bidding** | Bộ máy đấu giá tự động (Proxy Bidding Engine) | **Hoàn thành** | Ngày 13 | Khóa PESSIMISTIC, tự động nhảy giá, đạt giá sàn, thông báo OUTBID |
 | **order** | Đơn hàng trúng đấu giá, thanh toán, xử phạt bùng hàng | Chưa bắt đầu | Ngày 18, 19, 20 | |
 | **realtime** | WebSocket STOMP, nhảy giá thời gian thực | Chưa bắt đầu | Ngày 21, 22 | |
 | **payout** | Giải ngân tiền cho Seller sau khi trừ phí hoa hồng sàn | Chưa bắt đầu | Ngày 23 | |
@@ -91,5 +91,45 @@
 - Giao diện quản lý: `catalog/my-items.html` (danh sách món hàng), `catalog/item-form.html` (đăng món hàng mới), `catalog/item-detail.html` (chi tiết sản phẩm & album ảnh).
 - Kiểm thử unit test: `CatalogServiceTest` (2/2 pass).
 
+### Ngày 11 – Đăng bán & Thiết lập thông số phiên đấu giá (`auction`)
+- Entity `AuctionStatus` (`ACTIVE`, `SCHEDULED`, `ENDED_SOLD`, `ENDED_UNSOLD`, `CANCELED`) và `Auction` khớp 100% bảng `auctions` trong ERD mới.
+- `AuctionRepository` hỗ trợ khóa bi quan `findByIdForUpdate` (PESSIMISTIC_WRITE) và các query theo trạng thái, thời gian.
+- `AuctionService.createAuction(...)`: Ràng buộc tính hợp lệ giá khởi điểm (>= 0), bước giá (> 0), giá sàn bảo lưu (>= starting_price), giá mua ngay (> reserve_price hoặc > starting_price), kiểm tra quyền sở hữu món hàng của Seller và kiểm tra chống trùng lặp phiên đang diễn ra.
+- `AuctionController` & `AuctionApiController`: Form giao diện mở phiên đấu giá `auction/create.html` tích hợp trực tiếp từ trang chi tiết món hàng `catalog/item-detail.html`.
+
+### Ngày 12 – Chi tiết phiên đấu giá công khai & Tìm kiếm, Lọc (`auction`)
+- `AuctionDetailDto` & `AuctionResponseDto`: Hiển thị thông số phiên, thông tin sản phẩm, album ảnh, người bán, bộ đếm ngược thời gian trực tiếp (live countdown), số lượt đặt giá, ẩn danh người dẫn đầu theo quy tắc BR-24 (`u***1`).
+- Tuyệt đối bảo mật: Chỉ hiển thị cờ boolean `isReserveMet`, không bao giờ để lộ con số `reserve_price` bí mật của người bán.
+- Tìm kiếm & Lọc (`/auctions`, `/`): Tìm kiếm theo từ khóa (tên/mô tả), danh mục sản phẩm, khoảng giá và sắp xếp linh hoạt (`newest`, `endingSoon`, `priceAsc`, `priceDesc`).
+- Giao diện chi tiết: `auction/detail.html`, danh sách phiên đấu giá: `auction/list.html` và hiển thị trực quan các phiên nổi bật trên `index.html`.
+
+### Ngày 13 – Bộ máy đấu giá tự động Proxy Bidding Engine (`proxy_bidding`)
+- Entity `ProxyBid` (bảng `proxy_bids`) và `Bid` (bảng `bids`).
+- `ProxyBiddingService.processBid(auctionId, bidderId, maxAmount)`:
+  - Khóa bi quan `findByIdForUpdate` trên phiên đấu giá để ngăn chặn hoàn toàn Race Condition và Deadlock.
+  - Kiểm tra điều kiện: Người bán không được phép tự đặt giá, tài khoản người đặt phải ở trạng thái ACTIVE, mức giá tối đa phải >= giá hiện tại + bước giá tối thiểu.
+  - Thuật toán Proxy Bidding:
+    - Nếu là lượt đặt đầu tiên: Giá hiện tại xuất phát từ `startingPrice`. Nếu `maxAmount >= reservePrice`, giá lập tức nhảy lên mức giá sàn bảo lưu và đánh dấu `isReserveMet = true`.
+    - Nếu người dẫn đầu nâng giá tối đa: Cập nhật `maxAmount` mới và tự động kích hoạt giá sàn nếu đạt ngưỡng.
+    - Nếu người đặt mới trả giá cao hơn người dẫn đầu hiện tại: Người mới dẫn đầu, giá phiên nhảy lên $\min(\text{maxAmount}, \text{maxCũ} + \text{stepPrice})$, gửi thông báo `OUTBID` cho người dẫn đầu cũ.
+    - Nếu người đặt mới trả giá thấp hơn hoặc bằng giá tối đa của người dẫn đầu: Người dẫn đầu tiếp tục giữ vị trí, giá phiên tự động nhảy lên $\min(\text{maxDẫnĐầu}, \text{maxMới} + \text{stepPrice})$, gửi thông báo `OUTBID` ngay lập tức cho người đặt mới.
+- REST API `POST /api/auctions/{id}/bids` và form HTML `POST /auctions/{id}/bid`.
+
+### Ngày 14 – Tác vụ quét tự động kết thúc phiên Auction Scheduler (`auction`)
+- Cấu hình `@EnableScheduling` và thành phần `AuctionScheduler`:
+  - Quét mỗi 5 giây các phiên hết hạn (`status = ACTIVE` và `endTime <= now`):
+    - Nếu có lượt đặt giá và đạt giá sàn (hoặc không có giá sàn) $\rightarrow$ chuyển sang `ENDED_SOLD`, tự động tạo đơn hàng `Order` (trạng thái `AWAITING_PAYMENT`, hạn thanh toán 72 giờ), gửi thông báo `AUCTION_WON` cho Buyer và `ITEM_SOLD` cho Seller.
+    - Nếu không có người đặt hoặc chưa đạt giá sàn $\rightarrow$ chuyển sang `ENDED_UNSOLD`, gửi thông báo `AUCTION_UNSOLD` cho Seller.
+  - Quét mỗi 10 giây các phiên đã đến giờ bắt đầu (`status = SCHEDULED` và `startTime <= now`) $\rightarrow$ tự động kích hoạt chuyển sang `ACTIVE`.
+
+### Ngày 15 – Mua ngay Buy It Now & Huỷ phiên đấu giá (`auction`)
+- Tính năng Mua ngay Buy It Now (`executeBuyItNow`):
+  - Cho phép người mua chốt đơn ngay lập tức với mức giá `buyItNowPrice`.
+  - Khóa phiên, chuyển trạng thái sang `ENDED_SOLD`, sinh đơn hàng `Order` và gửi thông báo cho cả 2 bên.
+  - Nút Mua ngay tự động ẩn khi phiên đấu giá đã đạt giá sàn hoặc đã có lượt đấu giá. Người bán không thể tự mua sản phẩm của chính mình.
+- Tính năng Huỷ phiên đấu giá (`cancelAuction`):
+  - Người bán chỉ có quyền huỷ phiên đấu giá khi chưa có bất kỳ lượt đặt giá nào (`bidCount == 0`). Nếu đã có người đặt giá, hệ thống chặn hành động huỷ để bảo vệ tính công bằng của phiên.
+- Endpoints: `POST /auctions/{id}/buy-it-now`, `POST /auctions/{id}/cancel`, cùng các API JSON tương ứng.
+
 ---
-**Tổng kết kiểm thử tự động:** Toàn bộ **13/13 unit tests** của các module từ Task 5 đến Task 10 đều đạt **100% BUILD SUCCESS** (0 failures, 0 errors).
+**Tổng kết kiểm thử tự động:** Toàn bộ **33/33 unit tests** của toàn hệ thống từ Task 5 đến Task 15 đều đạt **100% BUILD SUCCESS** (0 failures, 0 errors).
