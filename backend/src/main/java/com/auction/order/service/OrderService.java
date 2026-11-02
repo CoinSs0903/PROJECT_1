@@ -42,6 +42,7 @@ public class OrderService {
         this(orderRepository, null, null, null, null, null, null, null);
     }
 
+    @org.springframework.beans.factory.annotation.Autowired
     public OrderService(
             OrderRepository orderRepository,
             AuctionRepository auctionRepository,

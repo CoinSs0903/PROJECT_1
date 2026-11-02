@@ -43,6 +43,7 @@ public class AuctionScheduler {
         this(auctionRepository, itemRepository, null, orderService, notificationFacade, auditLogFacade);
     }
 
+    @org.springframework.beans.factory.annotation.Autowired
     public AuctionScheduler(
             AuctionRepository auctionRepository,
             ItemRepository itemRepository,

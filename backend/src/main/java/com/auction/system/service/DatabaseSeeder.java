@@ -70,7 +70,7 @@ public class DatabaseSeeder {
         // Ensure SYSTEM_REVENUE wallet exists
         if (walletRepository.findByWalletType(WalletType.SYSTEM_REVENUE).isEmpty()) {
             Wallet sysWallet = new Wallet();
-            sysWallet.setUserId(0L);
+            sysWallet.setUserId(null);
             sysWallet.setWalletType(WalletType.SYSTEM_REVENUE);
             sysWallet.setAvailableBalance(0L);
             walletRepository.save(sysWallet);
