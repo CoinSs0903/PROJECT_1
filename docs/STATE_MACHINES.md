@@ -1,235 +1,136 @@
 # 🔄 TÀI LIỆU SƠ ĐỒ CHUYỂN TRẠNG THÁI (STATE MACHINES)
 
-> **Dự án:** Hệ Thống Đấu Giá Trực Tuyến (Online Auction System)  
-> **Căn cứ:** docs/SRS.md (Mục 4, 5, 8), docs/ERD.md, docs/PLAN.md (Ngày 2)  
-> **Nguyên tắc bất biến:** Duy nhất `AuctionStateMachine` được quyền chuyển trạng thái phiên đấu giá; mọi chuyển đổi trạng thái phải được ghi nhận vào `audit_logs`.
+> **Dự án:** Hệ Thống Đấu Giá Trực Tuyến (Cơ chế Đấu giá Tự động)  
+> **Căn cứ:** `docs/SRS.md`, `docs/ERD.md`, `docs/PLAN.md` (Ngày 2)  
+> **Nguyên tắc cốt lõi:** Duy nhất các State Machine và Service chuyên biệt được chuyển đổi trạng thái thực thể; mọi biến động phải tuân theo luồng hợp lệ.
 
 ---
 
 ## 1. MÁY TRẠNG THÁI PHIÊN ĐẤU GIÁ (`AuctionStateMachine`)
 
-Phiên đấu giá tuân thủ nghiêm ngặt 9 trạng thái định nghĩa tại SRS Mục 5.1 và ma trận chuyển trạng thái tại Mục 5.2.
+Vòng đời của một phiên đấu giá trong bảng `auctions` gồm các trạng thái:
+- `DRAFT`: Bản nháp chưa công bố.
+- `SCHEDULED`: Đã lên lịch, chờ đến giờ `start_time`.
+- `ACTIVE`: Đang mở cho người dùng trả giá (phân nhánh logic `is_reserve_met = false/true`).
+- `ENDED_SOLD`: Kết thúc thành công (đã có người thắng thỏa mãn điều kiện giá).
+- `ENDED_UNSOLD`: Kết thúc không thành công (không có ai bid hoặc không đạt giá sàn).
+- `CANCELED`: Phiên bị người bán hủy (khi chưa có lượt bid nào) hoặc bị Admin cưỡng chế hủy.
 
-### 1.1. Sơ đồ trạng thái Mermaid
+### 1.1. Sơ đồ Mermaid `AuctionStateMachine`
 
 ```mermaid
 stateDiagram-v2
-    [*] --> PENDING_APPROVAL: Seller tạo phiên & gửi duyệt (FR-SE-02, BR-01)
-
-    PENDING_APPROVAL --> REJECTED: Admin từ chối kèm lý do (BR-02)
-    REJECTED --> PENDING_APPROVAL: Seller chỉnh sửa & gửi lại (FR-SE-02)
-
-    PENDING_APPROVAL --> LISTED: Admin phê duyệt niêm yết (BR-02, BR-03)
+    [*] --> DRAFT: Seller khởi tạo phiên
+    DRAFT --> SCHEDULED: Hẹn giờ mở phiên trong tương lai
+    DRAFT --> ACTIVE: Mở phiên ngay lập tức (start_time <= now)
     
-    LISTED --> WAITING_FOR_OPENING: Hết hạn đăng ký (trước mở 2 ngày làm việc) (BR-09)
-    LISTED --> CANCELED: Seller hủy phiên hợp lệ / Admin hủy (BR-34)
-
-    WAITING_FOR_OPENING --> IN_PROGRESS: Đến giờ bắt đầu (start_time) (BR-15, BR-19)
-    WAITING_FOR_OPENING --> FAILED: Không có người đăng ký hợp lệ (BR-24)
-    WAITING_FOR_OPENING --> CANCELED: Seller hủy trước giờ mở / Admin hủy (BR-34)
-
-    IN_PROGRESS --> WAITING_FOR_PAYMENT: Có người trúng (Hết giờ tăng dần / Chấp nhận giảm dần) (BR-16, BR-20, BR-25)
-    IN_PROGRESS --> FAILED: Không ai trả giá / Chạm sàn không ai mua (BR-21, BR-24)
-    IN_PROGRESS --> CANCELED: Admin cưỡng chế hủy do phát hiện vi phạm (BR-34)
-
-    state WAITING_FOR_PAYMENT {
-        [*] --> AwaitingPayment
-        AwaitingPayment --> PaymentSuccess: Người trúng thanh toán đủ (BR-26)
-        AwaitingPayment --> WinnerDefaulted: Người trúng hủy / Quá hạn thanh toán (BR-27)
-        WinnerDefaulted --> TransitionNextWinner: Tăng dần - Xét người liền kề (BR-18)
-        WinnerDefaulted --> ResumeAuction: Giảm dần - Đưa phiên tiếp tục (BR-22)
+    SCHEDULED --> ACTIVE: Scheduler quét đến giờ start_time
+    SCHEDULED --> CANCELED: Seller hủy trước khi phiên bắt đầu
+    
+    state ACTIVE {
+        [*] --> RESERVE_NOT_MET: Khởi đầu (hoặc phiên có Reserve Price)
+        RESERVE_NOT_MET --> RESERVE_MET: Có lượt bid/max_amount >= reserve_price
+        RESERVE_MET --> RESERVE_MET: Tiếp tục tăng giá tự động
+        RESERVE_NOT_MET --> RESERVE_NOT_MET: Tiếp tục trả giá dưới giá sàn
     }
-
-    WAITING_FOR_PAYMENT --> COMPLETED: Thanh toán thành công đủ giá trị (BR-26)
-    WAITING_FOR_PAYMENT --> IN_PROGRESS: Giảm dần tiếp tục từ giá người hủy (BR-22)
-    WAITING_FOR_PAYMENT --> FAILED: Không còn người kế tiếp hợp lệ (BR-18, BR-22, BR-24)
-
-    COMPLETED --> [*]
-    FAILED --> [*]
+    
+    ACTIVE --> ENDED_SOLD: Người mua chọn Buy It Now (Mua ngay)
+    ACTIVE --> ENDED_SOLD: Hết giờ (end_time) & có lượt bid & đạt Reserve Price
+    ACTIVE --> ENDED_UNSOLD: Hết giờ (end_time) & (không có bid HOẶC chưa đạt Reserve Price)
+    ACTIVE --> CANCELED: Seller hủy phiên (chỉ được khi bid_count = 0) / Admin hủy vi phạm
+    
+    ENDED_UNSOLD --> ACTIVE: Seller sử dụng tính năng Relist (tạo phiên mới từ item_id cũ)
+    
+    ENDED_SOLD --> [*]
     CANCELED --> [*]
 ```
 
-### 1.2. Bảng định nghĩa Enum & Ma trận chuyển trạng thái phiên
-
-| Enum (`VARCHAR(30)`) | Nhãn tiếng Việt | Trạng thái tiếp theo có thể | Sự kiện kích hoạt (Event) | Tác nhân (Trigger Actor) | Mã BR / SRS |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| `PENDING_APPROVAL` | Chờ duyệt | `LISTED`, `REJECTED` | Gửi duyệt thông số phiên | Seller | FR-SE-02, BR-01 |
-| `REJECTED` | Bị từ chối | `PENDING_APPROVAL` | Admin từ chối phê duyệt | Admin | BR-02 |
-| `LISTED` | Đã niêm yết | `WAITING_FOR_OPENING`, `CANCELED` | Admin duyệt niêm yết công khai | Admin | BR-02, BR-03 |
-| `WAITING_FOR_OPENING` | Chờ mở phiên | `IN_PROGRESS`, `FAILED`, `CANCELED` | Đóng nhận đăng ký (trước mở 2 ngày LV) | **Scheduler** | BR-09, BR-24 |
-| `IN_PROGRESS` | Đang diễn ra | `WAITING_FOR_PAYMENT`, `FAILED`, `CANCELED` | Đến giờ mở phiên (`start_time`) | **Scheduler** | BR-15, BR-19 |
-| `WAITING_FOR_PAYMENT` | Chờ thanh toán | `COMPLETED`, `IN_PROGRESS`, `FAILED` | Xác định người trúng (hết giờ / chốt giá) | **Scheduler** / Bidder | BR-20, BR-25 |
-| `COMPLETED` | Hoàn tất | *(Trạng thái kết thúc)* | Người trúng thanh toán đủ số tiền | Bidder | BR-26, BR-28 |
-| `FAILED` | Không thành | *(Trạng thái kết thúc)* | Không đủ người / Không trả giá / Hết quyền | **Scheduler** | BR-18, BR-21, BR-24 |
-| `CANCELED` | Đã hủy | *(Trạng thái kết thúc)* | Seller hủy trước giờ mở / Admin hủy | Seller / Admin | BR-34 |
-
 ---
 
-## 2. MÁY TRẠNG THÁI TIỀN ĐẶT TRƯỚC (`DepositStateMachine`)
+## 2. MÁY TRẠNG THÁI ĐƠN HÀNG (`OrderStateMachine`)
 
-Quản lý tiền ký quỹ từ lúc phong tỏa trong ví người dùng đến khi hoàn trả hoặc chuyển thành tiền cọc cho người bán (SRS Mục 5.3).
+Vòng đời đơn hàng trong bảng `orders` sau khi chốt người thắng phiên đấu giá hoặc Buy It Now:
+- `AWAITING_PAYMENT`: Chờ người mua thanh toán tiền hàng (hạn 72 giờ).
+- `PAID`: Đã thanh toán tiền hàng qua Ví (tiền được tạm giữ an toàn trong ví Escrow).
+- `SHIPPED`: Người bán đã bàn giao hàng cho đơn vị vận chuyển và cập nhật mã vận đơn (`tracking_number`).
+- `DELIVERED`: Người mua đã nhận được hàng hoặc hệ thống tự động xác nhận sau 7 ngày.
+- `COMPLETED`: Đơn hàng hoàn tất, giải ngân tiền cho Seller (trừ phí sàn 5%).
+- `CANCELLED_UNPAID`: Quá hạn 72 giờ không thanh toán, người mua bị phạt 1 gậy (Unpaid Item Strike).
+- `DISPUTED`: Đơn hàng bị khiếu nại (Item not received / Item not as described).
+- `REFUNDED`: Giải quyết khiếu nại chấp thuận hoàn tiền cho Buyer.
 
-### 2.1. Sơ đồ trạng thái Mermaid
+### 2.1. Sơ đồ Mermaid `OrderStateMachine`
 
 ```mermaid
 stateDiagram-v2
-    [*] --> SUBMITTED: Bidder nộp hồ sơ, phong tỏa tiền từ ví khả dụng (BR-07, BR-10)
-
-    SUBMITTED --> REFUNDED: Hoàn tiền trong 3 ngày LV (Không trúng / Từ chối thay đổi niêm yết / Không đủ điều kiện) (BR-11, BR-12)
-    SUBMITTED --> REFUNDED: Hoàn tiền ngay khi phiên bị hủy (BR-34, DECISION-12)
+    [*] --> AWAITING_PAYMENT: Tự động tạo khi phiên ENDED_SOLD hoặc Buy It Now
     
-    SUBMITTED --> CONVERTED_TO_DEPOSIT: Người trúng đấu giá được xác định (BR-13)
+    AWAITING_PAYMENT --> PAID: Buyer thanh toán thành công qua số dư Ví
+    AWAITING_PAYMENT --> CANCELLED_UNPAID: Quá hạn 72 giờ (phạt 1 gậy bùng hàng)
     
-    SUBMITTED --> FORFEITED: Mất cọc do vi phạm (Không tham dự / Rút giá / Hủy thanh toán) (BR-14)
-
-    CONVERTED_TO_DEPOSIT --> TRANSFERRED_TO_SELLER: Chuyển cọc cho Seller trong 3 ngày LV kể từ kết thúc phiên (BR-13, BR-30)
+    PAID --> SHIPPED: Seller cập nhật mã vận đơn (tracking_number)
+    SHIPPED --> DELIVERED: Buyer xác nhận đã nhận hàng / Auto-delivered sau 7 ngày
     
-    FORFEITED --> TRANSFERRED_TO_SELLER: Chuyển tiền phạt cọc cho Seller (BR-14, BR-30)
-
+    DELIVERED --> COMPLETED: Không có khiếu nại sau 3 ngày -> Giải ngân cho Seller (trừ 5% phí)
+    
+    SHIPPED --> DISPUTED: Buyer mở khiếu nại hàng lỗi / không nhận được hàng
+    DELIVERED --> DISPUTED: Buyer mở khiếu nại trong hạn 3 ngày
+    
+    DISPUTED --> COMPLETED: Admin phán quyết Seller thắng -> Giải ngân
+    DISPUTED --> REFUNDED: Admin phán quyết Buyer thắng -> Hoàn tiền ví Buyer
+    
+    CANCELLED_UNPAID --> [*]
+    COMPLETED --> [*]
     REFUNDED --> [*]
-    TRANSFERRED_TO_SELLER --> [*]
 ```
-
-### 2.2. Bảng định nghĩa Enum & Ma trận chuyển trạng thái tiền đặt trước
-
-| Enum (`VARCHAR(30)`) | Nhãn tiếng Việt | Trạng thái tiếp theo có thể | Sự kiện kích hoạt | Tác nhân (Trigger) | Mã BR liên quan |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| `SUBMITTED` | Đã nộp (Phong tỏa) | `REFUNDED`, `CONVERTED_TO_DEPOSIT`, `FORFEITED` | Nộp hồ sơ đăng ký tham gia | Bidder | BR-07, BR-10 |
-| `REFUNDED` | Đã hoàn trả | *(Trạng thái cuối)* | Hoàn trả tiền vào ví khả dụng | **Scheduler** / Admin | BR-11, BR-12, BR-34 |
-| `CONVERTED_TO_DEPOSIT` | Chuyển thành cọc | `TRANSFERRED_TO_SELLER` | Xác định trúng đấu giá chính thức | Hệ thống / Scheduler | BR-13, BR-25 |
-| `FORFEITED` | Bị giữ (Mất cọc) | `TRANSFERRED_TO_SELLER` | Vi phạm quy chế / Hủy thanh toán | Hệ thống / Admin | BR-14, BR-17, BR-27 |
-| `TRANSFERRED_TO_SELLER` | Đã chuyển cho Seller | *(Trạng thái cuối)* | Chuyển tiền từ ví ký quỹ sang ví Seller | **Scheduler** / Admin | BR-13, BR-14, BR-30 |
 
 ---
 
-## 3. MÁY TRẠNG THÁI THANH TOÁN KẾT QUẢ TRÚNG (`SettlementStateMachine`)
+## 3. MÁY TRẠNG THÁI GIAO DỊCH VÍ (`WalletTransactionStateMachine`)
 
-Quản lý chu trình thanh toán nghĩa vụ tài chính của người trúng đấu giá (SRS BR-25, BR-26, BR-27).
-
-### 3.1. Sơ đồ trạng thái Mermaid
-
-```mermaid
-stateDiagram-v2
-    [*] --> WAITING_FOR_PAYMENT: Sinh bản ghi settlement khi có người trúng (BR-25)
-
-    WAITING_FOR_PAYMENT --> PAID: Thanh toán đủ tiền còn lại từ ví trong hạn (BR-26)
-    WAITING_FOR_PAYMENT --> CANCELED_BY_BUYER: Người trúng chủ động bấm từ chối / hủy (BR-27)
-    WAITING_FOR_PAYMENT --> EXPIRED: Hết hạn thanh toán cấu hình (mặc định 15 phút) (BR-26, BR-27)
-
-    PAID --> [*]
-    CANCELED_BY_BUYER --> [*]
-    EXPIRED --> [*]
-```
-
-### 3.2. Bảng định nghĩa Enum & Ma trận Settlement
-
-| Enum (`VARCHAR(30)`) | Nhãn tiếng Việt | Trạng thái tiếp theo | Sự kiện kích hoạt | Tác nhân | Mã BR |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| `WAITING_FOR_PAYMENT` | Chờ thanh toán | `PAID`, `CANCELED_BY_BUYER`, `EXPIRED` | Xác định người trúng đấu giá | Hệ thống | BR-25, BR-26 |
-| `PAID` | Đã thanh toán | *(Trạng thái cuối)* | Trừ tiền thành công từ ví người trúng | Bidder | BR-26 |
-| `CANCELED_BY_BUYER` | Người trúng hủy | *(Trạng thái cuối)* | Người trúng chủ động từ chối kết quả | Bidder | BR-27, BR-14 |
-| `EXPIRED` | Quá hạn thanh toán | *(Trạng thái cuối)* | Đồng hồ đếm ngược thanh toán về 0 | **Scheduler** | BR-26, BR-27 |
+Bảng `transactions` là nhật ký bất biến (Append-only) ghi nhận biến động số dư ví:
+- `TOPUP`: Nạp tiền vào ví người dùng (tăng `available_balance`).
+- `WITHDRAW`: Rút tiền từ ví về tài khoản ngân hàng (giảm `available_balance`).
+- `PAYMENT`: Thanh toán tiền đơn hàng trúng đấu giá (giảm ví Buyer, chuyển tiền vào ví bảo chứng).
+- `PAYOUT`: Giải ngân tiền bán hàng (cộng vào ví Seller sau khi trừ phí).
+- `SERVICE_FEE`: Thu phí hoa hồng sàn 5% (cộng vào ví `SYSTEM_REVENUE`).
+- `REFUND`: Hoàn tiền đơn hàng bị hủy hoặc khiếu nại (cộng lại ví Buyer).
 
 ---
 
-## 4. MÁY TRẠNG THÁI HỒ SƠ ĐĂNG KÝ THAM GIA (`RegistrationStateMachine`)
+## 4. MÁY TRẠNG THÁI KHIẾU NẠI (`ComplaintStateMachine`)
 
-Quản lý hồ sơ thẩm định tư cách người tham gia đấu giá của từng phiên (SRS BR-04, BR-05, BR-06).
-
-### 4.1. Sơ đồ trạng thái Mermaid
-
-```mermaid
-stateDiagram-v2
-    [*] --> PENDING_REVIEW: Bidder nộp phiếu và chứng từ (FR-BI-01, BR-05)
-
-    PENDING_REVIEW --> VALID: Đủ điều kiện, cấp mã ẩn danh duy nhất (BR-05, BR-31)
-    PENDING_REVIEW --> REJECTED: Vi phạm BR-04, BR-06 hoặc thiếu chứng từ (BR-05)
-
-    VALID --> WITHDRAWN: Tự rút và nhận lại tiền do thay đổi niêm yết (BR-11)
-    VALID --> DISQUALIFIED: Bị truất quyền do vi phạm quy chế hoặc rút giá (BR-14, BR-17, BR-22)
-
-    VALID --> ATTENDED: Đã vào phòng và tham gia trả giá/chấp nhận giá (BR-14)
-
-    REJECTED --> [*]
-    WITHDRAWN --> [*]
-    DISQUALIFIED --> [*]
-    ATTENDED --> [*]
-```
-
-### 4.2. Bảng định nghĩa Enum & Ma trận Registration
-
-| Enum (`VARCHAR(30)`) | Nhãn tiếng Việt | Trạng thái tiếp theo | Sự kiện kích hoạt | Tác nhân | Mã BR |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| `PENDING_REVIEW` | Chờ xét duyệt | `VALID`, `REJECTED` | Nộp hồ sơ và phong tỏa tiền cọc | Bidder | FR-BI-01, BR-05 |
-| `VALID` | Hợp lệ (Đã duyệt) | `WITHDRAWN`, `DISQUALIFIED`, `ATTENDED` | Admin duyệt hồ sơ trước mở phiên 1 ngày | Admin / Hệ thống | BR-05, BR-31 |
-| `REJECTED` | Bị từ chối | *(Trạng thái cuối)* | Không đáp ứng điều kiện pháp lý | Admin | BR-04, BR-05 |
-| `WITHDRAWN` | Đã rút đăng ký | *(Trạng thái cuối)* | Từ chối tiếp tục khi có thay đổi niêm yết | Bidder | BR-11 |
-| `DISQUALIFIED` | Bị truất quyền | *(Trạng thái cuối)* | Rút lại giá, thông đồng, gian lận | Hệ thống / Admin | BR-14, BR-17, BR-22 |
-| `ATTENDED` | Đã tham dự phiên | *(Trạng thái cuối)* | Điểm danh / gửi lệnh hợp lệ trong phiên | Hệ thống | BR-14 |
-
----
-
-## 5. MÁY TRẠNG THÁI HỒ SƠ NGƯỜI BÁN (`SellerProfileStateMachine`)
-
-Quản lý quy trình đăng ký và xét duyệt nâng cấp tài khoản Seller (FR-SE-01, FR-AD-01).
-
-### 5.1. Sơ đồ trạng thái Mermaid
+Vòng đời khiếu nại trong bảng `complaints`:
+- `PENDING`: Người mua gửi khiếu nại kèm chứng cứ hình ảnh.
+- `UNDER_REVIEW`: Admin đang tiếp nhận và đối chất 2 bên.
+- `RESOLVED`: Khiếu nại được giải quyết (hoàn tiền hoặc giải ngân).
+- `REJECTED`: Admin bác bỏ khiếu nại do không đủ chứng cứ.
 
 ```mermaid
 stateDiagram-v2
-    [*] --> PENDING: User gửi hồ sơ đăng ký làm người bán (FR-SE-01)
-
-    PENDING --> APPROVED: Admin thẩm định và chấp thuận hồ sơ (FR-AD-01)
-    PENDING --> REJECTED: Admin từ chối kèm lý do thẩm định (FR-AD-01)
-
-    REJECTED --> PENDING: User cập nhật, hoàn thiện hồ sơ và gửi lại (DECISION-13)
-
-    APPROVED --> [*]
-```
-
-### 5.2. Bảng định nghĩa Enum & Ma trận SellerProfile
-
-| Enum (`VARCHAR(30)`) | Nhãn tiếng Việt | Trạng thái tiếp theo | Sự kiện kích hoạt | Tác nhân | Mã SRS |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| `PENDING` | Chờ xét duyệt | `APPROVED`, `REJECTED` | Gửi đơn đăng ký đối tác người bán | User | FR-SE-01 |
-| `APPROVED` | Đã phê duyệt | *(Có quyền đăng tài sản)* | Admin xác nhận hồ sơ đầy đủ pháp lý | Admin | FR-AD-01 |
-| `REJECTED` | Bị từ chối | `PENDING` | Admin từ chối do thiếu giấy tờ/năng lực | Admin | FR-AD-01, DECISION-13 |
-
----
-
-## 6. MÁY TRẠNG THÁI TIẾP NHẬN & XỬ LÝ KHIẾU NẠI (`ComplaintStateMachine`)
-
-Quản lý khiếu nại của người tham gia đấu giá (SRS BR-35, UC-08).
-
-### 6.1. Sơ đồ trạng thái Mermaid
-
-```mermaid
-stateDiagram-v2
-    [*] --> NEW: User gửi đơn khiếu nại kèm chứng cứ (BR-35, UC-08)
-
-    NEW --> PROCESSING: Admin tiếp nhận và bắt đầu thụ lý kiểm tra (FR-AD-08)
-    
-    PROCESSING --> RESOLVED: Khiếu nại có căn cứ, Admin xử lý & bồi hoàn/ghi nhận (BR-35)
-    PROCESSING --> REJECTED: Khiếu nại sai hoặc không đủ căn cứ chứng minh (BR-35)
-
+    [*] --> PENDING: Buyer gửi đơn khiếu nại
+    PENDING --> UNDER_REVIEW: Admin bắt đầu thụ lý hồ sơ
+    UNDER_REVIEW --> RESOLVED: Admin đưa ra quyết định xử lý
+    UNDER_REVIEW --> REJECTED: Khiếu nại vô căn cứ
     RESOLVED --> [*]
     REJECTED --> [*]
 ```
 
-### 6.2. Bảng định nghĩa Enum & Ma trận Complaint
-
-| Enum (`VARCHAR(30)`) | Nhãn tiếng Việt | Trạng thái tiếp theo | Sự kiện kích hoạt | Tác nhân | Mã SRS / BR |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| `NEW` | Mới tiếp nhận | `PROCESSING` | Người dùng gửi đơn khiếu nại | User | BR-35, UC-08 |
-| `PROCESSING` | Đang xử lý | `RESOLVED`, `REJECTED` | Admin mở hồ sơ khiếu nại kiểm tra | Admin | FR-AD-08 |
-| `RESOLVED` | Đã xử lý | *(Trạng thái cuối)* | Admin giải quyết thỏa đáng, phản hồi | Admin | BR-35 |
-| `REJECTED` | Bị từ chối | *(Trạng thái cuối)* | Bác bỏ khiếu nại kèm lý do | Admin | BR-35 |
-
 ---
 
-## 7. ĐIỂM CẦN LƯU Ý KHI HIỆN THỰC HÓA CODE
+## 5. MÁY TRẠNG THÁI NGƯỜI DÙNG (`UserStatusStateMachine`)
 
-1. **Khóa logic trạng thái (Thread-safe & Concurrency):**
-   - Sự kiện chuyển từ `IN_PROGRESS` $\rightarrow$ `WAITING_FOR_PAYMENT` hoặc `FAILED` phải sử dụng cơ chế Khóa bi quan (`Pessimistic Write Lock`) hoặc Khóa lạc quan (`@Version`) trên thực thể `auctions` để tránh xung đột giữa bộ đếm thời gian của Scheduler và lệnh chấp nhận giá thời gian thực từ Bidder.
-2. **Nguyên tắc phân định quyền hạn:**
-   - Client Web tuyệt đối không bao giờ được gửi chuỗi trạng thái (`status`) lên Backend. Mọi API chỉ nhận sự kiện nghiệp vụ (ví dụ: `POST /api/auctions/{id}/bids`, `POST /api/settlements/{id}/pay`). Backend Service kiểm tra điều kiện hiện tại, thực thi và chuyển trạng thái nội bộ.
+Vòng đời trạng thái người dùng trong bảng `users`:
+- `ACTIVE`: Tài khoản hoạt động bình thường, được quyền mua và bán.
+- `RESTRICTED_BIDDING`: Tích lũy 3 gậy bùng hàng (`unpaid_strikes_count >= 3`), bị cấm tham gia đặt giá trong 30 ngày.
+- `BANNED`: Vi phạm nghiêm trọng gian lận hoặc lừa đảo, bị Admin khóa vĩnh viễn.
+
+```mermaid
+stateDiagram-v2
+    [*] --> ACTIVE: Đăng ký tài khoản thành công
+    ACTIVE --> RESTRICTED_BIDDING: Bùng hàng đủ 3 lần (3 Unpaid Item Strikes)
+    RESTRICTED_BIDDING --> ACTIVE: Hết thời hạn kỷ luật 30 ngày / Admin gỡ gậy
+    ACTIVE --> BANNED: Admin cưỡng chế khóa do gian lận
+    RESTRICTED_BIDDING --> BANNED: Tiếp tục vi phạm chính sách sàn
+    BANNED --> [*]
+```

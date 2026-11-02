@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/main :: layout(~{::title}, ~{::content})}">
+<head>
+    <title>Ví Cá Nhân & Biến Động Số Dư - Sàn Đấu Giá</title>
+</head>
+<body>
+<div th:fragment="content" class="py-3">
+    <!-- Wallet Balance Header -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-6">
+            <div class="card bg-primary text-white border-0 shadow-sm rounded-3 p-4 h-100">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="fs-6 text-white-50"><i class="bi bi-wallet2 me-1"></i> Số Dư Khả Dụng</span>
+                    <span class="badge bg-light text-primary fw-bold">Ví Nội Bộ</span>
+                </div>
+                <h2 class="display-6 fw-bold mb-3" th:text="${T(com.auction.common.util.MoneyUtil).formatVnd(balance)}">0 ₫</h2>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-warning fw-bold px-3" data-bs-toggle="modal" data-bs-target="#topupModal">
+                        <i class="bi bi-plus-circle me-1"></i> Nạp Tiền
+                    </button>
+                    <button class="btn btn-outline-light px-3" data-bs-toggle="modal" data-bs-target="#withdrawModal">
+                        <i class="bi bi-arrow-up-right-circle me-1"></i> Rút Tiền
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card bg-white border-0 shadow-sm rounded-3 p-4 h-100">
+                <h5 class="fw-bold text-dark mb-3"><i class="bi bi-shield-check text-success me-2"></i>Chính Sách Bảo Chứng Escrow</h5>
+                <ul class="text-muted small ps-3 mb-0">
+                    <li class="mb-2">Tiền thanh toán đơn hàng được bảo chứng an toàn, chỉ giải ngân cho Seller khi bạn xác nhận đã nhận hàng.</li>
+                    <li class="mb-2">Bạn có thể nạp tiền bất kỳ lúc nào để sẵn sàng thanh toán khi chiến thắng phiên đấu giá.</li>
+                    <li>Mọi giao dịch biến động số dư đều được mã hóa và lưu trữ bất biến (Append-only Ledger).</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transaction History Table -->
+    <div class="card bg-white border-0 shadow-sm rounded-3">
+        <div class="card-header bg-white py-3 border-bottom">
+            <h5 class="fw-bold mb-0 text-dark"><i class="bi bi-clock-history me-2"></i>Lịch Sử Giao Dịch</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4">Mã GD</th>
+                            <th>Loại Giao Dịch</th>
+                            <th>Mô Tả</th>
+                            <th>Biến Động</th>
+                            <th>Số Dư Sau</th>
+                            <th class="pe-4">Thời Gian</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${#lists.isEmpty(transactions)}">
+                            <td colspan="6" class="text-center py-4 text-muted">Chưa có giao dịch nào được ghi nhận.</td>
+                        </tr>
+                        <tr th:each="tx : ${transactions}">
+                            <td class="ps-4 fw-bold text-muted small" th:text="${'#TX' + tx.id}">#TX1</td>
+                            <td>
+                                <span th:if="${tx.transactionType.name() == 'TOPUP'}" class="badge bg-success">Nạp tiền</span>
+                                <span th:if="${tx.transactionType.name() == 'WITHDRAW'}" class="badge bg-secondary">Rút tiền</span>
+                                <span th:if="${tx.transactionType.name() == 'PAYMENT'}" class="badge bg-danger">Thanh toán</span>
+                                <span th:if="${tx.transactionType.name() == 'PAYOUT'}" class="badge bg-primary">Nhận tiền bán</span>
+                                <span th:if="${tx.transactionType.name() == 'SERVICE_FEE'}" class="badge bg-warning text-dark">Phí sàn</span>
+                                <span th:if="${tx.transactionType.name() == 'REFUND'}" class="badge bg-info text-dark">Hoàn tiền</span>
+                            </td>
+                            <td th:text="${tx.description}" class="small">Mô tả giao dịch</td>
+                            <td>
+                                <span th:class="${tx.balanceAfter >= tx.balanceBefore ? 'text-success fw-bold' : 'text-danger fw-bold'}"
+                                      th:text="${(tx.balanceAfter >= tx.balanceBefore ? '+' : '-') + T(com.auction.common.util.MoneyUtil).formatVnd(tx.amount)}">
+                                    +100.000 ₫
+                                </span>
+                            </td>
+                            <td class="fw-semibold text-dark" th:text="${T(com.auction.common.util.MoneyUtil).formatVnd(tx.balanceAfter)}">100.000 ₫</td>
+                            <td class="pe-4 text-muted small" th:text="${T(com.auction.common.util.DateTimeUtil).formatDateTime(tx.createdAt)}">01/01/2026</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Topup -->
+    <div class="modal fade" id="topupModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form th:action="@{/wallet/topup}" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title fw-bold"><i class="bi bi-plus-circle text-warning me-2"></i>Nạp Tiền Vào Ví</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Số tiền muốn nạp (VNĐ)</label>
+                            <input type="number" class="form-control form-control-lg" name="amount" min="10000" step="10000" required placeholder="Tối thiểu 10.000 VNĐ">
+                        </div>
+                        <div class="d-flex gap-2 mb-2">
+                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="document.querySelector('[name=amount]').value=100000">100.000đ</button>
+                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="document.querySelector('[name=amount]').value=500000">500.000đ</button>
+                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="document.querySelector('[name=amount]').value=2000000">2.000.000đ</button>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-warning fw-bold px-4">Xác Nhận Nạp</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Withdraw -->
+    <div class="modal fade" id="withdrawModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form th:action="@{/wallet/withdraw}" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title fw-bold"><i class="bi bi-arrow-up-right-circle text-primary me-2"></i>Rút Tiền Về Ngân Hàng</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Số tiền muốn rút (VNĐ)</label>
+                            <input type="number" class="form-control form-control-lg" name="amount" min="10000" step="10000" required placeholder="Nhập số tiền cần rút">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Thông tin tài khoản nhận tiền</label>
+                            <input type="text" class="form-control" name="bankAccount" required placeholder="Tên ngân hàng - Số tài khoản - Tên chủ thẻ">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-primary fw-bold px-4">Xác Nhận Rút</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+

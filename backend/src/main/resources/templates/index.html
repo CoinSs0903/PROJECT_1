@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/main :: layout(~{::title}, ~{::content})}">
+<head>
+    <title>Sàn Đấu Giá Trực Tuyến - Trang Chủ</title>
+</head>
+<body>
+<div th:fragment="content">
+    <!-- Hero Banner -->
+    <div class="p-5 mb-4 bg-primary text-white rounded-3 shadow-sm">
+        <div class="container-fluid py-4">
+            <h1 class="display-5 fw-bold">Sàn Đấu Giá Trực Tuyến Tự Động</h1>
+            <p class="col-md-8 fs-5">Tham gia đấu giá thông minh với cơ chế <strong>Proxy Bidding</strong>: Hệ thống tự động trả giá thay bạn để luôn dẫn đầu với chi phí tối ưu nhất!</p>
+            <div class="d-flex gap-3">
+                <a class="btn btn-warning btn-lg fw-bold px-4" th:href="@{/items}"><i class="bi bi-tag-fill me-1"></i> Xem Món Hàng</a>
+                <a class="btn btn-outline-light btn-lg px-4" th:href="@{/items/new}"><i class="bi bi-plus-circle me-1"></i> Đăng Bán Hàng</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats & Feature Highlights -->
+    <div class="row g-4 mb-4 text-center">
+        <div class="col-md-3">
+            <div class="card h-100 p-3 border-0 shadow-sm bg-white">
+                <div class="fs-1 text-primary mb-2"><i class="bi bi-robot"></i></div>
+                <h5 class="fw-bold">Proxy Bidding</h5>
+                <p class="text-muted small">Cài đặt mức giá trần tối đa một lần, hệ thống tự động nhảy bước giá cho bạn.</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100 p-3 border-0 shadow-sm bg-white">
+                <div class="fs-1 text-success mb-2"><i class="bi bi-shield-lock-fill"></i></div>
+                <h5 class="fw-bold">Giá Sàn Bảo Lưu</h5>
+                <p class="text-muted small">Bảo vệ quyền lợi người bán: Chỉ bán khi giá trần đạt ngưỡng kỳ vọng.</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100 p-3 border-0 shadow-sm bg-white">
+                <div class="fs-1 text-warning mb-2"><i class="bi bi-lightning-charge-fill"></i></div>
+                <h5 class="fw-bold">Mua Ngay Buy It Now</h5>
+                <p class="text-muted small">Sở hữu ngay món hàng yêu thích mà không cần chờ hết giờ đếm ngược.</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100 p-3 border-0 shadow-sm bg-white">
+                <div class="fs-1 text-danger mb-2"><i class="bi bi-wallet2"></i></div>
+                <h5 class="fw-bold">Ví Bảo Chứng</h5>
+                <p class="text-muted small">Thanh toán an toàn, bảo vệ người mua đến khi nhận hàng thành công.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Live & Upcoming Auctions Section -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="fw-bold text-dark mb-0"><i class="bi bi-fire text-danger me-2"></i>Phiên Đấu Giá Nổi Bật</h4>
+        <a th:href="@{/items}" class="text-decoration-none fw-semibold">Xem tất cả <i class="bi bi-arrow-right"></i></a>
+    </div>
+
+    <div class="row g-4" id="auctionList">
+        <div class="col-12 text-center py-5 bg-white rounded-3 shadow-sm">
+            <i class="bi bi-inbox fs-1 text-muted"></i>
+            <p class="text-muted mt-2">Đang tải danh sách các phiên đấu giá sôi nổi...</p>
+            <a th:href="@{/items/new}" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i>Đăng món hàng mới ngay</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+

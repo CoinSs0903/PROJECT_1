@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/main :: layout(~{::title}, ~{::content})}">
+<head>
+    <title>Món Hàng Của Tôi - Sàn Đấu Giá</title>
+</head>
+<body>
+<div th:fragment="content" class="py-3">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold mb-1"><i class="bi bi-box-seam text-primary me-2"></i>Món Hàng Của Tôi</h3>
+            <p class="text-muted small mb-0">Quản lý kho hàng của bạn để sẵn sàng tạo các phiên đấu giá trực tuyến</p>
+        </div>
+        <a th:href="@{/items/new}" class="btn btn-primary fw-bold shadow-sm">
+            <i class="bi bi-plus-lg me-1"></i> Thêm Món Hàng Mới
+        </a>
+    </div>
+
+    <!-- Empty state -->
+    <div th:if="${#lists.isEmpty(items)}" class="text-center py-5 bg-white rounded-3 shadow-sm">
+        <i class="bi bi-inbox fs-1 text-muted d-block mb-3"></i>
+        <h5 class="fw-bold text-dark">Bạn chưa đăng món hàng nào</h5>
+        <p class="text-muted small">Hãy thêm món hàng đầu tiên để bắt đầu trải nghiệm đấu giá tự động!</p>
+        <a th:href="@{/items/new}" class="btn btn-warning fw-bold px-4">
+            <i class="bi bi-plus-circle me-1"></i> Đăng Hàng Ngay
+        </a>
+    </div>
+
+    <!-- Items Grid -->
+    <div th:unless="${#lists.isEmpty(items)}" class="row g-4">
+        <div class="col-md-4" th:each="item : ${items}">
+            <div class="card h-100 border-0 shadow-sm auction-card overflow-hidden">
+                <img th:src="${item.mainImageUrl}" class="card-img-top" style="height: 200px; object-fit: cover;" alt="Hình ảnh sản phẩm">
+                <div class="card-body d-flex flex-direction-column justify-content-between">
+                    <div>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="badge bg-secondary" th:text="${item.categoryName}">Danh mục</span>
+                            <span class="badge bg-info text-dark" th:text="${item.itemCondition.displayName}">Tình trạng</span>
+                        </div>
+                        <h5 class="card-title fw-bold text-truncate" th:text="${item.title}">Tên món hàng</h5>
+                        <p class="card-text text-muted small text-truncate" th:text="${item.description}">Mô tả ngắn...</p>
+                    </div>
+                    <div class="pt-3 border-top mt-3 d-flex justify-content-between align-items-center">
+                        <small class="text-muted" th:text="${T(com.auction.common.util.DateTimeUtil).formatDate(item.createdAt)}">01/01/2026</small>
+                        <a th:href="@{'/items/' + ${item.id}}" class="btn btn-outline-primary btn-sm fw-semibold">
+                            Chi tiết <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+

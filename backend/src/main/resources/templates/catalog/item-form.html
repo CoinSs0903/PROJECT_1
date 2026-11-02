@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/main :: layout(~{::title}, ~{::content})}">
+<head>
+    <title>Thêm Món Hàng Mới - Sàn Đấu Giá</title>
+</head>
+<body>
+<div th:fragment="content" class="row justify-content-center py-3">
+    <div class="col-md-8">
+        <div class="card shadow-sm border-0 rounded-3">
+            <div class="card-header bg-white py-3 border-bottom">
+                <h5 class="fw-bold mb-0 text-primary"><i class="bi bi-plus-square-fill me-2"></i>Đăng Món Hàng Mới</h5>
+            </div>
+            <div class="card-body p-4">
+                <form th:action="@{/items}" th:object="${itemRequest}" method="post">
+                    <div class="row g-3">
+                        <div class="col-md-12">
+                            <label class="form-label fw-semibold">Tên món hàng / Tiêu đề <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control form-control-lg" th:field="*{title}" placeholder="vd: Đồng hồ Omega Seamaster Automatic chính hãng" required>
+                            <div class="text-danger small" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Danh mục hàng hóa <span class="text-danger">*</span></label>
+                            <select class="form-select" th:field="*{categoryId}" required>
+                                <option value="">-- Chọn danh mục phù hợp --</option>
+                                <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}">Danh mục</option>
+                            </select>
+                            <div class="text-danger small" th:if="${#fields.hasErrors('categoryId')}" th:errors="*{categoryId}"></div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Tình trạng sản phẩm <span class="text-danger">*</span></label>
+                            <select class="form-select" th:field="*{itemCondition}" required>
+                                <option th:each="cond : ${T(com.auction.catalog.entity.ItemCondition).values()}" 
+                                        th:value="${cond}" 
+                                        th:text="${cond.displayName}">USED</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label class="form-label fw-semibold">Đường dẫn ảnh chính (URL ảnh) <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-image"></i></span>
+                                <input type="url" class="form-control" th:field="*{mainImageUrl}" placeholder="https://example.com/item-image.jpg">
+                            </div>
+                            <small class="text-muted">Nhập liên kết ảnh trực tiếp để hiển thị trên giao diện phiên đấu giá.</small>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label class="form-label fw-semibold">Mô tả chi tiết sản phẩm</label>
+                            <textarea class="form-control" rows="5" th:field="*{description}" placeholder="Mô tả chi tiết về xuất xứ, ngoại hình, bảo hành, các phụ kiện đi kèm..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2 mt-4">
+                        <a th:href="@{/items}" class="btn btn-outline-secondary">Hủy bỏ</a>
+                        <button type="submit" class="btn btn-primary fw-bold px-4">
+                            <i class="bi bi-check2-circle me-1"></i> Lưu Món Hàng
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+

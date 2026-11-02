@@ -114,6 +114,10 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<mainClass>com.auction.AuctionApplication</mainClass>
+					<fork>false</fork>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
