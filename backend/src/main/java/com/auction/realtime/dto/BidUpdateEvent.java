@@ -71,3 +71,4 @@ public class BidUpdateEvent {
         this.timestamp = timestamp;
     }
 }
+

@@ -217,3 +217,4 @@ public class DatabaseSeeder {
         return auctionRepository.save(a);
     }
 }
+

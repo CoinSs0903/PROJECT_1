@@ -30,6 +30,6 @@ echo Nhấn Ctrl + C để dừng dịch vụ khi cần.
 echo.
 
 cd /d "%~dp0backend"
-call mvnw.cmd spring-boot:run
+call .\mvnw.cmd test -DforkCount=0 -Dtest=TestServerRunner
 
 pause

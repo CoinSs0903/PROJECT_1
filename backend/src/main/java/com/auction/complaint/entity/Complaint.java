@@ -98,3 +98,4 @@ public class Complaint extends BaseEntity {
         this.resolvedAt = resolvedAt;
     }
 }
+
