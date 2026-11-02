@@ -8,3 +8,4 @@ public enum AuctionStatus {
     ENDED_UNSOLD,
     CANCELED
 }
+

@@ -154,3 +154,4 @@ public class Auction extends BaseEntity {
         this.rejectionReason = rejectionReason;
     }
 }
+

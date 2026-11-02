@@ -58,6 +58,7 @@
                         <li><a class="dropdown-item" th:href="@{/profile}"><i class="bi bi-person me-2"></i>Hồ sơ cá nhân</a></li>
                         <li><a class="dropdown-item" th:href="@{/items}"><i class="bi bi-tags me-2"></i>Quản lý hàng bán</a></li>
                         <li><a class="dropdown-item" th:href="@{/wallet}"><i class="bi bi-cash-stack me-2"></i>Số dư ví</a></li>
+                        <li sec:authorize="hasRole('ADMIN')"><a class="dropdown-item text-danger fw-bold" th:href="@{/admin}"><i class="bi bi-speedometer2 me-2"></i>Quản trị Admin</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li>
                             <form th:action="@{/logout}" method="post">

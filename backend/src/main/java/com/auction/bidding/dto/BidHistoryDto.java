@@ -45,3 +45,4 @@ public class BidHistoryDto {
         return isAutoBid;
     }
 }
+

@@ -14,13 +14,16 @@ import com.auction.catalog.repository.ItemRepository;
 import com.auction.common.util.MoneyUtil;
 import com.auction.common.util.StringUtil;
 import com.auction.notification.facade.NotificationFacade;
+import com.auction.realtime.service.AuctionRealtimeNotifier;
 import com.auction.user.entity.User;
 import com.auction.user.entity.UserStatus;
 import com.auction.user.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -33,6 +36,7 @@ public class ProxyBiddingService {
     private final UserRepository userRepository;
     private final NotificationFacade notificationFacade;
     private final AuditLogFacade auditLogFacade;
+    private AuctionRealtimeNotifier realtimeNotifier;
 
     public ProxyBiddingService(
             AuctionRepository auctionRepository,
@@ -49,6 +53,17 @@ public class ProxyBiddingService {
         this.userRepository = userRepository;
         this.notificationFacade = notificationFacade;
         this.auditLogFacade = auditLogFacade;
+    }
+
+    @Autowired(required = false)
+    public void setRealtimeNotifier(AuctionRealtimeNotifier realtimeNotifier) {
+        this.realtimeNotifier = realtimeNotifier;
+    }
+
+    private void notifyRealtime(Long auctionId, long price, int bidCount, String maskedUser, boolean reserveMet) {
+        if (realtimeNotifier != null) {
+            realtimeNotifier.broadcastBidUpdate(auctionId, price, bidCount, maskedUser, reserveMet);
+        }
     }
 
     @Transactional
@@ -123,8 +138,11 @@ public class ProxyBiddingService {
             auditLogFacade.log("BID_PLACED", bidderId, "Auction", auctionId,
                     "Đặt giá đầu tiên: " + newPrice + ", giá tối đa: " + maxAmount);
 
+            String maskedName = StringUtil.maskUsername(bidder.getUsername());
+            notifyRealtime(auctionId, newPrice, auction.getBidCount(), maskedName, auction.isReserveMet());
+
             return BidResultDto.success("Đặt giá thành công! Bạn đang dẫn đầu phiên đấu giá.",
-                    newPrice, auction.getBidCount(), StringUtil.maskUsername(bidder.getUsername()),
+                    newPrice, auction.getBidCount(), maskedName,
                     auction.isReserveMet(), true);
         }
 
@@ -157,8 +175,11 @@ public class ProxyBiddingService {
             auditLogFacade.log("BID_UPDATED", bidderId, "Auction", auctionId,
                     "Nâng mức giá tối đa lên " + maxAmount);
 
+            String maskedName = StringUtil.maskUsername(bidder.getUsername());
+            notifyRealtime(auctionId, auction.getCurrentPrice(), auction.getBidCount(), maskedName, auction.isReserveMet());
+
             return BidResultDto.success("Cập nhật mức giá tối đa thành công! Bạn tiếp tục dẫn đầu.",
-                    auction.getCurrentPrice(), auction.getBidCount(), StringUtil.maskUsername(bidder.getUsername()),
+                    auction.getCurrentPrice(), auction.getBidCount(), maskedName,
                     auction.isReserveMet(), true);
         }
 
@@ -203,8 +224,11 @@ public class ProxyBiddingService {
             auditLogFacade.log("BID_PLACED", bidderId, "Auction", auctionId,
                     "Vượt người dẫn đầu. Giá mới: " + newPrice + ", giá tối đa: " + maxAmount);
 
+            String maskedName = StringUtil.maskUsername(bidder.getUsername());
+            notifyRealtime(auctionId, newPrice, auction.getBidCount(), maskedName, auction.isReserveMet());
+
             return BidResultDto.success("Đặt giá thành công! Bạn đang dẫn đầu phiên đấu giá.",
-                    newPrice, auction.getBidCount(), StringUtil.maskUsername(bidder.getUsername()),
+                    newPrice, auction.getBidCount(), maskedName,
                     auction.isReserveMet(), true);
         } else {
             // Existing leader wins automatically!
@@ -246,6 +270,8 @@ public class ProxyBiddingService {
                     .map(u -> StringUtil.maskUsername(u.getUsername()))
                     .orElse("***");
 
+            notifyRealtime(auctionId, newPrice, auction.getBidCount(), leaderMasked, auction.isReserveMet());
+
             // Notify bidder they are outbid immediately
             notificationFacade.sendNotification(bidderId, "OUTBID", "Giá của bạn đã bị vượt ngay lập tức!",
                     "Giá tối đa bạn đặt (" + MoneyUtil.formatVnd(maxAmount)
@@ -260,5 +286,68 @@ public class ProxyBiddingService {
                     newPrice, auction.getBidCount(), leaderMasked,
                     auction.isReserveMet(), false);
         }
+    }
+
+    /**
+     * Rút lại giá (Bid Retraction - Day 18 / BR-14)
+     * Người mua chỉ được rút lại giá nếu còn hơn 12 tiếng trước khi phiên kết thúc
+     */
+    @Transactional
+    public void retractBid(Long auctionId, Long bidderId, String reason) {
+        Auction auction = auctionRepository.findByIdForUpdate(auctionId)
+                .orElseThrow(() -> new IllegalArgumentException("Phiên đấu giá không tồn tại: " + auctionId));
+
+        if (auction.getStatus() != AuctionStatus.ACTIVE) {
+            throw new IllegalStateException("Chỉ có thể rút giá trong phiên đang hoạt động.");
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+        if (auction.getEndTime().isBefore(now.plusHours(12))) {
+            throw new IllegalStateException("Không thể rút giá khi phiên đấu giá còn ít hơn 12 giờ (Quy tắc BR-14).");
+        }
+
+        ProxyBid bidderProxy = proxyBidRepository.findByAuctionIdAndBidderId(auctionId, bidderId)
+                .orElseThrow(() -> new IllegalArgumentException("Bạn chưa từng đặt giá trong phiên này."));
+
+        proxyBidRepository.delete(bidderProxy);
+
+        // Tính toán lại người dẫn đầu và mức giá hiện tại
+        List<ProxyBid> remaining = proxyBidRepository.findByAuctionIdOrderByMaxAmountDesc(auctionId);
+        if (remaining.isEmpty()) {
+            auction.setHighestBidderId(null);
+            auction.setCurrentPrice(auction.getStartingPrice());
+            auction.setReserveMet(false);
+        } else {
+            ProxyBid topLeader = remaining.get(0);
+            auction.setHighestBidderId(topLeader.getBidderId());
+
+            long newPrice = auction.getStartingPrice();
+            if (remaining.size() > 1) {
+                ProxyBid secondLeader = remaining.get(1);
+                newPrice = Math.min(topLeader.getMaxAmount(), secondLeader.getMaxAmount() + auction.getStepPrice());
+            }
+
+            if (auction.getReservePrice() != null && topLeader.getMaxAmount() >= auction.getReservePrice()) {
+                auction.setReserveMet(true);
+                if (newPrice < auction.getReservePrice()) {
+                    newPrice = Math.min(topLeader.getMaxAmount(), auction.getReservePrice());
+                }
+            } else {
+                auction.setReserveMet(false);
+            }
+            auction.setCurrentPrice(newPrice);
+        }
+
+        auction.setBidCount(Math.max(0, auction.getBidCount() - 1));
+        auctionRepository.save(auction);
+
+        String leaderMasked = auction.getHighestBidderId() != null
+                ? userRepository.findById(auction.getHighestBidderId()).map(u -> StringUtil.maskUsername(u.getUsername())).orElse("***")
+                : "Chưa có";
+
+        notifyRealtime(auctionId, auction.getCurrentPrice(), auction.getBidCount(), leaderMasked, auction.isReserveMet());
+
+        auditLogFacade.log("BID_RETRACTED", bidderId, "Auction", auctionId,
+                "Người dùng #" + bidderId + " rút lại giá với lý do: " + reason);
     }
 }

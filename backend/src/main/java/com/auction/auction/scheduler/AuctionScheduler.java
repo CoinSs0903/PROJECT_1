@@ -9,7 +9,9 @@ import com.auction.catalog.repository.ItemRepository;
 import com.auction.common.util.MoneyUtil;
 import com.auction.notification.facade.NotificationFacade;
 import com.auction.order.entity.Order;
+import com.auction.order.entity.OrderStatus;
 import com.auction.order.entity.PurchaseType;
+import com.auction.order.repository.OrderRepository;
 import com.auction.order.service.OrderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +29,7 @@ public class AuctionScheduler {
 
     private final AuctionRepository auctionRepository;
     private final ItemRepository itemRepository;
+    private final OrderRepository orderRepository;
     private final OrderService orderService;
     private final NotificationFacade notificationFacade;
     private final AuditLogFacade auditLogFacade;
@@ -37,8 +40,19 @@ public class AuctionScheduler {
             OrderService orderService,
             NotificationFacade notificationFacade,
             AuditLogFacade auditLogFacade) {
+        this(auctionRepository, itemRepository, null, orderService, notificationFacade, auditLogFacade);
+    }
+
+    public AuctionScheduler(
+            AuctionRepository auctionRepository,
+            ItemRepository itemRepository,
+            OrderRepository orderRepository,
+            OrderService orderService,
+            NotificationFacade notificationFacade,
+            AuditLogFacade auditLogFacade) {
         this.auctionRepository = auctionRepository;
         this.itemRepository = itemRepository;
+        this.orderRepository = orderRepository;
         this.orderService = orderService;
         this.notificationFacade = notificationFacade;
         this.auditLogFacade = auditLogFacade;
@@ -53,6 +67,21 @@ public class AuctionScheduler {
                 closeSingleAuction(a.getId(), now);
             } catch (Exception e) {
                 log.error("Lỗi khi tự động kết thúc phiên đấu giá #{}: {}", a.getId(), e.getMessage());
+            }
+        }
+    }
+
+    @Scheduled(fixedDelay = 10000)
+    public void processExpiredOrders() {
+        if (orderRepository == null) return;
+        LocalDateTime now = LocalDateTime.now();
+        List<Order> expiredOrders = orderRepository.findByStatusAndPaymentDeadlineBefore(OrderStatus.AWAITING_PAYMENT, now);
+        for (Order o : expiredOrders) {
+            try {
+                orderService.cancelUnpaidOrder(o.getId());
+                log.info("Đơn hàng #{} đã quá hạn thanh toán 72h. Huỷ đơn và phạt strike.", o.getId());
+            } catch (Exception e) {
+                log.error("Lỗi khi huỷ đơn quá hạn #{}: {}", o.getId(), e.getMessage());
             }
         }
     }
@@ -158,3 +187,4 @@ public class AuctionScheduler {
         log.info("Phiên đấu giá #{} đã chuyển sang ACTIVE.", auction.getId());
     }
 }
+

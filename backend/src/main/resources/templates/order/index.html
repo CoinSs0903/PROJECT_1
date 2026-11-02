@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/main :: layout(~{::title}, ~{::content})}">
+<head>
+    <title>Quản Lý Đơn Hàng - Sàn Đấu Giá</title>
+</head>
+<body>
+<div th:fragment="content" class="py-3">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold mb-1"><i class="bi bi-receipt text-primary me-2"></i>Đơn Hàng Của Tôi</h3>
+            <p class="text-muted small mb-0">Theo dõi tiến độ thanh toán, vận chuyển và nhận hàng bảo chứng an toàn</p>
+        </div>
+        <a th:href="@{/wallet}" class="btn btn-outline-primary fw-semibold">
+            <i class="bi bi-wallet2 me-1"></i> Quản Lý Ví Tiền
+        </a>
+    </div>
+
+    <!-- Tabs: Purchases vs Sales -->
+    <div class="card border-0 shadow-sm rounded-3">
+        <div class="card-header bg-white border-bottom">
+            <ul class="nav nav-tabs card-header-tabs" id="orderTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link fw-bold" th:classappend="${activeTab == 'purchases'} ? 'active' : ''" id="purchases-tab" data-bs-toggle="tab" data-bs-target="#purchases" type="button" role="tab">
+                        <i class="bi bi-bag-check me-1"></i> Đơn Mua Của Tôi (<span th:text="${#lists.size(purchases)}">0</span>)
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link fw-bold" th:classappend="${activeTab == 'sales'} ? 'active' : ''" id="sales-tab" data-bs-toggle="tab" data-bs-target="#sales" type="button" role="tab">
+                        <i class="bi bi-shop me-1"></i> Đơn Bán Của Tôi (<span th:text="${#lists.size(sales)}">0</span>)
+                    </button>
+                </li>
+            </ul>
+        </div>
+        <div class="card-body p-4 tab-content" id="orderTabsContent">
+            <!-- Tab 1: Purchases -->
+            <div class="tab-pane fade" th:classappend="${activeTab == 'purchases'} ? 'show active' : ''" id="purchases" role="tabpanel">
+                <div th:if="${#lists.isEmpty(purchases)}" class="text-center py-5 text-muted">
+                    <i class="bi bi-inbox fs-1 d-block mb-3"></i>
+                    <h5 class="fw-bold text-dark">Bạn chưa có đơn mua nào</h5>
+                    <p class="small">Hãy tham gia đấu giá hoặc Mua ngay để sở hữu những sản phẩm yêu thích!</p>
+                    <a th:href="@{/auctions}" class="btn btn-primary btn-sm fw-bold px-3">Xem các phiên đấu giá</a>
+                </div>
+                <div th:unless="${#lists.isEmpty(purchases)}" class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                        <tr>
+                            <th>Mã đơn</th>
+                            <th>Sản phẩm</th>
+                            <th>Người bán</th>
+                            <th>Tổng tiền</th>
+                            <th>Trạng thái</th>
+                            <th>Hạn thanh toán</th>
+                            <th class="text-end">Thao tác</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="o : ${purchases}">
+                            <td><strong th:text="${'#' + o.id}">#1</strong></td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <img th:if="${o.itemImageUrl != null}" th:src="${o.itemImageUrl}" class="rounded me-2" style="width: 45px; height: 45px; object-fit: cover;" alt="item">
+                                    <div>
+                                        <div class="fw-semibold text-truncate" style="max-width: 250px;" th:text="${o.itemTitle}">Tên sản phẩm</div>
+                                        <small class="badge bg-light text-dark border" th:text="${o.purchaseType}">AUCTION_WIN</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td th:text="${o.sellerUsername}">seller</td>
+                            <td class="fw-bold text-danger" th:text="${T(com.auction.common.util.MoneyUtil).formatVnd(o.totalAmount)}">1.000.000 ₫</td>
+                            <td>
+                                <span class="badge" th:classappend="${o.status.name() == 'PAID' or o.status.name() == 'COMPLETED'} ? 'bg-success' : (${o.status.name() == 'AWAITING_PAYMENT'} ? 'bg-warning text-dark' : (${o.status.name() == 'SHIPPED'} ? 'bg-info text-dark' : 'bg-danger'))"
+                                      th:text="${o.status}">AWAITING_PAYMENT</span>
+                            </td>
+                            <td>
+                                <small th:if="${o.status.name() == 'AWAITING_PAYMENT'}" class="text-danger fw-semibold" th:text="${T(com.auction.common.util.DateTimeUtil).formatDateTime(o.paymentDeadline)}">01/01/2026</small>
+                                <small th:unless="${o.status.name() == 'AWAITING_PAYMENT'}" class="text-muted">-</small>
+                            </td>
+                            <td class="text-end">
+                                <a th:href="@{'/orders/' + ${o.id}}" class="btn btn-primary btn-sm fw-semibold">
+                                    Chi tiết <i class="bi bi-arrow-right"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tab 2: Sales -->
+            <div class="tab-pane fade" th:classappend="${activeTab == 'sales'} ? 'show active' : ''" id="sales" role="tabpanel">
+                <div th:if="${#lists.isEmpty(sales)}" class="text-center py-5 text-muted">
+                    <i class="bi bi-inbox fs-1 d-block mb-3"></i>
+                    <h5 class="fw-bold text-dark">Bạn chưa có đơn bán nào</h5>
+                    <p class="small">Hãy đăng bán món hàng để tiếp cận hàng nghìn người mua tiềm năng!</p>
+                    <a th:href="@{/items/new}" class="btn btn-warning btn-sm fw-bold px-3">Đăng bán ngay</a>
+                </div>
+                <div th:unless="${#lists.isEmpty(sales)}" class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                        <tr>
+                            <th>Mã đơn</th>
+                            <th>Sản phẩm</th>
+                            <th>Người mua</th>
+                            <th>Tiền nhận (sau phí 5%)</th>
+                            <th>Trạng thái</th>
+                            <th>Mã vận đơn</th>
+                            <th class="text-end">Thao tác</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="o : ${sales}">
+                            <td><strong th:text="${'#' + o.id}">#1</strong></td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <img th:if="${o.itemImageUrl != null}" th:src="${o.itemImageUrl}" class="rounded me-2" style="width: 45px; height: 45px; object-fit: cover;" alt="item">
+                                    <div>
+                                        <div class="fw-semibold text-truncate" style="max-width: 250px;" th:text="${o.itemTitle}">Tên sản phẩm</div>
+                                        <small class="badge bg-light text-dark border" th:text="${o.purchaseType}">AUCTION_WIN</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td th:text="${o.buyerUsername}">buyer</td>
+                            <td class="fw-bold text-success" th:text="${T(com.auction.common.util.MoneyUtil).formatVnd(o.finalPrice * 95 / 100)}">950.000 ₫</td>
+                            <td>
+                                <span class="badge" th:classappend="${o.status.name() == 'PAID' or o.status.name() == 'COMPLETED'} ? 'bg-success' : (${o.status.name() == 'AWAITING_PAYMENT'} ? 'bg-warning text-dark' : (${o.status.name() == 'SHIPPED'} ? 'bg-info text-dark' : 'bg-danger'))"
+                                      th:text="${o.status}">AWAITING_PAYMENT</span>
+                            </td>
+                            <td>
+                                <span th:if="${o.trackingNumber != null}" class="badge bg-light text-dark border" th:text="${o.trackingNumber}">VN123</span>
+                                <span th:unless="${o.trackingNumber != null}" class="text-muted small">Chưa gửi</span>
+                            </td>
+                            <td class="text-end">
+                                <a th:href="@{'/orders/' + ${o.id}}" class="btn btn-outline-primary btn-sm fw-semibold">
+                                    Quản lý <i class="bi bi-arrow-right"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

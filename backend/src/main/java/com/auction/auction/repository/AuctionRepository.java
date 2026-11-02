@@ -30,3 +30,4 @@ public interface AuctionRepository extends JpaRepository<Auction, Long> {
     @Query("SELECT a FROM Auction a WHERE a.status = 'SCHEDULED' AND a.startTime <= :now")
     List<Auction> findDueScheduledAuctions(@Param("now") LocalDateTime now);
 }
+

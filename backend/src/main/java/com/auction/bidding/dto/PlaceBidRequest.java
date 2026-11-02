@@ -23,3 +23,4 @@ public class PlaceBidRequest {
         this.maxAmount = maxAmount;
     }
 }
+

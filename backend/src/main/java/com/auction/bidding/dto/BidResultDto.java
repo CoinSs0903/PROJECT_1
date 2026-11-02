@@ -85,3 +85,4 @@ public class BidResultDto {
         this.leading = leading;
     }
 }
+

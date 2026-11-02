@@ -38,11 +38,11 @@
                 </div>
 
                 <!-- Price & Status Box -->
-                <div class="p-3 mb-4 rounded-3 bg-light border">
+                <div class="p-3 mb-4 rounded-3 bg-light border" id="priceStatusBox">
                     <div class="row align-items-center">
                         <div class="col-sm-7">
                             <span class="text-muted small d-block">Giá hiện tại</span>
-                            <h2 class="fw-bold text-danger mb-0" th:text="${T(com.auction.common.util.MoneyUtil).formatVnd(auction.currentPrice)}">100.000 ₫</h2>
+                            <h2 class="fw-bold text-danger mb-0" id="currentPriceDisplay" th:text="${T(com.auction.common.util.MoneyUtil).formatVnd(auction.currentPrice)}">100.000 ₫</h2>
                             <small class="text-muted">
                                 Khởi điểm: <span th:text="${T(com.auction.common.util.MoneyUtil).formatVnd(auction.startingPrice)}">0 ₫</span> |
                                 Bước giá: +<span th:text="${T(com.auction.common.util.MoneyUtil).formatVnd(auction.stepPrice)}">10.000 ₫</span>
@@ -50,18 +50,18 @@
                         </div>
                         <div class="col-sm-5 text-sm-end mt-2 mt-sm-0">
                             <!-- Reserve status badge: NEVER reveal secret reserve price -->
-                            <div th:if="${auction.reserveMet}" class="badge bg-success-subtle text-success border border-success px-2 py-1 mb-1">
+                            <div th:if="${auction.reserveMet}" id="reserveMetBadge" class="badge bg-success-subtle text-success border border-success px-2 py-1 mb-1">
                                 <i class="bi bi-shield-check me-1"></i>Đã đạt giá sàn
                             </div>
-                            <div th:unless="${auction.reserveMet}" class="badge bg-secondary-subtle text-muted border px-2 py-1 mb-1">
+                            <div th:unless="${auction.reserveMet}" id="reserveNotMetBadge" class="badge bg-secondary-subtle text-muted border px-2 py-1 mb-1">
                                 <i class="bi bi-shield-lock me-1"></i>Chưa đạt giá sàn
                             </div>
                             <div class="small text-muted">
                                 <i class="bi bi-person-fill"></i> Người dẫn đầu:
-                                <strong class="text-dark" th:text="${auction.highestBidderMasked != null ? auction.highestBidderMasked : 'Chưa có'}">u***1</strong>
+                                <strong class="text-dark" id="highestBidderDisplay" th:text="${auction.highestBidderMasked != null ? auction.highestBidderMasked : 'Chưa có'}">u***1</strong>
                             </div>
                             <div class="small text-muted">
-                                <i class="bi bi-hammer"></i> Lượt trả: <strong class="text-dark" th:text="${auction.bidCount}">0</strong>
+                                <i class="bi bi-hammer"></i> Lượt trả: <strong class="text-dark" id="bidCountDisplay" th:text="${auction.bidCount}">0</strong>
                             </div>
                         </div>
                     </div>
@@ -262,5 +262,65 @@ document.addEventListener("DOMContentLoaded", function() {
     setInterval(updateTimer, 1000);
 });
 </script>
+<!-- WebSocket STOMP for Realtime Bidding (Days 21 & 22) -->
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+<script th:inline="javascript">
+document.addEventListener("DOMContentLoaded", function() {
+    const auctionId = /*[[${auction.id}]]*/ 0;
+    if (!auctionId) return;
+
+    try {
+        const socket = new SockJS('/ws-auction');
+        const stompClient = Stomp.over(socket);
+        stompClient.debug = null; // suppress debug log in console
+
+        stompClient.connect({}, function() {
+            stompClient.subscribe('/topic/auctions/' + auctionId, function(message) {
+                const data = JSON.parse(message.body);
+                if (!data) return;
+
+                // Update current price
+                const priceEl = document.getElementById("currentPriceDisplay");
+                if (priceEl && data.currentPrice) {
+                    priceEl.innerText = new Intl.NumberFormat('vi-VN').format(data.currentPrice) + " ₫";
+                    // Visual pulse animation
+                    const box = document.getElementById("priceStatusBox");
+                    if (box) {
+                        box.classList.add("border-success", "bg-success", "bg-opacity-10");
+                        setTimeout(() => {
+                            box.classList.remove("border-success", "bg-success", "bg-opacity-10");
+                        }, 1200);
+                    }
+                }
+
+                // Update bid count
+                const countEl = document.getElementById("bidCountDisplay");
+                if (countEl && data.bidCount) {
+                    countEl.innerText = data.bidCount;
+                }
+
+                // Update leader
+                const leaderEl = document.getElementById("highestBidderDisplay");
+                if (leaderEl && data.highestBidderMasked) {
+                    leaderEl.innerText = data.highestBidderMasked;
+                }
+
+                // Update reserve badge
+                if (data.isReserveMet) {
+                    const notMet = document.getElementById("reserveNotMetBadge");
+                    if (notMet) {
+                        notMet.className = "badge bg-success-subtle text-success border border-success px-2 py-1 mb-1";
+                        notMet.innerHTML = '<i class="bi bi-shield-check me-1"></i>Đã đạt giá sàn';
+                    }
+                }
+            });
+        });
+    } catch (e) {
+        console.warn("WebSocket could not connect:", e);
+    }
+});
+</script>
 </body>
 </html>
+

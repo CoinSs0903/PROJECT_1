@@ -345,3 +345,4 @@ public class AuctionService {
         return auctionRepository.findById(id);
     }
 }
+

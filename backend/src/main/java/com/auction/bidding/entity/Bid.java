@@ -76,3 +76,4 @@ public class Bid {
         this.bidTime = bidTime;
     }
 }
+

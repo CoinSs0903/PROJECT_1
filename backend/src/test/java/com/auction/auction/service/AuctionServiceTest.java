@@ -534,6 +534,7 @@ class AuctionServiceTest {
     static class InMemoryOrderRepo implements OrderRepository {
         Map<Long, Order> store = new ConcurrentHashMap<>();
         AtomicLong seq = new AtomicLong(1);
+        @Override public Optional<Order> findByIdForUpdate(Long id) { return Optional.ofNullable(store.get(id)); }
         @Override public Optional<Order> findByAuctionId(Long auctionId) {
             return store.values().stream().filter(o -> o.getAuctionId().equals(auctionId)).findFirst();
         }
@@ -576,3 +577,4 @@ class AuctionServiceTest {
         @Override public Page<Order> findAll(Pageable pageable) { return null; }
     }
 }
+

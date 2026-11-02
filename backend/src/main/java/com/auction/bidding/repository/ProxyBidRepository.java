@@ -13,3 +13,4 @@ public interface ProxyBidRepository extends JpaRepository<ProxyBid, Long> {
     Optional<ProxyBid> findTopByAuctionIdOrderByMaxAmountDescCreatedAtAsc(Long auctionId);
     List<ProxyBid> findByAuctionIdOrderByMaxAmountDesc(Long auctionId);
 }
+

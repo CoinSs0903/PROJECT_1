@@ -475,3 +475,4 @@ class ProxyBiddingServiceTest {
         @Override public Page<User> findAll(Pageable pageable) { return null; }
     }
 }
+

@@ -4,3 +4,4 @@ public enum PurchaseType {
     AUCTION_WIN,
     BUY_IT_NOW
 }
+

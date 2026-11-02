@@ -60,5 +60,40 @@ public class BiddingController {
         }
         return "redirect:/auctions/" + id;
     }
+
+    @PostMapping("/auctions/{id}/retract")
+    public String retractBidWeb(
+            @PathVariable("id") Long id,
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestParam(value = "reason", required = false, defaultValue = "Nhầm lẫn số tiền") String reason,
+            RedirectAttributes redirectAttributes) {
+        if (userDetails == null) {
+            return "redirect:/login";
+        }
+        try {
+            proxyBiddingService.retractBid(id, userDetails.getId(), reason);
+            redirectAttributes.addFlashAttribute("successMessage", "Bạn đã rút lại giá thành công.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        }
+        return "redirect:/auctions/" + id;
+    }
+
+    @PostMapping("/api/auctions/{id}/retract")
+    @ResponseBody
+    public ResponseEntity<ApiResponse<Void>> retractBidApi(
+            @PathVariable("id") Long id,
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestParam(value = "reason", required = false, defaultValue = "Nhầm lẫn số tiền") String reason) {
+        if (userDetails == null) {
+            return ResponseEntity.status(401).body(ApiResponse.error(ErrorCode.UNAUTHORIZED, "Bạn cần đăng nhập"));
+        }
+        try {
+            proxyBiddingService.retractBid(id, userDetails.getId(), reason);
+            return ResponseEntity.ok(ApiResponse.ok("Rút giá thành công", null));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(ApiResponse.error(ErrorCode.BAD_REQUEST, e.getMessage()));
+        }
+    }
 }
 

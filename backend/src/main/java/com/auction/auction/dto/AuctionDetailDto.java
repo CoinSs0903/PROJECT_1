@@ -248,3 +248,4 @@ public class AuctionDetailDto {
         this.bidHistory = bidHistory;
     }
 }
+

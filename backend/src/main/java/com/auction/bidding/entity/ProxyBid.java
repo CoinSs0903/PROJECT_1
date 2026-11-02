@@ -44,3 +44,4 @@ public class ProxyBid extends BaseEntity {
         this.maxAmount = maxAmount;
     }
 }
+

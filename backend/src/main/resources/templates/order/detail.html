@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/main :: layout(~{::title}, ~{::content})}">
+<head>
+    <title th:text="${'Chi Tiết Đơn Hàng #' + order.id}">Chi Tiết Đơn Hàng</title>
+</head>
+<body>
+<div th:fragment="content" class="py-3">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <div class="d-flex align-items-center gap-2">
+                <a th:href="@{/orders}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i> Quay lại</a>
+                <h3 class="fw-bold mb-0" th:text="${'Đơn Hàng #' + order.id}">Đơn Hàng #1</h3>
+            </div>
+            <span class="text-muted small">Thời gian tạo: <span th:text="${T(com.auction.common.util.DateTimeUtil).formatDateTime(order.createdAt)}">01/01/2026</span></span>
+        </div>
+        <div>
+            <span class="badge fs-6 px-3 py-2"
+                  th:classappend="${order.status.name() == 'PAID' or order.status.name() == 'COMPLETED'} ? 'bg-success' : (${order.status.name() == 'AWAITING_PAYMENT'} ? 'bg-warning text-dark' : (${order.status.name() == 'SHIPPED'} ? 'bg-info text-dark' : 'bg-danger'))"
+                  th:text="${order.status}">AWAITING_PAYMENT</span>
+        </div>
+    </div>
+
+    <!-- Stepper Tracker -->
+    <div class="card border-0 shadow-sm rounded-3 p-4 mb-4 bg-white">
+        <div class="row text-center g-3">
+            <div class="col-3">
+                <div class="p-2 rounded" th:classappend="${order.status.name() != 'CANCELLED_UNPAID'} ? 'bg-primary text-white' : 'bg-light text-muted'">
+                    <i class="bi bi-check-circle-fill fs-4 d-block"></i>
+                    <span class="small fw-bold">1. Đặt Hàng</span>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="p-2 rounded" th:classappend="${order.status.name() == 'PAID' or order.status.name() == 'SHIPPED' or order.status.name() == 'COMPLETED'} ? 'bg-primary text-white' : (${order.status.name() == 'AWAITING_PAYMENT'} ? 'bg-warning text-dark border border-warning' : 'bg-light text-muted')">
+                    <i class="bi bi-wallet2 fs-4 d-block"></i>
+                    <span class="small fw-bold">2. Thanh Toán</span>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="p-2 rounded" th:classappend="${order.status.name() == 'SHIPPED' or order.status.name() == 'COMPLETED'} ? 'bg-primary text-white' : 'bg-light text-muted'">
+                    <i class="bi bi-truck fs-4 d-block"></i>
+                    <span class="small fw-bold">3. Vận Chuyển</span>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="p-2 rounded" th:classappend="${order.status.name() == 'COMPLETED'} ? 'bg-success text-white' : 'bg-light text-muted'">
+                    <i class="bi bi-gift fs-4 d-block"></i>
+                    <span class="small fw-bold">4. Hoàn Tất</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Left: Product & Shipping Details -->
+        <div class="col-lg-7">
+            <!-- Product Box -->
+            <div class="card border-0 shadow-sm rounded-3 p-4 mb-4">
+                <h5 class="fw-bold mb-3 border-bottom pb-2">Thông Tin Sản Phẩm</h5>
+                <div class="d-flex align-items-center mb-3">
+                    <img th:if="${order.itemImageUrl != null}" th:src="${order.itemImageUrl}" class="rounded me-3" style="width: 80px; height: 80px; object-fit: cover;" alt="item">
+                    <div>
+                        <h5 class="fw-bold mb-1" th:text="${order.itemTitle}">Tên sản phẩm</h5>
+                        <div class="small text-muted mb-1">
+                            Hình thức mua: <strong class="badge bg-secondary" th:text="${order.purchaseType}">AUCTION_WIN</strong>
+                        </div>
+                        <a th:href="@{'/auctions/' + ${order.auctionId}}" class="small text-primary text-decoration-none">
+                            Xem phiên đấu giá liên kết <i class="bi bi-box-arrow-up-right"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="border-top pt-3">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Giá chốt phiên:</span>
+                        <span class="fw-semibold" th:text="${T(com.auction.common.util.MoneyUtil).formatVnd(order.finalPrice)}">1.000.000 ₫</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Phí giao hàng:</span>
+                        <span class="fw-semibold" th:text="${T(com.auction.common.util.MoneyUtil).formatVnd(order.shippingFee)}">0 ₫</span>
+                    </div>
+                    <div class="d-flex justify-content-between pt-2 border-top">
+                        <span class="fw-bold">Tổng thanh toán:</span>
+                        <span class="fw-bold text-danger fs-5" th:text="${T(com.auction.common.util.MoneyUtil).formatVnd(order.totalAmount)}">1.000.000 ₫</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Shipping Info Box -->
+            <div class="card border-0 shadow-sm rounded-3 p-4">
+                <h5 class="fw-bold mb-3 border-bottom pb-2">Thông Tin Giao Nhận</h5>
+                <p class="mb-2"><strong>Người mua:</strong> <span th:text="${order.buyerUsername}">buyer</span></p>
+                <p class="mb-2"><strong>Người bán:</strong> <span th:text="${order.sellerUsername}">seller</span></p>
+                <p class="mb-2">
+                    <strong>Địa chỉ giao hàng:</strong>
+                    <span th:text="${order.shippingAddress != null ? order.shippingAddress : 'Chưa cập nhật'}">123 Đường ABC</span>
+                </p>
+                <p class="mb-0">
+                    <strong>Mã vận đơn (Tracking):</strong>
+                    <span th:if="${order.trackingNumber != null}" class="badge bg-primary fs-6" th:text="${order.trackingNumber}">VN123456789</span>
+                    <span th:unless="${order.trackingNumber != null}" class="text-muted small fst-italic">Người bán chưa cập nhật</span>
+                </p>
+            </div>
+        </div>
+
+        <!-- Right: Actions based on Role -->
+        <div class="col-lg-5">
+            <!-- 1. Buyer: Payment Action -->
+            <div th:if="${order.canPay}" class="card border-warning shadow-sm rounded-3 p-4 mb-4 bg-warning bg-opacity-10">
+                <h5 class="fw-bold text-dark mb-2"><i class="bi bi-wallet2 me-2"></i>Thanh Toán Đơn Hàng</h5>
+                <p class="small text-muted mb-3">
+                    Hạn thanh toán: <strong class="text-danger" th:text="${T(com.auction.common.util.DateTimeUtil).formatDateTime(order.paymentDeadline)}">01/01/2026</strong>.
+                    Sau thời gian này đơn hàng sẽ tự động bị huỷ và bạn sẽ bị phạt gậy bùng hàng.
+                </p>
+
+                <div class="p-3 mb-3 bg-white rounded-3 border">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span class="text-muted small">Số dư ví khả dụng:</span>
+                        <strong class="text-success" th:text="${T(com.auction.common.util.MoneyUtil).formatVnd(walletBalance)}">2.000.000 ₫</strong>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted small">Cần thanh toán:</span>
+                        <strong class="text-danger" th:text="${T(com.auction.common.util.MoneyUtil).formatVnd(order.totalAmount)}">1.000.000 ₫</strong>
+                    </div>
+                </div>
+
+                <div th:if="${walletBalance >= order.totalAmount}">
+                    <form th:action="@{'/orders/' + ${order.id} + '/pay'}" method="post">
+                        <div class="mb-3">
+                            <label class="form-label small fw-semibold">Địa chỉ nhận hàng <span class="text-danger">*</span></label>
+                            <textarea name="shippingAddress" class="form-control" rows="2" placeholder="Số nhà, tên đường, phường/xã, quận/huyện, tỉnh/thành..." required th:text="${order.shippingAddress}"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-warning w-100 fw-bold py-2 shadow-sm" onclick="return confirm('Bạn có chắc chắn muốn thanh toán đơn hàng này qua số dư ví không? Tiền sẽ được sàn giữ bảo chứng đến khi nhận hàng.');">
+                            <i class="bi bi-shield-check me-1"></i> Xác Nhận & Thanh Toán Ví
+                        </button>
+                    </form>
+                </div>
+                <div th:unless="${walletBalance >= order.totalAmount}">
+                    <div class="alert alert-danger py-2 small mb-3">
+                        <i class="bi bi-exclamation-triangle-fill me-1"></i> Số dư ví của bạn không đủ để thanh toán.
+                    </div>
+                    <a th:href="@{/wallet}" class="btn btn-primary w-100 fw-bold">
+                        <i class="bi bi-plus-circle me-1"></i> Nạp Thêm Tiền Vào Ví
+                    </a>
+                </div>
+            </div>
+
+            <!-- 2. Seller: Update Shipment Action -->
+            <div th:if="${order.canShip}" class="card border-primary shadow-sm rounded-3 p-4 mb-4">
+                <h5 class="fw-bold text-primary mb-2"><i class="bi bi-truck me-2"></i>Giao Hàng Cho Người Mua</h5>
+                <p class="small text-muted mb-3">Người mua đã thanh toán tiền vào hệ thống bảo chứng. Vui lòng đóng gói và cập nhật mã bưu phẩm.</p>
+                <form th:action="@{'/orders/' + ${order.id} + '/ship'}" method="post">
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Mã vận đơn bưu cục <span class="text-danger">*</span></label>
+                        <input type="text" name="trackingNumber" class="form-control" placeholder="Ví dụ: VNPOST-123456, GHTK-789..." required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 fw-bold">
+                        <i class="bi bi-send-check me-1"></i> Xác Nhận Đã Gửi Hàng
+                    </button>
+                </form>
+            </div>
+
+            <!-- 3. Buyer: Confirm Received Action -->
+            <div th:if="${order.canConfirmReceived}" class="card border-success shadow-sm rounded-3 p-4 mb-4 bg-success bg-opacity-10">
+                <h5 class="fw-bold text-success mb-2"><i class="bi bi-box-seam me-2"></i>Xác Nhận Đã Nhận Hàng</h5>
+                <p class="small text-muted mb-3">
+                    Nếu bạn đã kiểm tra và nhận được món hàng đúng như mô tả, hãy bấm nút dưới đây để hoàn tất đơn hàng và giải ngân tiền cho người bán.
+                </p>
+                <form th:action="@{'/orders/' + ${order.id} + '/confirm'}" method="post">
+                    <button type="submit" class="btn btn-success w-100 fw-bold py-2 shadow-sm" onclick="return confirm('Bạn xác nhận đã nhận được hàng nguyên vẹn và đồng ý giải ngân cho người bán?');">
+                        <i class="bi bi-check2-circle me-1"></i> Đã Nhận Hàng Thành Công
+                    </button>
+                </form>
+            </div>
+
+            <!-- 4. Seller: Relist Action if Cancelled Unpaid -->
+            <div th:if="${order.isSeller and order.status.name() == 'CANCELLED_UNPAID'}" class="card border-danger shadow-sm rounded-3 p-4 mb-4">
+                <h5 class="fw-bold text-danger mb-2"><i class="bi bi-arrow-repeat me-2"></i>Mở Bán Lại (Relist)</h5>
+                <p class="small text-muted mb-3">Người mua đã không thanh toán đơn hàng này. Bạn có thể mở bán lại sản phẩm chỉ với 1 click!</p>
+                <form th:action="@{'/auctions/' + ${order.auctionId} + '/relist'}" method="post">
+                    <button type="submit" class="btn btn-warning w-100 fw-bold">
+                        <i class="bi bi-arrow-clockwise me-1"></i> Mở Bán Lại (Relist) Ngay
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

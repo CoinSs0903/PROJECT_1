@@ -151,3 +151,4 @@ public class AuctionResponseDto {
         this.buyItNowAvailable = buyItNowAvailable;
     }
 }
+

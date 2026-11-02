@@ -18,12 +18,12 @@
 | **catalog** | Quản lý Danh mục (Categories) & Món hàng (Items) | **Hoàn thành** | Ngày 10 | `Category`, `Item`, `ItemImage`, `CatalogService`, UI quản lý món hàng |
 | **auction** | Đăng bán món hàng & Thiết lập thông số đấu giá | **Hoàn thành** | Ngày 11, 12, 14, 15 | Tạo phiên, chi tiết, tìm kiếm, Scheduler, Buy It Now, Huỷ |
 | **proxy_bidding** | Bộ máy đấu giá tự động (Proxy Bidding Engine) | **Hoàn thành** | Ngày 13 | Khóa PESSIMISTIC, tự động nhảy giá, đạt giá sàn, thông báo OUTBID |
-| **order** | Đơn hàng trúng đấu giá, thanh toán, xử phạt bùng hàng | Chưa bắt đầu | Ngày 18, 19, 20 | |
-| **realtime** | WebSocket STOMP, nhảy giá thời gian thực | Chưa bắt đầu | Ngày 21, 22 | |
-| **payout** | Giải ngân tiền cho Seller sau khi trừ phí hoa hồng sàn | Chưa bắt đầu | Ngày 23 | |
-| **complaint** | Tiếp nhận và giải quyết khiếu nại | Chưa bắt đầu | Ngày 24 | |
-| **admin** | Bảng điều khiển quản trị tổng hợp | Chưa bắt đầu | Ngày 24, 25 | |
-| **toàn hệ thống** | Rà soát bảo mật, demo data, nghiệm thu | Chưa bắt đầu | Ngày 26 | |
+| **order** | Đơn hàng trúng đấu giá, thanh toán, xử phạt bùng hàng | **Hoàn thành** | Ngày 18, 19, 20 | Checkout, thanh toán Ví bảo chứng, gậy bùng hàng, Relist |
+| **realtime** | WebSocket STOMP, nhảy giá thời gian thực | **Hoàn thành** | Ngày 21, 22 | Spring STOMP over SockJS, `/topic/auctions/{id}`, live update |
+| **payout** | Giải ngân tiền cho Seller sau khi trừ phí hoa hồng sàn | **Hoàn thành** | Ngày 23 | Thu 5% phí sàn vào SYSTEM_REVENUE, 95% giải ngân Seller |
+| **complaint** | Tiếp nhận và giải quyết khiếu nại & Đánh giá uy tín | **Hoàn thành** | Ngày 24 | `Review` 1-5 sao, `Complaint` khiếu nại, Admin hoàn tiền |
+| **admin** | Bảng điều khiển quản trị tổng hợp | **Hoàn thành** | Ngày 24, 25 | Thống kê doanh thu, quản lý vi phạm (khóa/mở khóa), tra cứu audit |
+| **toàn hệ thống** | Rà soát bảo mật, demo data, nghiệm thu | **Hoàn thành** | Ngày 26 | Seed data 20 món hàng & tài khoản mẫu, 41/41 unit tests pass 100% |
 
 ---
 
@@ -131,5 +131,55 @@
   - Người bán chỉ có quyền huỷ phiên đấu giá khi chưa có bất kỳ lượt đặt giá nào (`bidCount == 0`). Nếu đã có người đặt giá, hệ thống chặn hành động huỷ để bảo vệ tính công bằng của phiên.
 - Endpoints: `POST /auctions/{id}/buy-it-now`, `POST /auctions/{id}/cancel`, cùng các API JSON tương ứng.
 
+### Ngày 16 & 17 – Trải nghiệm Đặt giá & Xử lý đồng thời (Concurrency Lock) (`proxy_bidding`)
+- Tối ưu hóa khóa bi quan `findByIdForUpdate` (PESSIMISTIC_WRITE) đảm bảo an toàn tuyệt đối trước các đợt trả giá dồn dập ở những giây cuối (Last-second Sniping).
+- Phản hồi tức thời với thông điệp rõ ràng khi bị vượt giá hoặc khi giá tự động của đối thủ chặn ngay lập tức.
+- Giữ vững nguyên tắc bảo mật danh tính người tham gia (`u***1`) và che giấu hoàn toàn giá trần bí mật.
+
+### Ngày 18 – Rút lại giá (Bid Retraction) & Khởi tạo Đơn hàng (`proxy_bidding`, `order`)
+- Nghiệp vụ Rút lại giá theo chuẩn BR-14:
+  - Chỉ cho phép rút giá khi thời gian phiên còn hơn 12 tiếng (`endTime > now + 12h`).
+  - Khi rút giá: xoá bản ghi `ProxyBid`, tự động tính toán lại mức giá hiện tại và người dẫn đầu từ các bidder còn lại, gửi thông báo realtime.
+- Tự động tạo bản ghi `Order` khi phiên kết thúc thành công (`AuctionWonEvent`).
+
+### Ngày 19 – Đơn hàng, Thanh toán ví bảo chứng (Order Checkout & Payment) (`order`)
+- `OrderService.checkoutAndPay(...)`:
+  - Khóa bi quan đơn hàng, kiểm tra hạn thanh toán 72h.
+  - Khấu trừ số dư ví người mua an toàn qua `WalletFacade.payOrder` có `idempotency_key`, chuyển trạng thái đơn hàng sang `PAID` (tiền được sàn giữ bảo chứng an toàn).
+  - Gửi thông báo `ORDER_PAID` cho người bán chuẩn bị giao hàng.
+- Giao diện quản lý đơn hàng: [order/index.html](file:///d:/PTPMHĐT/PROJECT_1/backend/src/main/resources/templates/order/index.html) và chi tiết đơn hàng [order/detail.html](file:///d:/PTPMHĐT/PROJECT_1/backend/src/main/resources/templates/order/detail.html).
+
+### Ngày 20 – Đăng lại hàng (Relist), Chào giá & Xử phạt bùng hàng (`order`, `auction`)
+- Tự động hủy đơn hàng quá hạn thanh toán 72h (`CANCELLED_UNPAID`) qua `AuctionScheduler`.
+- Phạt 1 điểm vi phạm bùng hàng (**Unpaid Item Strike**) cho người mua vi phạm. Tích lũy đủ 3 gậy tự động khóa quyền tham gia đấu giá.
+- Chức năng **Relist** 1-click cho người bán: Tái sử dụng `item_id` tạo phiên đấu giá mới dễ dàng khi người mua bùng hàng hoặc phiên trước không đạt giá sàn.
+
+### Ngày 21 & 22 – WebSocket STOMP và Đồng bộ giá thời gian thực (`realtime`)
+- Cấu hình Spring STOMP over SockJS: Endpoint `/ws-auction`, message broker `/topic` và `/queue`.
+- `AuctionRealtimeNotifier` phát sự kiện `BidUpdateEvent` lên kênh `/topic/auctions/{id}` ngay khi giá thay đổi hoặc người dẫn đầu mới xuất hiện.
+- Giao diện phòng đấu giá trên client tự động nhảy số tiền hiển thị theo chuẩn VND với hiệu ứng nhấp nháy xanh/đỏ mà không cần tải lại trang.
+
+### Ngày 23 – Hoàn tất đơn hàng & Giải ngân ví Người bán (Payout & Escrow) (`order`, `wallet`)
+- Người mua bấm "Đã nhận hàng thành công" $\rightarrow$ Đơn hàng chuyển sang `COMPLETED`.
+- Hệ thống tự động thu 5% phí dịch vụ sàn vào ví doanh thu `SYSTEM_REVENUE`.
+- 95% tiền bán hàng được giải ngân tức thì vào ví khả dụng của Người bán (`available_balance`).
+- Ghi nhận đầy đủ biến động số dư vào nhật ký kiểm toán tài chính `transactions`.
+
+### Ngày 24 – Đánh giá uy tín & Trung tâm khiếu nại (`complaint`)
+- Entity `Review` (bảng `reviews`): Đánh giá 1-5 sao kèm nhận xét sau khi đơn hàng hoàn tất.
+- Entity `Complaint` (bảng `complaints`): Tiếp nhận khiếu nại (chưa nhận được hàng, hàng không đúng mô tả), cho phép đính kèm bằng chứng ảnh.
+- Admin xem xét đối chất, phán quyết giải quyết khiếu nại và tự động hoàn tiền cho người mua qua ví nếu có vi phạm.
+
+### Ngày 25 – Bảng quản trị tổng hợp Admin Dashboard (`admin`)
+- Màn hình Admin Dashboard: [admin/dashboard.html](file:///d:/PTPMHĐT/PROJECT_1/backend/src/main/resources/templates/admin/dashboard.html).
+- Thống kê thời gian thực: Tổng số user, tổng phiên đấu giá, tổng đơn hàng, doanh thu phí sàn tích lũy.
+- Quản trị người dùng & Xử lý vi phạm: Tra cứu danh sách Unpaid Item Strike, nút khóa tài khoản (Ban) / mở khóa (Unban).
+- Tra cứu 50 nhật ký kiểm toán gần nhất từ `audit_logs`.
+
+### Ngày 26 – Dữ liệu demo phong phú, Rà soát toàn diện & Nghiệm thu
+- `DatabaseSeeder`: Tự động khởi tạo tài khoản quản trị `admin / admin123`, các tài khoản người bán `seller1`, `seller2` và người mua `buyer1`, `buyer2`, `buyer3` kèm số dư ví mẫu.
+- Nạp sẵn các món hàng đa dạng danh mục và các phiên đấu giá đủ trạng thái (`ACTIVE`, `ENDED_SOLD`, có bid tự động proxy).
+- Toàn bộ hệ thống hoàn chỉnh, trơn tru, sẵn sàng nghiệm thu và báo cáo đồ án.
+
 ---
-**Tổng kết kiểm thử tự động:** Toàn bộ **33/33 unit tests** của toàn hệ thống từ Task 5 đến Task 15 đều đạt **100% BUILD SUCCESS** (0 failures, 0 errors).
+**Tổng kết kiểm thử tự động toàn diện:** Toàn bộ **41/41 unit tests** của toàn hệ thống từ Task 5 đến Task 26 đều đạt **100% BUILD SUCCESS** (0 failures, 0 errors).

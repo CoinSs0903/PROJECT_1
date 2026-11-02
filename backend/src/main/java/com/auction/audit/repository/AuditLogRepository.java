@@ -10,5 +10,6 @@ import java.util.List;
 public interface AuditLogRepository extends JpaRepository<AuditLog, Long> {
     List<AuditLog> findByUserIdOrderByCreatedAtDesc(Long userId);
     List<AuditLog> findByEntityNameAndEntityIdOrderByCreatedAtDesc(String entityName, Long entityId);
+    List<AuditLog> findTop50ByOrderByCreatedAtDesc();
 }
 
