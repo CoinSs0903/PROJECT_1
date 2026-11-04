@@ -18,6 +18,8 @@
             --portal-navy: #113255;
             --portal-navy-dark: #0b2440;
             --portal-blue-active: #1d4f73;
+            --portal-topbar-bg: #2b2e35;
+            --portal-brand-blue: #005088;
             --portal-bg: #f1f5f9;
             --portal-card-border: #e2e8f0;
             --portal-text-muted: #64748b;
@@ -32,33 +34,80 @@
             color: #1e293b;
         }
 
-        /* Top Navbar */
+        /* Top Navbar - Charcoal / Slate Theme */
         .portal-top-navbar {
-            background-color: var(--portal-navy) !important;
-            height: 52px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+            background-color: var(--portal-topbar-bg) !important;
+            height: 48px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
             z-index: 1040;
         }
 
+        .portal-top-navbar .btn-link {
+            color: #c2c7d0 !important;
+            transition: color 0.15s ease;
+        }
+
+        .portal-top-navbar .btn-link:hover {
+            color: #ffffff !important;
+        }
+
+        /* Blue Brand Box on Left */
+        .portal-brand-box {
+            background-color: var(--portal-brand-blue);
+            color: #ffffff !important;
+            height: 32px;
+            padding: 0 10px;
+            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.95rem;
+            letter-spacing: 0.3px;
+            transition: background-color 0.15s ease;
+        }
+
+        .portal-brand-box:hover {
+            background-color: #003e6b;
+            color: #ffffff !important;
+        }
+
+        .portal-brand-box svg {
+            flex-shrink: 0;
+        }
+
+        /* Red Notification Dot Badge */
+        .portal-notif-dot {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 7px;
+            height: 7px;
+            background-color: #ef4444;
+            border-radius: 50%;
+            border: 1px solid var(--portal-topbar-bg);
+        }
+
+        /* Circular Avatar Badge - Teal with Initials */
         .portal-avatar-circle {
-            width: 34px;
-            height: 34px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             background-color: #0d9488;
             color: #ffffff;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.82rem;
+            font-size: 0.8rem;
             font-weight: 700;
             text-transform: uppercase;
-            border: 2px solid rgba(255, 255, 255, 0.3);
+            letter-spacing: 0.5px;
             transition: transform 0.15s ease;
         }
 
         .portal-avatar-circle:hover {
-            transform: scale(1.08);
-            border-color: #ffffff;
+            transform: scale(1.06);
         }
 
         .dropdown-toggle-no-caret::after {

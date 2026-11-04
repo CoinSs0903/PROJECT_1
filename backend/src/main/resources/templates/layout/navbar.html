@@ -4,37 +4,41 @@
 </head>
 <body>
 <nav th:fragment="navbar" class="portal-top-navbar navbar navbar-expand navbar-dark px-3 sticky-top">
-    <!-- Left: Hamburger + Brand + Breadcrumbs -->
-    <div class="d-flex align-items-center flex-grow-1">
-        <!-- Hamburger Toggle Sidebar Button -->
-        <button id="sidebarToggleBtn" class="btn btn-link text-white p-1 me-2 text-decoration-none" type="button" title="Thu gọn / Mở rộng menu">
+    <!-- Left: Brand Blue Box + Hamburger + Breadcrumbs (Matching Image 1) -->
+    <div class="d-flex align-items-center flex-grow-1 min-w-0">
+        <!-- 1. Blue Brand Box (Like the blue box in Image 1) -->
+        <a th:href="@{/}" class="portal-brand-box me-2" title="Trang chủ">
+            <svg class="portal-brand-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 3C7.03 3 3 7.03 3 12C3 16.97 7.03 21 12 21C16.97 21 21 16.97 21 12" stroke="#67e8f9" stroke-width="2.2" stroke-linecap="round"/>
+                <path d="M12 7C9.24 7 7 9.24 7 12C7 14.76 9.24 17 12 17" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round"/>
+                <circle cx="12" cy="12" r="2" fill="#ffffff"/>
+            </svg>
+            <span class="portal-brand-text">Auction</span>
+        </a>
+
+        <!-- 2. Hamburger Menu Button (Right next to Blue Box) -->
+        <button id="sidebarToggleBtn" class="btn btn-link text-white-50 p-1 me-3 text-decoration-none hover-white" type="button" title="Thu gọn / Mở rộng menu">
             <i class="bi bi-list fs-4"></i>
         </button>
 
-        <!-- Brand Name -->
-        <a class="navbar-brand d-flex align-items-center fw-bold me-3 text-white text-decoration-none" th:href="@{/}">
-            <span class="portal-logo me-2"><i class="bi bi-hammer text-warning"></i></span>
-            <span class="portal-title fw-bold" style="letter-spacing: 0.5px;">AUCTION HOUSE</span>
-        </a>
-
-        <!-- Breadcrumb / Active Context -->
-        <div class="portal-breadcrumbs d-none d-md-flex align-items-center text-white-50 small border-start border-secondary ps-3 ms-1">
-            <span class="text-truncate" style="max-width: 260px;">HỆ THỐNG ĐẤU GIÁ TRỰC TUYẾN</span>
-            <i class="bi bi-chevron-right mx-2 text-white-50" style="font-size: 0.7rem;"></i>
-            <span class="text-white fw-semibold">Tổng quan</span>
+        <!-- 3. Breadcrumb / Course-like Header (Matching Image 1: MTH 103 13 25-26-1 > Overview) -->
+        <div class="portal-breadcrumbs d-flex align-items-center text-truncate small" style="font-size: 0.88rem;">
+            <span class="text-white-50 text-truncate" style="max-width: 280px; letter-spacing: 0.3px;">HỆ THỐNG ĐẤU GIÁ TRỰC TUYẾN</span>
+            <span class="mx-2 text-white-50" style="font-size: 0.8rem;">›</span>
+            <span class="text-white fw-semibold text-truncate">Tổng quan</span>
         </div>
     </div>
 
-    <!-- Right: Quick Tools + Notifications + User Avatar -->
+    <!-- Right: Quick Tools (?) + (:::) + (🔔 red dot) + (NG Teal Avatar Circle) -->
     <div class="d-flex align-items-center ms-auto gap-2">
-        <!-- Help icon (?) -->
-        <a th:href="@{/docs/SRS.md}" target="_blank" class="btn btn-link text-white-50 p-2 text-decoration-none hover-white" title="Trợ giúp & Quy chế">
+        <!-- 1. Help Icon (?) -->
+        <a th:href="@{/docs/SRS.md}" target="_blank" class="btn btn-link text-white-50 p-1 text-decoration-none hover-white" title="Trợ giúp & Quy chế">
             <i class="bi bi-question-circle fs-5"></i>
         </a>
 
-        <!-- Quick Apps Launcher (Grid Icon) -->
+        <!-- 2. Quick Apps Launcher Grid Icon (:::) -->
         <div class="dropdown">
-            <button class="btn btn-link text-white-50 p-2 text-decoration-none hover-white dropdown-toggle-no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Công cụ nhanh">
+            <button class="btn btn-link text-white-50 p-1 text-decoration-none hover-white dropdown-toggle-no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Công cụ nhanh">
                 <i class="bi bi-grid-3x3-gap fs-5"></i>
             </button>
             <div class="dropdown-menu dropdown-menu-end shadow p-3" style="width: 280px;">
@@ -80,13 +84,12 @@
             </div>
         </div>
 
-        <!-- Notification Bell -->
-        <div class="dropdown" sec:authorize="isAuthenticated()">
-            <button class="btn btn-link text-white-50 p-2 position-relative text-decoration-none hover-white dropdown-toggle-no-caret" id="notifDropdown" data-bs-toggle="dropdown" aria-expanded="false" title="Thông báo">
+        <!-- 3. Notification Bell with Red Dot Badge (Matching Image 1) -->
+        <div class="dropdown">
+            <button class="btn btn-link text-white-50 p-1 position-relative text-decoration-none hover-white dropdown-toggle-no-caret" id="notifDropdown" data-bs-toggle="dropdown" aria-expanded="false" title="Thông báo">
                 <i class="bi bi-bell fs-5"></i>
-                <span id="unreadNotifBadge" class="position-absolute top-1 start-100 translate-middle badge rounded-pill bg-danger d-none" style="font-size: 0.65rem;">
-                    0
-                </span>
+                <!-- Red dot badge (like Image 1) -->
+                <span class="portal-notif-dot"></span>
             </button>
             <ul class="dropdown-menu dropdown-menu-end shadow" style="width: 320px; max-height: 400px; overflow-y: auto;" aria-labelledby="notifDropdown" id="notifList">
                 <li class="dropdown-header fw-bold border-bottom py-2">Thông báo gần đây</li>
@@ -96,38 +99,43 @@
             </ul>
         </div>
 
-        <!-- Authenticated: User Avatar Circle (Sakai style initials badge) -->
-        <div class="dropdown ms-1" sec:authorize="isAuthenticated()">
-            <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle dropdown-toggle-no-caret" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
+        <!-- 4. User Avatar Circle (Teal Circle with Initials 'NG' / User Initials, Matching Image 1) -->
+        <div class="dropdown ms-1">
+            <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle-no-caret" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
                 <div class="portal-avatar-circle" title="Tài khoản cá nhân">
-                    <span sec:authentication="name" class="avatar-text">US</span>
+                    <!-- If authenticated, show username initials; if guest, show 'NG' matching Image 1 -->
+                    <span sec:authorize="isAuthenticated()" sec:authentication="name" class="avatar-text">NG</span>
+                    <span sec:authorize="!isAuthenticated()" class="avatar-text">NG</span>
                 </div>
             </a>
             <ul class="dropdown-menu dropdown-menu-end shadow border-0 py-2" style="width: 230px;" aria-labelledby="userMenu">
-                <li class="px-3 py-2 border-bottom">
+                <!-- When authenticated -->
+                <li sec:authorize="isAuthenticated()" class="px-3 py-2 border-bottom">
                     <div class="fw-bold text-dark text-truncate" sec:authentication="name">User</div>
                     <div class="text-muted small">Tài khoản thành viên</div>
                 </li>
-                <li><a class="dropdown-item py-2" th:href="@{/profile}"><i class="bi bi-person me-2 text-primary"></i>Hồ sơ cá nhân</a></li>
-                <li><a class="dropdown-item py-2" th:href="@{/items}"><i class="bi bi-tags me-2 text-success"></i>Hàng đăng bán</a></li>
-                <li><a class="dropdown-item py-2" th:href="@{/orders}"><i class="bi bi-receipt me-2 text-warning"></i>Đơn hàng trúng giá</a></li>
-                <li><a class="dropdown-item py-2" th:href="@{/wallet}"><i class="bi bi-wallet2 me-2 text-info"></i>Ví tiền & Nạp/Rút</a></li>
+                <li sec:authorize="isAuthenticated()"><a class="dropdown-item py-2" th:href="@{/profile}"><i class="bi bi-person me-2 text-primary"></i>Hồ sơ cá nhân</a></li>
+                <li sec:authorize="isAuthenticated()"><a class="dropdown-item py-2" th:href="@{/items}"><i class="bi bi-tags me-2 text-success"></i>Hàng đăng bán</a></li>
+                <li sec:authorize="isAuthenticated()"><a class="dropdown-item py-2" th:href="@{/orders}"><i class="bi bi-receipt me-2 text-warning"></i>Đơn hàng trúng giá</a></li>
+                <li sec:authorize="isAuthenticated()"><a class="dropdown-item py-2" th:href="@{/wallet}"><i class="bi bi-wallet2 me-2 text-info"></i>Ví tiền & Nạp/Rút</a></li>
                 <li sec:authorize="hasRole('ADMIN')"><a class="dropdown-item py-2 text-danger fw-bold" th:href="@{/admin}"><i class="bi bi-shield-lock me-2"></i>Cổng Quản Trị</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li>
+                <li sec:authorize="isAuthenticated()"><hr class="dropdown-divider"></li>
+                <li sec:authorize="isAuthenticated()">
                     <form th:action="@{/logout}" method="post">
                         <button type="submit" class="dropdown-item py-2 text-danger">
                             <i class="bi bi-box-arrow-right me-2"></i>Đăng xuất
                         </button>
                     </form>
                 </li>
-            </ul>
-        </div>
 
-        <!-- Unauthenticated: Login & Register buttons -->
-        <div class="d-flex align-items-center gap-2" sec:authorize="!isAuthenticated()">
-            <a th:href="@{/login}" class="btn btn-outline-light btn-sm px-3 fw-semibold">Đăng nhập</a>
-            <a th:href="@{/register}" class="btn btn-warning btn-sm px-3 fw-bold text-dark">Đăng ký</a>
+                <!-- When guest (unauthenticated) -->
+                <li sec:authorize="!isAuthenticated()" class="px-3 py-2 border-bottom">
+                    <div class="fw-bold text-dark">Khách Vãng Lai</div>
+                    <div class="text-muted small">Chưa đăng nhập</div>
+                </li>
+                <li sec:authorize="!isAuthenticated()"><a class="dropdown-item py-2 fw-semibold text-primary" th:href="@{/login}"><i class="bi bi-box-arrow-in-right me-2"></i>Đăng nhập</a></li>
+                <li sec:authorize="!isAuthenticated()"><a class="dropdown-item py-2 fw-semibold text-success" th:href="@{/register}"><i class="bi bi-person-plus me-2"></i>Đăng ký tài khoản</a></li>
+            </ul>
         </div>
     </div>
 </nav>
