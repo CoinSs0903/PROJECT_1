@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+</head>
+<body>
+<aside th:fragment="sidebar" id="portalSidebar" class="portal-sidebar bg-white border-end">
+    <div class="sidebar-inner py-3">
+        <!-- Quick Home link -->
+        <div class="px-3 mb-2">
+            <a th:href="@{/}" class="sidebar-item d-flex align-items-center px-3 py-2 rounded text-decoration-none text-dark">
+                <i class="bi bi-house-door me-2 fs-5 text-secondary"></i>
+                <span class="fw-semibold">Trang chủ</span>
+            </a>
+        </div>
+
+        <!-- Section: Pinned / Main Workspace -->
+        <div class="sidebar-section px-3 mb-3">
+            <div class="sidebar-section-title text-uppercase text-muted px-2 py-1 fw-bold" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+                Phân Hệ Đấu Giá
+            </div>
+
+            <!-- Workspace Folder / Active Course item -->
+            <div class="sidebar-folder mb-2">
+                <div class="sidebar-folder-header d-flex align-items-center justify-content-between px-2 py-1 bg-light rounded text-dark fw-bold small">
+                    <span class="d-flex align-items-center text-truncate">
+                        <i class="bi bi-caret-down-fill me-1 text-primary" style="font-size: 0.7rem;"></i>
+                        <span>SÀN GIAO DỊCH 2026</span>
+                    </span>
+                    <i class="bi bi-pin-angle-fill text-muted" style="font-size: 0.8rem;" title="Đã ghim"></i>
+                </div>
+
+                <!-- Sub-items under active workspace -->
+                <div class="sidebar-nav-list mt-1 ps-1">
+                    <a th:href="@{/}" class="sidebar-subitem d-flex align-items-center px-3 py-2 rounded text-decoration-none text-secondary">
+                        <i class="bi bi-view-list me-2 fs-6"></i>
+                        <span>Tổng quan</span>
+                    </a>
+                    <a th:href="@{/auctions}" class="sidebar-subitem d-flex align-items-center px-3 py-2 rounded text-decoration-none text-secondary">
+                        <i class="bi bi-hammer me-2 fs-6 text-danger"></i>
+                        <span>Phiên đấu giá trực tiếp</span>
+                    </a>
+                    <a th:href="@{/items}" class="sidebar-subitem d-flex align-items-center px-3 py-2 rounded text-decoration-none text-secondary">
+                        <i class="bi bi-box-seam me-2 fs-6 text-primary"></i>
+                        <span>Món hàng niêm yết</span>
+                    </a>
+                    <a th:href="@{/items/new}" class="sidebar-subitem d-flex align-items-center px-3 py-2 rounded text-decoration-none text-secondary">
+                        <i class="bi bi-plus-circle me-2 fs-6 text-success"></i>
+                        <span>Đăng bán món hàng</span>
+                    </a>
+                    <a th:href="@{/orders}" sec:authorize="isAuthenticated()" class="sidebar-subitem d-flex align-items-center px-3 py-2 rounded text-decoration-none text-secondary">
+                        <i class="bi bi-receipt me-2 fs-6 text-warning"></i>
+                        <span>Đơn hàng & Giao dịch</span>
+                    </a>
+                    <a th:href="@{/wallet}" sec:authorize="isAuthenticated()" class="sidebar-subitem d-flex align-items-center px-3 py-2 rounded text-decoration-none text-secondary">
+                        <i class="bi bi-wallet2 me-2 fs-6 text-info"></i>
+                        <span>Ví tiền ký quỹ</span>
+                    </a>
+                    <a th:href="@{/notifications}" sec:authorize="isAuthenticated()" class="sidebar-subitem d-flex align-items-center px-3 py-2 rounded text-decoration-none text-secondary">
+                        <i class="bi bi-megaphone me-2 fs-6 text-primary"></i>
+                        <span>Thông báo hệ thống</span>
+                    </a>
+                    <a th:href="@{/complaints}" sec:authorize="isAuthenticated()" class="sidebar-subitem d-flex align-items-center px-3 py-2 rounded text-decoration-none text-secondary">
+                        <i class="bi bi-shield-exclamation me-2 fs-6 text-danger"></i>
+                        <span>Khiếu nại & Hỗ trợ</span>
+                    </a>
+                    <a th:href="@{/admin}" sec:authorize="hasRole('ADMIN')" class="sidebar-subitem d-flex align-items-center px-3 py-2 rounded text-decoration-none text-danger fw-bold">
+                        <i class="bi bi-speedometer2 me-2 fs-6"></i>
+                        <span>Quản trị Hệ thống</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section: Pinned Shortcuts -->
+        <div class="sidebar-section px-3 mb-3 border-top pt-3">
+            <div class="sidebar-section-title text-uppercase text-muted px-2 py-1 fw-bold" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+                Phím Tắt Nhanh
+            </div>
+            <div class="sidebar-shortcuts ps-1">
+                <a th:href="@{/auctions?sort=endingSoon}" class="sidebar-subitem d-flex align-items-center justify-content-between px-3 py-2 rounded text-decoration-none text-secondary">
+                    <span class="d-flex align-items-center text-truncate">
+                        <i class="bi bi-clock-history me-2 text-warning"></i>
+                        <span class="small">Sắp kết thúc</span>
+                    </span>
+                    <i class="bi bi-pin-fill text-muted" style="font-size: 0.75rem;"></i>
+                </a>
+                <a th:href="@{/auctions?sort=popular}" class="sidebar-subitem d-flex align-items-center justify-content-between px-3 py-2 rounded text-decoration-none text-secondary">
+                    <span class="d-flex align-items-center text-truncate">
+                        <i class="bi bi-fire me-2 text-danger"></i>
+                        <span class="small">Sôi động nhất</span>
+                    </span>
+                    <i class="bi bi-pin-fill text-muted" style="font-size: 0.75rem;"></i>
+                </a>
+                <a th:href="@{/profile}" sec:authorize="isAuthenticated()" class="sidebar-subitem d-flex align-items-center justify-content-between px-3 py-2 rounded text-decoration-none text-secondary">
+                    <span class="d-flex align-items-center text-truncate">
+                        <i class="bi bi-person-gear me-2 text-secondary"></i>
+                        <span class="small">Hồ sơ cá nhân</span>
+                    </span>
+                    <i class="bi bi-pin-fill text-muted" style="font-size: 0.75rem;"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Bottom: All sites -->
+        <div class="px-3 border-top pt-3 mt-auto">
+            <a th:href="@{/auctions}" class="btn btn-light btn-sm w-100 text-start text-muted d-flex align-items-center justify-content-between">
+                <span><i class="bi bi-grid-3x3-gap-fill me-2"></i>Xem tất cả danh mục</span>
+                <i class="bi bi-chevron-right small"></i>
+            </a>
+        </div>
+    </div>
+</aside>
+</body>
+</html>

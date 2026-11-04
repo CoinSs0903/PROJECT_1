@@ -1,102 +1,277 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/main :: layout(~{::title}, ~{::content})}">
 <head>
-    <title>Sàn Đấu Giá Trực Tuyến - Trang Chủ</title>
+    <title>Tổng quan - Hệ Thống Đấu Giá Trực Tuyến</title>
 </head>
 <body>
 <div th:fragment="content">
-    <!-- Hero Banner -->
-    <div class="p-5 mb-4 bg-primary text-white rounded-3 shadow-sm">
-        <div class="container-fluid py-4">
-            <h1 class="display-5 fw-bold">Sàn Đấu Giá Trực Tuyến Tự Động</h1>
-            <p class="col-md-8 fs-5">Tham gia đấu giá thông minh với cơ chế <strong>Proxy Bidding</strong>: Hệ thống tự động trả giá thay bạn để luôn dẫn đầu với chi phí tối ưu nhất!</p>
-            <div class="d-flex gap-3">
-                <a class="btn btn-warning btn-lg fw-bold px-4" th:href="@{/items}"><i class="bi bi-tag-fill me-1"></i> Xem Món Hàng</a>
-                <a class="btn btn-outline-light btn-lg px-4" th:href="@{/items/new}"><i class="bi bi-plus-circle me-1"></i> Đăng Bán Hàng</a>
-            </div>
-        </div>
-    </div>
-
-    <!-- Quick Stats & Feature Highlights -->
-    <div class="row g-4 mb-4 text-center">
-        <div class="col-md-3">
-            <div class="card h-100 p-3 border-0 shadow-sm bg-white">
-                <div class="fs-1 text-primary mb-2"><i class="bi bi-robot"></i></div>
-                <h5 class="fw-bold">Proxy Bidding</h5>
-                <p class="text-muted small">Cài đặt mức giá trần tối đa một lần, hệ thống tự động nhảy bước giá cho bạn.</p>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card h-100 p-3 border-0 shadow-sm bg-white">
-                <div class="fs-1 text-success mb-2"><i class="bi bi-shield-lock-fill"></i></div>
-                <h5 class="fw-bold">Giá Sàn Bảo Lưu</h5>
-                <p class="text-muted small">Bảo vệ quyền lợi người bán: Chỉ bán khi giá trần đạt ngưỡng kỳ vọng.</p>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card h-100 p-3 border-0 shadow-sm bg-white">
-                <div class="fs-1 text-warning mb-2"><i class="bi bi-lightning-charge-fill"></i></div>
-                <h5 class="fw-bold">Mua Ngay Buy It Now</h5>
-                <p class="text-muted small">Sở hữu ngay món hàng yêu thích mà không cần chờ hết giờ đếm ngược.</p>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card h-100 p-3 border-0 shadow-sm bg-white">
-                <div class="fs-1 text-danger mb-2"><i class="bi bi-wallet2"></i></div>
-                <h5 class="fw-bold">Ví Bảo Chứng</h5>
-                <p class="text-muted small">Thanh toán an toàn, bảo vệ người mua đến khi nhận hàng thành công.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Live & Upcoming Auctions Section -->
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4 class="fw-bold text-dark mb-0"><i class="bi bi-fire text-danger me-2"></i>Phiên Đấu Giá Đang Diễn Ra</h4>
-        <a th:href="@{/auctions}" class="text-decoration-none fw-semibold">Xem tất cả <i class="bi bi-arrow-right"></i></a>
-    </div>
-
-    <!-- Empty state -->
-    <div th:if="${#lists.isEmpty(auctions)}" class="text-center py-5 bg-white rounded-3 shadow-sm mb-4">
-        <i class="bi bi-inbox fs-1 text-muted d-block mb-3"></i>
-        <h5 class="fw-bold text-dark">Chưa có phiên đấu giá nào đang diễn ra</h5>
-        <p class="text-muted small">Hãy đăng bán món hàng đầu tiên và mở phiên đấu giá để trải nghiệm hệ thống!</p>
-        <a th:href="@{/items/new}" class="btn btn-warning fw-bold px-4">
-            <i class="bi bi-plus-circle me-1"></i> Đăng Hàng Ngay
-        </a>
-    </div>
-
-    <!-- Auctions Grid -->
-    <div th:unless="${#lists.isEmpty(auctions)}" class="row g-4 mb-4">
-        <div class="col-md-6 col-lg-3" th:each="a : ${auctions}">
-            <div class="card h-100 border-0 shadow-sm auction-card overflow-hidden">
-                <div class="position-relative">
-                    <img th:src="${a.itemImageUrl}" class="card-img-top" style="height: 180px; object-fit: cover;" alt="Ảnh sản phẩm">
-                    <span class="position-absolute top-0 start-0 m-2 badge bg-success shadow-sm">
-                        <i class="bi bi-broadcast me-1"></i>ACTIVE
-                    </span>
-                    <span th:if="${a.buyItNowAvailable}" class="position-absolute top-0 end-0 m-2 badge bg-warning text-dark shadow-sm">
-                        <i class="bi bi-lightning-charge-fill me-1"></i>Mua Ngay
-                    </span>
+    <!-- Portal Two-Column Dashboard Layout -->
+    <div class="row g-4">
+        <!-- ================= LEFT COLUMN (65% width) ================= -->
+        <div class="col-lg-8">
+            <!-- Widget 1: System Overview Panel -->
+            <div class="portal-widget-card">
+                <div class="portal-widget-header">
+                    <h5 class="portal-widget-title">
+                        <i class="bi bi-info-circle text-primary"></i>
+                        <span>Tổng quan</span>
+                    </h5>
+                    <a th:href="@{/auctions}" class="portal-widget-link-btn" title="Đi tới sàn đấu giá">
+                        <i class="bi bi-link-45deg"></i> Link
+                    </a>
                 </div>
-                <div class="card-body d-flex flex-column justify-content-between p-3">
-                    <div>
-                        <div class="d-flex justify-content-between align-items-center mb-1">
-                            <span class="badge bg-secondary small" th:text="${a.categoryName}">Danh mục</span>
-                            <span class="small text-muted"><i class="bi bi-hammer me-1"></i><strong th:text="${a.bidCount}">0</strong> lượt</span>
+                <div class="portal-widget-body">
+                    <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
+                        <div>
+                            <h5 class="fw-bold text-dark mb-1">Hệ Thống Đấu Giá Trực Tuyến Tự Động</h5>
+                            <p class="text-muted small mb-0">Nền tảng giao dịch tài sản minh bạch, ứng dụng công nghệ <strong>Proxy Bidding</strong> và cơ chế bảo chứng an toàn.</p>
                         </div>
-                        <h6 class="card-title fw-bold text-truncate mb-2" th:title="${a.itemTitle}" th:text="${a.itemTitle}">Tên sản phẩm</h6>
-                        <div class="mb-2">
-                            <span class="text-muted small d-block">Giá hiện tại</span>
-                            <h5 class="fw-bold text-danger mb-0" th:text="${T(com.auction.common.util.MoneyUtil).formatVnd(a.currentPrice)}">100.000 ₫</h5>
+                        <div class="d-none d-sm-flex gap-2">
+                            <a th:href="@{/items/new}" class="btn btn-primary btn-sm fw-semibold">
+                                <i class="bi bi-plus-circle me-1"></i>Đăng hàng
+                            </a>
+                            <a th:href="@{/auctions}" class="btn btn-outline-secondary btn-sm fw-semibold">
+                                <i class="bi bi-search me-1"></i>Khám phá
+                            </a>
                         </div>
                     </div>
-                    <div class="pt-2 border-top mt-2 d-flex justify-content-between align-items-center">
-                        <small class="text-muted countdown-item" th:data-endtime="${a.endTime}">
-                            <i class="bi bi-clock me-1"></i><span class="timer-text">Đang tính...</span>
-                        </small>
-                        <a th:href="@{'/auctions/' + ${a.id}}" class="btn btn-outline-primary btn-sm fw-semibold">
-                            Đấu Giá <i class="bi bi-arrow-right"></i>
+
+                    <!-- 4 Core Mechanisms as Elegant Enterprise Portal Cards -->
+                    <div class="row g-3 mb-2">
+                        <div class="col-sm-6 col-md-3">
+                            <div class="p-3 bg-light rounded border h-100">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="bi bi-robot text-primary fs-5 me-2"></i>
+                                    <span class="fw-bold small text-dark">Proxy Bidding</span>
+                                </div>
+                                <p class="text-muted" style="font-size: 0.78rem; line-height: 1.35; margin-bottom: 0;">Cài đặt giá trần một lần, hệ thống tự động nhảy bước giá dẫn đầu.</p>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <div class="p-3 bg-light rounded border h-100">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="bi bi-shield-check text-success fs-5 me-2"></i>
+                                    <span class="fw-bold small text-dark">Giá Sàn Ẩn</span>
+                                </div>
+                                <p class="text-muted" style="font-size: 0.78rem; line-height: 1.35; margin-bottom: 0;">Bảo vệ kỳ vọng người bán: Chỉ bán khi giá trần đạt ngưỡng an toàn.</p>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <div class="p-3 bg-light rounded border h-100">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="bi bi-lightning-charge-fill text-warning fs-5 me-2"></i>
+                                    <span class="fw-bold small text-dark">Mua Ngay</span>
+                                </div>
+                                <p class="text-muted" style="font-size: 0.78rem; line-height: 1.35; margin-bottom: 0;">Mua đứt sản phẩm ngay lập tức với mức giá cố định Buy It Now.</p>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <div class="p-3 bg-light rounded border h-100">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="bi bi-wallet2 text-danger fs-5 me-2"></i>
+                                    <span class="fw-bold small text-dark">Ví Bảo Chứng</span>
+                                </div>
+                                <p class="text-muted" style="font-size: 0.78rem; line-height: 1.35; margin-bottom: 0;">Giam giữ tiền an toàn (Escrow), giải ngân khi giao nhận thành công.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Widget 2: Live Auctions Widget (Active Auctions) -->
+            <div class="portal-widget-card">
+                <div class="portal-widget-header">
+                    <h5 class="portal-widget-title">
+                        <i class="bi bi-fire text-danger"></i>
+                        <span>Phiên Đấu Giá Đang Diễn Ra (Live Auctions)</span>
+                    </h5>
+                    <a th:href="@{/auctions}" class="portal-widget-link-btn" title="Xem tất cả phiên">
+                        <i class="bi bi-link-45deg"></i> Link
+                    </a>
+                </div>
+                <div class="portal-widget-body">
+                    <!-- Empty State -->
+                    <div th:if="${#lists.isEmpty(auctions)}" class="text-center py-5">
+                        <i class="bi bi-inbox fs-1 text-muted d-block mb-2"></i>
+                        <h6 class="fw-bold text-dark mb-1">Hiện chưa có phiên đấu giá nào đang mở</h6>
+                        <p class="text-muted small mb-3">Hãy tạo món hàng mới và bắt đầu mở phiên đấu giá đầu tiên trên sàn!</p>
+                        <a th:href="@{/items/new}" class="btn btn-primary btn-sm fw-semibold">
+                            <i class="bi bi-plus-circle me-1"></i>Đăng Hàng Mới
                         </a>
+                    </div>
+
+                    <!-- Auctions Grid -->
+                    <div th:unless="${#lists.isEmpty(auctions)}" class="row g-3">
+                        <div class="col-md-6" th:each="a : ${auctions}">
+                            <div class="card h-100 border rounded-3 p-2 bg-white shadow-none">
+                                <div class="d-flex gap-3">
+                                    <div class="position-relative flex-shrink-0" style="width: 120px; height: 110px;">
+                                        <img th:src="${a.itemImageUrl}" class="w-100 h-100 rounded object-fit-cover" alt="Sản phẩm" style="object-fit: cover;">
+                                        <span th:if="${a.buyItNowAvailable}" class="position-absolute top-0 start-0 badge bg-warning text-dark m-1" style="font-size: 0.65rem;">
+                                            Mua Ngay
+                                        </span>
+                                    </div>
+                                    <div class="flex-grow-1 min-w-0 d-flex flex-column justify-content-between">
+                                        <div>
+                                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                                <span class="badge bg-light text-secondary border small" style="font-size: 0.7rem;" th:text="${a.categoryName}">Danh mục</span>
+                                                <span class="small text-muted" style="font-size: 0.75rem;"><i class="bi bi-hammer me-1"></i><strong th:text="${a.bidCount}">0</strong> lượt</span>
+                                            </div>
+                                            <h6 class="fw-bold text-truncate mb-1" th:title="${a.itemTitle}">
+                                                <a th:href="@{'/auctions/' + ${a.id}}" class="text-decoration-none text-dark hover-primary" th:text="${a.itemTitle}">Tên sản phẩm</a>
+                                            </h6>
+                                            <div class="text-danger fw-bold fs-6" th:text="${T(com.auction.common.util.MoneyUtil).formatVnd(a.currentPrice)}">100.000 ₫</div>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center pt-1 border-top mt-1">
+                                            <span class="text-muted countdown-item small" style="font-size: 0.75rem;" th:data-endtime="${a.endTime}">
+                                                <i class="bi bi-clock me-1"></i><span class="timer-text">Đang tính...</span>
+                                            </span>
+                                            <a th:href="@{'/auctions/' + ${a.id}}" class="btn btn-outline-primary btn-sm py-0 px-2 fw-semibold" style="font-size: 0.75rem;">
+                                                Chi tiết <i class="bi bi-chevron-right"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= RIGHT COLUMN (35% width) ================= -->
+        <div class="col-lg-4">
+            <!-- Widget 3: Recent Announcements (Thông báo mới) -->
+            <div class="portal-widget-card">
+                <div class="portal-widget-header">
+                    <h5 class="portal-widget-title">
+                        <i class="bi bi-megaphone text-info"></i>
+                        <span>Thông báo gần đây</span>
+                    </h5>
+                    <a th:href="@{/notifications}" class="portal-widget-link-btn" title="Xem tất cả">
+                        <i class="bi bi-link-45deg"></i> Link
+                    </a>
+                </div>
+                <div class="portal-widget-body p-0">
+                    <div class="list-group list-group-flush small">
+                        <div class="list-group-item p-3">
+                            <div class="d-flex w-100 justify-content-between mb-1">
+                                <span class="fw-bold text-primary">Quy chế Đấu giá Tự động (Proxy)</span>
+                                <small class="text-muted">Hôm nay</small>
+                            </div>
+                            <p class="mb-1 text-muted" style="font-size: 0.8rem;">Hệ thống tự động trả giá thay bạn theo từng bước giá chuẩn, đảm bảo bạn luôn dẫn đầu với chi phí tiết kiệm nhất.</p>
+                        </div>
+                        <div class="list-group-item p-3">
+                            <div class="d-flex w-100 justify-content-between mb-1">
+                                <span class="fw-bold text-dark">Thời hạn thanh toán đơn hàng</span>
+                                <small class="text-muted">04/11</small>
+                            </div>
+                            <p class="mb-1 text-muted" style="font-size: 0.8rem;">Người thắng đấu giá có tối đa <strong>72 giờ</strong> để hoàn tất thanh toán trước khi bị phạt gậy bùng hàng (Strike).</p>
+                        </div>
+                        <div class="list-group-item p-3">
+                            <div class="d-flex w-100 justify-content-between mb-1">
+                                <span class="fw-bold text-dark">Chính sách Bảo chứng & Phí sàn</span>
+                                <small class="text-muted">02/11</small>
+                            </div>
+                            <p class="mb-1 text-muted" style="font-size: 0.8rem;">Tiền hàng được giữ an toàn (Escrow) đến khi người mua xác nhận nhận hàng. Phí dịch vụ sàn 5%.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Widget 4: Calendar Widget (Matching the calendar in Image 2) -->
+            <div class="portal-widget-card">
+                <div class="portal-widget-header">
+                    <h5 class="portal-widget-title">
+                        <i class="bi bi-calendar3 text-success"></i>
+                        <span>Lịch đấu giá</span>
+                    </h5>
+                    <a th:href="@{/auctions}" class="portal-widget-link-btn" title="Xem lịch chi tiết">
+                        <i class="bi bi-link-45deg"></i> Link
+                    </a>
+                </div>
+                <div class="portal-widget-body">
+                    <!-- Calendar Header Controls -->
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div class="btn-group btn-group-sm">
+                            <button class="btn btn-outline-secondary py-0 px-2" style="font-size: 0.75rem;">Tùy chọn</button>
+                            <button class="btn btn-outline-secondary py-0 px-2" style="font-size: 0.75rem;">Công khai</button>
+                        </div>
+                        <div class="btn-group btn-group-sm">
+                            <button class="btn btn-light border py-0 px-2 small">&lt;</button>
+                            <button class="btn btn-light border py-0 px-2 small fw-semibold">Hôm nay</button>
+                            <button class="btn btn-light border py-0 px-2 small">&gt;</button>
+                        </div>
+                    </div>
+
+                    <div class="fw-bold text-dark text-center my-2" style="font-size: 0.9rem;">Tháng 11 Năm 2026</div>
+
+                    <!-- Mini Calendar Table -->
+                    <div class="table-responsive">
+                        <table class="table table-bordered portal-mini-calendar mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>CN</th>
+                                    <th>T2</th>
+                                    <th>T3</th>
+                                    <th>T4</th>
+                                    <th>T5</th>
+                                    <th>T6</th>
+                                    <th>T7</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>2</td>
+                                    <td>3</td>
+                                    <td class="current-day">4</td>
+                                    <td class="has-event">5</td>
+                                    <td>6</td>
+                                    <td class="has-event">7</td>
+                                </tr>
+                                <tr>
+                                    <td>8</td>
+                                    <td>9</td>
+                                    <td class="has-event">10</td>
+                                    <td>11</td>
+                                    <td>12</td>
+                                    <td>13</td>
+                                    <td>14</td>
+                                </tr>
+                                <tr>
+                                    <td>15</td>
+                                    <td>16</td>
+                                    <td>17</td>
+                                    <td>18</td>
+                                    <td>19</td>
+                                    <td>20</td>
+                                    <td>21</td>
+                                </tr>
+                                <tr>
+                                    <td>22</td>
+                                    <td>23</td>
+                                    <td>24</td>
+                                    <td>25</td>
+                                    <td>26</td>
+                                    <td>27</td>
+                                    <td>28</td>
+                                </tr>
+                                <tr>
+                                    <td>29</td>
+                                    <td>30</td>
+                                    <td class="text-muted">1</td>
+                                    <td class="text-muted">2</td>
+                                    <td class="text-muted">3</td>
+                                    <td class="text-muted">4</td>
+                                    <td class="text-muted">5</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="mt-2 text-muted small text-center" style="font-size: 0.72rem;">
+                        <span class="d-inline-block px-2 py-0 current-day me-1">4</span> Ngày hiện tại &nbsp;|&nbsp; 
+                        <span class="text-primary fw-bold">Số xanh</span>: Có phiên chốt giá
                     </div>
                 </div>
             </div>
@@ -128,4 +303,3 @@ document.addEventListener("DOMContentLoaded", function() {
 </script>
 </body>
 </html>
-
