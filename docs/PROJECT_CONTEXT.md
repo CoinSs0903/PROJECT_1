@@ -3,7 +3,7 @@
 ## 1. Thông tin chung
 
 - **Dự án:** Hệ thống đấu giá trực tuyến (Online Auction System)
-- **Mục tiêu:** Cung cấp nền tảng đấu giá trực tuyến công bằng, cạnh tranh thời gian thực cho hai phương thức: đấu giá tăng dần (trả giá lên) và đấu giá giảm dần (đặt giá xuống), áp dụng cho động sản và bất động sản.
+- **Mục tiêu:** Cung cấp nền tảng sàn thương mại điện tử chuyên biệt về đấu giá trực tuyến thông minh, công bằng, cạnh tranh thời gian thực với các cơ chế cốt lõi: Tự động nâng giá (Proxy Bidding), Giá sàn bảo lưu (Reserve Price), Mua ngay (Buy It Now) và Ví thanh toán bảo chứng (Escrow Wallet).
 - **Tài liệu đặc tả (SRS):** [docs/SRS.md](./SRS.md)
 - **Kế hoạch triển khai (PLAN):** [docs/PLAN.md](./PLAN.md)
 - **Mã nguồn Backend:** nằm trong thư mục `backend/`

@@ -42,14 +42,15 @@ Máy chủ sẽ khởi động trên cổng: **`http://localhost:8080`**
 ```text
 src/main/java/com/auction/
 ├── common/             # Các lớp dùng chung: ServerClock, Money VND, BaseEntity, Exception
-├── user/               # Tài khoản, xác thực, phân quyền (User, Guest, Admin, SellerProfile)
-├── wallet/             # Quản lý ví, giao dịch tiền bất biến, ký quỹ, phong tỏa & đối soát
-├── auction/            # Tài sản, phiên đấu giá, quy chế, máy trạng thái AuctionStateMachine
-├── registration/       # Đăng ký tham gia phiên, nộp tiền đặt trước, mã ẩn danh (Anonymous Code)
-├── bidding/            # Lõi đấu giá: Đấu giá tăng dần (placeBid) & giảm dần (acceptPrice)
-├── settlement/         # Công bố người trúng, thanh toán sau phiên, biên bản điện tử
-├── realtime/           # WebSocket STOMP controller & topic đồng bộ giá thời gian thực
-├── payout/             # Hoàn tiền cọc, giải ngân cho Seller, tính phí hệ thống
-├── complaint/          # Tiếp nhận và xử lý khiếu nại
-└── admin/              # Tổng hợp quản trị và điều hành phiên
+├── user/               # Quản lý tài khoản, xác thực, phân quyền Spring Security (ROLE_USER, ROLE_ADMIN)
+├── catalog/            # Quản lý danh mục (Category) và Món hàng đăng bán (Item)
+├── auction/            # Phiên đấu giá (Auction), quy chế, Scheduler tự động đóng phiên
+├── bidding/            # Lõi đấu giá tự động (Proxy Bidding) & Lịch sử bước giá (Bid)
+├── order/              # Đơn hàng (Order) sau đấu giá hoặc Mua ngay (Buy It Now)
+├── wallet/             # Quản lý ví cá nhân & hệ thống, giao dịch tiền bất biến, ký quỹ Escrow
+├── notification/       # Hệ thống thông báo người dùng (Notification)
+├── complaint/          # Tiếp nhận và xử lý khiếu nại (Complaint)
+├── audit/              # Nhật ký kiểm toán hệ thống (AuditLog)
+├── realtime/           # WebSocket STOMP controller & topic đồng bộ bước giá live
+└── system/             # Khởi tạo dữ liệu mẫu (DatabaseSeeder) & Cấu hình hệ thống
 ```

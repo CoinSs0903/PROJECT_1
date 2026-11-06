@@ -1,307 +1,196 @@
-# 📘 TÀI LIỆU GIẢI THÍCH NGHIỆP VỤ ERD & SO SÁNH MÔ HÌNH eBay
+# 📘 TÀI LIỆU GIẢI THÍCH NGHIỆP VỤ CƠ SỞ DỮ LIỆU (ERD) & CƠ CHẾ ĐẤU GIÁ TỰ ĐỘNG
 
-> **Dự án:** Hệ Thống Đấu Giá Trực Tuyến (Online Auction System - `project_1`)  
-> **Môn học:** Phát Triển Phần Mềm Hướng Đối Tượng (PTPMHĐT)  
-> **Tài liệu liên quan:** [ERD.md](./ERD.md) | [STATE_MACHINES.md](./STATE_MACHINES.md) | [SRS.md](./SRS.md)
+> **Dự án:** Hệ Thống Đấu Giá Trực Tuyến Tự Động (Online Auction System - `PROJECT_1`)  
+> **Môn học:** Phát Triển Phần Mềm Hướng Đối Tượng (OOAD / PTPMHĐT)  
+> **Tài liệu liên quan:** [ERD.md](./ERD.md) | [SRS.md](./SRS.md) | [STATE_MACHINES.md](./STATE_MACHINES.md) | [BUSINESS_RULES.md](./BUSINESS_RULES.md)
 
 ---
 
 ## MỤC LỤC
-1. [Nguyên tắc Thiết kế Cốt lõi (Database Conventions)](#1-nguyên-tắc-thiết-kế-cốt-lõi-database-conventions)
-2. [Giải thích Chi tiết 19 Bảng theo 5 Phân hệ Nghiệp vụ](#2-giải-thích-chi-tiết-19-bảng-theo-5-phân-hệ-nghiệp-vụ)
-3. [Luồng Nghiệp vụ & Biến đổi Dữ liệu 6 Giai đoạn (`project_1`)](#3-luồng-nghiệp-vụ--biến-đổi-dữ-liệu-6-giai-đoạn-project_1)
-4. [Phân tích Mở rộng: Chuyển đổi ERD sang Mô hình Đấu giá eBay](#4-phân-tích-mở-rộng-chuyển-đổi-erd-sang-mô-hình-đấu-giá-eBay)
-5. [Ghi chú Trọng tâm khi Báo cáo / Vấn đáp Đồ án (Notes)](#5-ghi-chú-trọng-tâm-khi-báo-cáo--vấn-đáp-đồ-án-notes)
+1. [Nguyên Tắc Thiết Kế Cốt Lõi (Database Conventions)](#1-nguyên-tắc-thiết-kế-cốt-lõi-database-conventions)
+2. [Chi Tiết 15 Bảng Dữ Liệu Theo 5 Phân Hệ Nghiệp Vụ](#2-chi-tiết-15-bảng-dữ-liệu-theo-5-phân-hệ-nghiệp-vụ)
+3. [Luồng Nghiệp Vụ & Biến Đổi Dữ Liệu 6 Giai Đoạn](#3-luồng-nghiệp-vụ--biến-đổi-dữ-liệu-6-giai-đoạn)
+4. [Lý Do Tối Ưu Hóa & Loại Bỏ Các Bảng Hành Chính Cũ](#4-lý-do-tối-ưu-hóa--loại-bỏ-các-bảng-hành-chính-cũ)
+5. [Bộ Câu Hỏi & Ghi Chú Trọng Tâm Khi Báo Cáo / Vấn Đáp Đồ Án](#5-bộ-câu-hỏi--ghi-chú-trọng-tâm-khi-báo-cáo--vấn-đáp-đồ-án)
 
 ---
 
 ## 1. NGUYÊN TẮC THIẾT KẾ CỐT LÕI (DATABASE CONVENTIONS)
 
-Trước khi đi vào từng bảng, ERD của `project_1` tuân thủ **5 nguyên tắc kỹ thuật bất biến** nhằm đảm bảo tính toàn vẹn tài chính và pháp lý:
+Cơ sở dữ liệu của hệ thống tuân thủ **6 nguyên tắc kỹ thuật chuẩn mực** nhằm đảm bảo tính toàn vẹn tài chính, độ tin cậy thời gian thực và khả năng kiểm toán:
 
-| STT | Nguyên tắc | Thiết kế trong ERD | Lý do nghiệp vụ |
+| STT | Nguyên Tắc | Thiết Kế Kỹ Thuật Trong DB | Lý Do Nghiệp Vụ |
 | :-: | :--- | :--- | :--- |
-| **1** | **Tiền tệ chính xác tuyệt đối** | Dùng kiểu `BIGINT` (đơn vị: VNĐ), có ràng buộc `CHECK (amount >= 0)`. | Tránh hoàn toàn sai số làm tròn dấu phẩy động (`FLOAT`/`DOUBLE`) khi tính tiền cọc (5%–20%), phí dịch vụ và hoàn tiền. |
-| **2** | **Thời gian chuẩn xác đến mili-giây** | Dùng `DATETIME(3)` theo múi giờ chuẩn `Asia/Ho_Chi_Minh`. | Phân xử công bằng thứ tự đặt giá (`server_time`) khi nhiều người cùng trả giá ở những giây cuối cùng. |
-| **3** | **Bất biến lịch sử (Append-only)** | Các bảng `bids`, `transactions`, `audit_logs` chỉ cho phép `INSERT`, cấm `UPDATE`/`DELETE`. | Đảm bảo tính minh bạch, chống sửa đổi lịch sử trả giá hoặc làm lệch sổ cái dòng tiền. |
-| **4** | **Chống lặp giao dịch (Idempotency)** | Cột `idempotency_key VARCHAR(100) UNIQUE` tại bảng `transactions`. | Ngăn chặn lỗi trừ tiền hoặc hoàn tiền 2 lần khi mạng chập chờn hoặc hệ thống retry request. |
-| **5** | **Bảo mật danh tính phòng đấu giá** | Cột `anonymous_code` (`UNIQUE(auction_id, anonymous_code)`) tại bảng `registrations`. | Che giấu danh tính thật của người mua trong suốt thời gian diễn ra phiên, chống thông đồng dìm giá hoặc đe dọa. |
+| **1** | **Tiền tệ chính xác tuyệt đối** | Kiểu dữ liệu `BIGINT` (đơn vị: VNĐ), kèm ràng buộc `CHECK (amount >= 0)` và `available_balance >= 0`. | Tránh triệt để sai số làm tròn số thực (`FLOAT`/`DOUBLE`) trong các giao dịch cộng trừ tiền ví, tính phí sàn và khấu trừ thanh toán đơn hàng. |
+| **2** | **Thời gian chuẩn xác đến mili-giây** | Dùng `DATETIME(3)` theo múi giờ chuẩn `Asia/Ho_Chi_Minh`. | Phân xử thứ tự đặt giá công bằng (`created_at`) khi nhiều người mua cùng gửi lệnh trả giá hoặc cập nhật giá trần ở những giây cuối phiên. |
+| **3** | **Bất biến lịch sử (Append-only)** | Các bảng `bids`, `transactions`, `audit_logs` là bảng **Chỉ ghi thêm (Append-only)**, cấm lệnh `UPDATE` hoặc `DELETE`. | Bảo đảm tính toàn vẹn kiểm toán (Audit Trail), chống gian lận thay đổi lịch sử trả giá hoặc làm sai lệch sổ cái tài chính. |
+| **4** | **Chống lặp giao dịch (Idempotency)** | Cột `idempotency_key VARCHAR(100) UNIQUE` tại bảng `transactions`. | Ngăn ngừa sự cố trừ tiền hoặc giải ngân 2 lần khi đường truyền mạng chập chờn hoặc người dùng click đúp/gửi lại request. |
+| **5** | **Bảo mật giá trần bí mật (Proxy Bid Privacy)** | Cột `max_amount` trong bảng `proxy_bids` chỉ được xử lý ở phía server, không bao giờ lộ ra API public. | Bảo đảm người tham gia không thể dò biết mức giá tối đa của đối thủ, bảo đảm tính công bằng tuyệt đối của cơ chế Proxy Bidding. |
+| **6** | **Hỗ trợ đăng lại (Relist Flexibility)** | Tách biệt thực thể Món hàng (`items`) và Phiên đấu giá (`auctions`) theo quan hệ **1 - N**. | Cho phép người bán tổ chức lại phiên đấu giá mới cho cùng một món hàng nếu phiên trước đó không có ai trả giá hoặc giá chưa đạt giá sàn bảo lưu. |
 
 ---
 
-## 2. GIẢI THÍCH CHI TIẾT 19 BẢNG THEO 5 PHÂN HỆ NGHIỆP VỤ
+## 2. CHI TIẾT 15 BẢNG DỮ LIỆU THEO 5 PHÂN HỆ NGHIỆP VỤ
 
-Hệ thống gồm **19 bảng** (14 bảng cốt lõi từ SRS và 5 bảng mở rộng hỗ trợ nghiệp vụ), được chia thành 5 phân hệ:
+Cơ sở dữ liệu hoàn chỉnh của hệ thống bao gồm **15 bảng** (khởi tạo qua Flyway `V1__init.sql` và `V2__audit_logs.sql`), được phân định rõ ràng theo 5 phân hệ nghiệp vụ:
 
-### 2.1. Phân hệ Người dùng & Định danh (`users`, `seller_profiles`)
-* **`users` (Tài khoản người dùng):**
-  * Lưu thông tin định danh cá nhân (`username`, `email`, `citizen_id` đều là `UNIQUE`) và tài khoản ngân hàng (`bank_name`, `bank_account_number`) để phục vụ rút tiền/nhận tiền.
-  * Mọi người dùng thông thường đều có `role = 'USER'` (mặc định có quyền làm Người mua - Bidder). Quản trị viên có `role = 'ADMIN'`.
-* **`seller_profiles` (Hồ sơ người bán):**
-  * Quan hệ **1 - 0..1** với `users` (`UNIQUE(user_id)`).
-  * **Nghiệp vụ:** Một `USER` muốn đăng tài sản đấu giá phải nộp hồ sơ năng lực/pháp lý vào bảng này. Chỉ khi Admin xét duyệt (`status = 'APPROVED'`), người dùng đó mới được phép tạo tài sản ở bảng `assets`.
+### 2.1. Phân hệ Tài khoản & Danh mục (`users`, `categories`)
+* **`users` (Người dùng hệ thống):**
+  * Quản lý thông tin định danh cá nhân (`username`, `email` duy nhất), mật khẩu băm (`password_hash`), thông tin giao hàng (`shipping_address`), thông tin ngân hàng phục vụ rút tiền (`bank_name`, `bank_account_number`).
+  * Phân quyền linh hoạt: Mọi tài khoản thông thường đều mang vai trò `ROLE_USER` và có đầy đủ quyền làm Người mua (Buyer) hoặc Người bán (Seller); Quản trị viên mang vai trò `ROLE_ADMIN`.
+  * Cột `unpaid_strikes_count`: Đếm số lần bùng hàng không thanh toán; khi đạt ngưỡng phạt sẽ tự động khóa quyền mua hàng.
+* **`categories` (Danh mục sản phẩm đa cấp):**
+  * Hỗ trợ cấu trúc danh mục cha - con thông qua khóa ngoại đệ quy `parent_id` trỏ về chính bảng `categories`.
+  * Quản lý đường dẫn thân thiện (`slug` duy nhất) và thứ tự hiển thị (`display_order`).
 
-### 2.2. Phân hệ Tài sản & Phiên đấu giá (`assets`, `asset_images`, `auctions`, `listing_change_requests`, `auction_follows`, `auction_minutes`)
-* **`assets` & `asset_images` (Tài sản & Thư viện ảnh):**
-  * Lưu thông tin tài sản thuộc sở hữu của người bán (`seller_id`).
-  * Phân loại `asset_type`: Động sản (`MOVABLE`) hoặc Bất động sản (`IMMOVABLE`). Việc phân loại này quyết định thời gian niêm yết tối thiểu theo luật định.
-* **`auctions` (Phiên đấu giá):**
-  * Quan hệ **1 - 1** với `assets` (`UNIQUE(asset_id)`).
-  * Hỗ trợ 2 phương thức đấu giá (`method`):
-    1. **Trả giá lên (`ASCENDING`):** Sử dụng `starting_price` (giá khởi điểm) và `step_price` (bước giá tối thiểu mỗi lần trả thêm).
-    2. **Đặt giá xuống (`DESCENDING`):** Giá giảm tự động từ `starting_price` theo từng mức `step_price` sau mỗi khoảng thời gian `price_reduction_interval_seconds`, nhưng không thấp hơn giá sàn `floor_price`.
-  * Lưu trữ trực tiếp `current_price` và `highest_bidder_id` ngay trên bảng để tối ưu tốc độ đọc thời gian thực trong phòng đấu giá mà không cần `MAX(amount)` trên bảng `bids`.
-* **Các bảng mở rộng vòng đời phiên:**
-  * **`listing_change_requests`:** Lưu yêu cầu xin thay đổi thông số phiên đấu giá khi đã niêm yết (kèm ảnh chụp JSON `old_values`, `new_values`) để Admin duyệt.
-  * **`auction_follows`:** Lưu danh sách phiên đấu giá mà người dùng bấm theo dõi để nhận thông báo nhắc lịch.
-  * **`auction_minutes`:** Biên bản đấu giá điện tử (quan hệ 1-1 với `auctions`), tự động chụp toàn bộ kết quả phiên dưới dạng JSON (`snapshot_data`) khi phiên kết thúc (`COMPLETED` hoặc `FAILED`).
+### 2.2. Phân hệ Hàng hóa & Phiên đấu giá (`items`, `item_images`, `auctions`)
+* **`items` (Món hàng đăng bán):**
+  * Thuộc sở hữu của người bán (`seller_id` trỏ tới `users.id`) và thuộc danh mục `category_id`.
+  * Lưu trữ thông tin tình trạng món hàng (`item_condition`: `NEW`, `LIKE_NEW`, `USED`), tiêu đề, mô tả và ảnh đại diện.
+* **`item_images` (Album ảnh chi tiết món hàng):**
+  * Quan hệ **1 - N** với `items`, hỗ trợ người bán đăng nhiều góc chụp thực tế kèm thứ tự sắp xếp (`display_order`).
+* **`auctions` (Phiên đấu giá trực tuyến):**
+  * Liên kết với món hàng (`item_id`). Một món hàng có thể có nhiều phiên qua các lần Relist, nhưng tại một thời điểm chỉ có tối đa 1 phiên ở trạng thái hoạt động (`ACTIVE`).
+  * Thiết lập các thông số tài chính và thời gian:
+    * `start_price`: Giá khởi điểm mở phiên.
+    * `step_price`: Bước giá tối thiểu bắt buộc giữa các lần nâng giá.
+    * `reserve_price`: **Giá sàn bảo lưu ẩn** (chỉ người bán biết). Cột `reserve_met` (BOOLEAN) đánh dấu phiên đã chạm ngưỡng này hay chưa.
+    * `buy_now_price`: **Giá mua ngay** (cho phép người mua mua đứt và kết thúc phiên lập tức).
+    * `current_price`: Mức giá dẫn đầu hiện tại (được cập nhật tức thì phục vụ hiển thị nhanh).
+    * `highest_bidder_id`: ID người đang dẫn đầu phiên.
+    * `start_time`, `end_time`: Mốc thời gian mở và đóng phiên theo cơ chế đóng cứng (Hard-close).
+    * `status`: Trạng thái phiên (`DRAFT`, `ACTIVE`, `ENDED_SOLD`, `ENDED_UNSOLD`, `CANCELED`).
 
-### 2.3. Phân hệ Tham gia, Đặt trước, Trả giá & Quyết toán (`registrations`, `deposits`, `bids`, `settlements`)
-* **`registrations` (Hồ sơ đăng ký tham gia phiên):**
-  * Ràng buộc `UNIQUE(auction_id, bidder_id)`: Mỗi người chỉ được đăng ký tối đa 1 lần cho 1 phiên.
-  * Cấp mã ẩn danh 6 chữ số `anonymous_code` duy nhất trong phiên.
-  * Cột `decision_on_listing_change` (`CONTINUE` / `DECLINE`): Ghi nhận quyết định đi tiếp hay rút lui nhận lại cọc của người mua nếu phiên đấu giá có sự thay đổi thông tin niêm yết.
-* **`deposits` (Tiền đặt trước):**
-  * Quan hệ **1 - 1** với `registrations` (`UNIQUE(registration_id)`).
-  * Quản lý khoản tiền đặt trước (từ 5% đến 20% giá khởi điểm): từ lúc đang phong tỏa (`HELD`), hoàn trả cho người thua (`REFUNDED`), chuyển thành tiền cọc của người thắng (`CONVERTED_TO_SELLER_DEPOSIT`), hoặc tịch thu nếu vi phạm/bỏ cọc (`FORFEITED`) để chuyển cho người bán (`TRANSFERRED_TO_SELLER`).
-* **`bids` (Lịch sử trả giá bất biến):**
-  * Lưu **tất cả** các lượt gửi giá của người mua theo `server_time`, bao gồm cả lượt hợp lệ (`is_valid = TRUE`) và không hợp lệ (`is_valid = FALSE` kèm lý do `invalid_reason` như thấp hơn bước giá, gửi chậm hơn người khác...).
-* **`settlements` (Thanh toán kết quả trúng đấu giá):**
-  * Sinh ra ngay khi xác định được người thắng. Tính toán nghĩa vụ tài chính còn lại:
-    $$\text{remaining\_amount} = \text{winning\_price} - \text{deposit\_deducted}$$
-  * Theo dõi hạn thanh toán (`payment_deadline`) và trạng thái hoàn tất (`WAITING_FOR_PAYMENT` → `PAID` / `CANCELED` / `OVERDUE`).
+### 2.3. Phân hệ Trả giá tự động (`proxy_bids`, `bids`)
+* **`proxy_bids` (Cài đặt mức giá trần tự động):**
+  * Ghi nhận mức giá tối đa bí mật (`max_amount`) mà người mua sẵn sàng chi trả cho một phiên (`auction_id`, `bidder_id`).
+  * Hệ thống sử dụng thuật toán Proxy Bidding để tự động nâng giá cho người mua từng bước một (`step_price`) mỗi khi có đối thủ trả giá cạnh tranh.
+* **`bids` (Lịch sử các bước giá được ghi nhận):**
+  * Bảng bất biến ghi nhận mọi bước giá phát sinh trong phiên kèm thời điểm chính xác (`created_at` mili-giây).
+  * Cột `is_proxy`: Đánh dấu bước giá này do người dùng tự gõ tay trực tiếp hay do máy tự động nhảy bước giá thay người mua.
 
-### 2.4. Phân hệ Tài chính & Ví điện tử (`wallets`, `transactions`)
-* **`wallets` (Ví tiền):**
-  * Gồm ví cá nhân của người dùng (`wallet_type = 'USER'`, `UNIQUE(user_id)`) và 2 ví hệ thống (`user_id = NULL`): **Ví ký quỹ (`SYSTEM_ESCROW`)** và **Ví doanh thu phí sàn (`SYSTEM_REVENUE`)**.
-  * Tách biệt rõ 2 ngăn tiền:
-    * `available_balance`: Số dư khả dụng (có thể rút hoặc dùng để đăng ký phiên mới).
-    * `frozen_balance`: Số dư đang bị đóng băng (đang làm tiền đặt trước cho các phiên chưa kết thúc).
-* **`transactions` (Sổ cái giao dịch tiền bất biến):**
-  * Ghi vết mọi biến động số dư (`balance_before`, `balance_after`) theo 8 loại giao dịch: `TOPUP` (nạp), `WITHDRAW` (rút), `FREEZE` (đóng băng cọc), `UNFREEZE` (giải tỏa cọc), `CONVERT_DEPOSIT` (khấu trừ cọc), `PAYMENT` (thanh toán tiền trúng), `SERVICE_FEE` (thu phí sàn), `PAYOUT_TO_SELLER` (giải ngân cho người bán).
-  * Liên kết đa hình (`reference_type` + `reference_id`) trỏ về bản ghi `deposits` hoặc `settlements` tương ứng.
+### 2.4. Phân hệ Đơn hàng & Tài chính bảo chứng (`orders`, `wallets`, `transactions`)
+* **`orders` (Đơn hàng sau đấu giá):**
+  * Được tự động tạo khi phiên kết thúc có người trúng (`ENDED_SOLD`) hoặc khi có người bấm Mua ngay (`BUY_IT_NOW`).
+  * Lưu trữ giá chốt (`final_price`), phí vận chuyển (`shipping_fee`), tổng tiền thanh toán (`total_amount`), địa chỉ giao hàng và mã vận đơn (`tracking_number`).
+  * Theo dõi vòng đời thanh toán và vận chuyển: `AWAITING_PAYMENT` → `PAID_IN_ESCROW` → `SHIPPED` → `DELIVERED` → `COMPLETED` (hoặc `CANCELLED_UNPAID` nếu bùng hàng).
+* **`wallets` (Ví tiền nội bộ bảo chứng):**
+  * Gồm ví cá nhân của từng người dùng (`user_id`) và các ví nghiệp vụ hệ thống (`SYSTEM_REVENUE`: ví thu phí sàn, `SYSTEM_ESCROW`: ví trung gian giữ tiền bảo chứng).
+  * Hai ngăn số dư:
+    * `available_balance`: Số dư khả dụng (dùng để thanh toán hoặc rút về tài khoản ngân hàng).
+    * `frozen_balance`: Số dư đang tạm giữ bảo chứng (cho đến khi người mua nhận hàng thành công).
+* **`transactions` (Sổ cái biến động số dư bất biến):**
+  * Ghi lại chi tiết từng biến động số dư (`balance_before`, `balance_after`) kèm loại giao dịch (`TOP_UP`, `WITHDRAW`, `PAYMENT`, `ESCROW_HOLD`, `ESCROW_RELEASE`, `REFUND`, `SYSTEM_FEE`).
+  * Tích hợp `idempotency_key` đảm bảo không bao giờ xử lý lặp giao dịch tài chính.
 
-### 2.5. Phân hệ Vận hành, Kiểm toán & Cấu hình (`notifications`, `audit_logs`, `complaints`, `system_configs`, `holidays`)
-* **`notifications`:** Lưu thông báo gửi tới người dùng (khi được duyệt hồ sơ, bị vượt giá, trúng đấu giá, hoàn cọc...).
-* **`complaints`:** Quản lý đơn khiếu nại của Bidder hoặc Seller đối với một phiên đấu giá kèm đường dẫn bằng chứng (`evidence_url`) và kết luận xử lý của Admin (`resolution_note`).
-* **`audit_logs`:** Nhật ký kiểm toán toàn hệ thống, tự động chụp JSON `data_before` và `data_after` kèm địa chỉ IP mỗi khi có thay đổi trạng thái quan trọng.
-* **`system_configs` & `holidays`:** Lưu tham số vận hành động (tỷ lệ phí dịch vụ, thời gian chờ thanh toán) và danh sách ngày lễ nhà nước để tính chính xác **ngày làm việc** (Business Days).
+### 2.5. Phân hệ Tương tác & Vận hành (`reviews`, `notifications`, `complaints`, `system_configs`, `audit_logs`)
+* **`reviews` (Đánh giá uy tín):** Đánh giá số sao (1-5) và nhận xét của người mua dành cho người bán sau khi hoàn tất đơn hàng.
+* **`notifications` (Hệ thống thông báo):** Gửi thông báo tức thì cho người dùng khi bị vượt giá, khi trúng đấu giá, khi có đơn hàng mới hoặc khi đơn hàng được cập nhật trạng thái.
+* **`complaints` (Tiếp nhận khiếu nại):** Cho phép người mua hoặc người bán khiếu nại về món hàng, thanh toán hoặc giao vận kèm bằng chứng hình ảnh; Admin tiếp nhận và đưa ra phán quyết xử lý.
+* **`system_configs` (Cấu hình hệ thống):** Lưu trữ các tham số vận hành linh hoạt (tỷ lệ phí sàn %, thời gian gia hạn thanh toán đơn hàng...).
+* **`audit_logs` (Nhật ký kiểm toán toàn diện):** Tự động ghi vết các thao tác nhạy cảm, trạng thái trước/sau (`data_before`, `data_after`) cùng IP và User ID thực hiện.
 
 ---
 
-## 3. LUỒNG NGHIỆP VỤ & BIẾN ĐỔI DỮ LIỆU 6 GIAI ĐOẠN (`project_1`)
+## 3. LUỒNG NGHIỆP VỤ & BIẾN ĐỔI DỮ LIỆU 6 GIAI ĐOẠN
 
 ```mermaid
 sequenceDiagram
     autonumber
     actor Seller as Người bán (Seller)
-    actor Admin as Quản trị viên (Admin)
     actor Bidder as Người mua (Bidder)
-    participant DB as Cơ sở dữ liệu (ERD)
-    participant System as Hệ thống (Scheduler)
+    participant Server as Hệ thống (Backend)
+    participant DB as Cơ sở dữ liệu (MySQL)
+    actor Admin as Quản trị viên (Admin)
 
-    Seller->>DB: 1. Nộp hồ sơ người bán (seller_profiles: PENDING)
-    Admin->>DB: 2. Duyệt hồ sơ (seller_profiles: APPROVED)
-    Seller->>DB: 3. Tạo tài sản (assets) & phiên đấu giá (auctions: PENDING_APPROVAL)
-    Admin->>DB: 4. Duyệt niêm yết công khai (auctions: LISTED)
-    Bidder->>DB: 5. Nạp tiền (wallets) & Đăng ký (registrations + deposits: HELD, FREEZE tiền)
-    System->>DB: 6. Trước mở phiên 2 ngày LV: Đóng đăng ký (auctions: WAITING_FOR_OPENING)
-    System->>DB: 7. Đến start_time: Mở phòng đấu giá (auctions: IN_PROGRESS)
-    Bidder->>DB: 8. Gửi lệnh trả giá/chấp nhận giá (bids -> cập nhật current_price)
-    System->>DB: 9. Chốt người thắng (auctions: WAITING_FOR_PAYMENT, tạo settlements)
-    System->>DB: 10. Hoàn tiền đặt trước cho người thua (deposits: REFUNDED, UNFREEZE tiền)
-    Bidder->>DB: 11. Người thắng trả phần tiền còn lại (settlements: PAID)
-    System->>DB: 12. Giải ngân cho Seller, thu phí sàn & xuất biên bản (auctions: COMPLETED, auction_minutes)
+    %% Giai đoạn 1: Đăng bán
+    Seller->>Server: 1. Đăng món hàng (items, item_images)
+    Seller->>Server: 2. Thiết lập phiên: Giá khởi điểm, bước giá, giá sàn ẩn, giá mua ngay (auctions: ACTIVE)
+    
+    %% Giai đoạn 2: Đấu giá & Proxy Bidding
+    Bidder->>Server: 3. Đặt giá trần bí mật (Proxy Bid) hoặc Mua ngay (Buy It Now)
+    Server->>DB: 4. So khớp thuật toán: Ghi nhận mức giá trần (proxy_bids) & sinh bước giá hiển thị (bids)
+    Server-->>Bidder: 5. Broadcast giá mới qua WebSocket (cập nhật current_price thời gian thực)
+    
+    %% Giai đoạn 3: Đóng phiên & Tạo đơn hàng
+    Server->>DB: 6. Đến end_time: Scheduler đóng phiên cứng (Hard-close)
+    alt Giá cao nhất >= Reserve Price (hoặc không cài Reserve)
+        Server->>DB: 7a. Chốt phiên thành công: auctions.status = ENDED_SOLD, tự động tạo orders (AWAITING_PAYMENT)
+    else Giá cao nhất < Reserve Price
+        Server->>DB: 7b. Phiên không thành: auctions.status = ENDED_UNSOLD (Seller có quyền Relist)
+    end
+    
+    %% Giai đoạn 4: Thanh toán ví bảo chứng (Escrow)
+    Bidder->>Server: 8. Thanh toán đơn hàng qua Ví cá nhân (wallets)
+    Server->>DB: 9. Chuyển tiền vào Ví ký quỹ bảo chứng: orders.status = PAID_IN_ESCROW, ghi sổ transactions
+    
+    %% Giai đoạn 5: Giao vận & Giải ngân
+    Seller->>Server: 10. Giao hàng & cập nhật mã vận đơn (orders.status = SHIPPED)
+    Bidder->>Server: 11. Nhận hàng thành công & bấm xác nhận (orders.status = DELIVERED)
+    Server->>DB: 12. Tự động giải ngân từ Escrow sang Ví Seller, thu phí sàn cho SYSTEM_REVENUE (orders: COMPLETED)
+    
+    %% Giai đoạn 6: Đánh giá & Khiếu nại
+    Bidder->>Server: 13. Đánh giá chất lượng người bán (reviews)
+    opt Khi có tranh chấp hàng hóa
+        Bidder->>Server: 14. Gửi đơn khiếu nại (complaints) kèm ảnh bằng chứng
+        Admin->>Server: 15. Phán quyết khiếu nại & hoàn tiền hoặc giải ngân
+    end
 ```
 
-### Giai đoạn 1: Chuẩn bị & Niêm yết (`PENDING_APPROVAL` → `LISTED`)
-1. Người dùng được duyệt `seller_profiles` (`APPROVED`) tạo bản ghi trong `assets` và `asset_images`.
-2. Seller tạo phiên trong `auctions` (`status = 'PENDING_APPROVAL'`), chọn phương thức `ASCENDING` hoặc `DESCENDING`, thiết lập giá khởi điểm và tỷ lệ tiền đặt trước (5%–20%).
-3. Admin kiểm tra tính hợp lệ (đối chiếu bảng `holidays` để đảm bảo thời gian niêm yết đủ số ngày làm việc theo quy định) và duyệt phiên sang `status = 'LISTED'`, ghi nhận `listing_at` và `registration_deadline` (trước `start_time` 2 ngày làm việc).
-
-### Giai đoạn 2: Đăng ký & Phong tỏa Tiền đặt trước (`LISTED` → `WAITING_FOR_OPENING`)
-1. Bidder nạp tiền vào `wallets` (`transactions`: `TOPUP`).
-2. Trước mốc `registration_deadline`, Bidder gửi yêu cầu đăng ký. Hệ thống thực thi trong **1 Database Transaction**:
-   * Tạo bản ghi `registrations` kèm mã ẩn danh `anonymous_code`.
-   * Tạo bản ghi `deposits` (`status = 'HELD'`, `amount = deposit_amount`).
-   * Tại bảng `wallets` của Bidder:
-     $$\text{available\_balance} = \text{available\_balance} - \text{deposit\_amount}$$
-     $$\text{frozen\_balance} = \text{frozen\_balance} + \text{deposit\_amount}$$
-   * Ghi bản ghi `transactions` (`transaction_type = 'FREEZE'`).
-3. Đúng mốc `registration_deadline`, Scheduler tự động chuyển `auctions.status` sang `WAITING_FOR_OPENING` (khóa cổng đăng ký mới).
-
-### Giai đoạn 3: Mở phiên & Đấu giá thời gian thực (`WAITING_FOR_OPENING` → `IN_PROGRESS`)
-1. Đúng giờ `start_time`, nếu không có người đăng ký hợp lệ, phiên chuyển thẳng sang `FAILED` và hoàn tiền cọc. Ngược lại, phiên chuyển sang `IN_PROGRESS`.
-2. **Với Đấu giá Tăng dần (`ASCENDING`):**
-   * Khi Bidder đặt giá, hệ thống khóa dòng `auctions` hiện tại, kiểm tra `amount >= current_price + step_price`.
-   * Nếu hợp lệ: Lưu `bids` (`is_valid = TRUE`), cập nhật `auctions.current_price = amount` và `auctions.highest_bidder_id = bidder_id`.
-   * Nếu không hợp lệ: Lưu `bids` (`is_valid = FALSE`, kèm `invalid_reason`).
-3. **Với Đấu giá Giảm dần (`DESCENDING`):**
-   * Định kỳ mỗi `price_reduction_interval_seconds`, Scheduler giảm `current_price` một mức `step_price` (tối thiểu bằng `floor_price`).
-   * Người đầu tiên gửi lệnh `bid_type = 'ACCEPT'` hợp lệ sẽ trở thành `highest_bidder_id` và kết thúc việc trả giá ngay lập tức.
-
-### Giai đoạn 4: Kết thúc trả giá & Hoàn cọc người thua (`IN_PROGRESS` → `WAITING_FOR_PAYMENT`)
-1. Khi xác định được người thắng (`highest_bidder_id`):
-   * `auctions.status` chuyển sang `WAITING_FOR_PAYMENT`.
-   * Khoản đặt trước của người thắng trong `deposits` chuyển từ `HELD` sang `CONVERTED_TO_SELLER_DEPOSIT`.
-   * Tạo bản ghi `settlements` với `remaining_amount = winning_price - deposit_deducted` và hạn chót `payment_deadline`.
-2. Đối với tất cả người tham gia **không trúng** (và không vi phạm quy chế):
-   * `deposits.status` chuyển sang `REFUNDED`.
-   * Trong `wallets`: giảm `frozen_balance`, cộng trả lại vào `available_balance` (`transactions`: `UNFREEZE`).
-
-### Giai đoạn 5: Thanh toán, Giải ngân & Xử lý ngoại lệ (`WAITING_FOR_PAYMENT` → `COMPLETED` / `FAILED`)
-* **Trường hợp 1 – Người thắng thanh toán đúng hạn (`PAID`):**
-  1. Trừ `remaining_amount` từ `available_balance` của người thắng (`PAYMENT`) và tất toán khoản `frozen_balance` tiền cọc (`CONVERT_DEPOSIT`).
-  2. Cộng phí dịch vụ vào ví `SYSTEM_REVENUE` (`SERVICE_FEE`) và cộng tiền bán tài sản (sau khi trừ phí) vào `available_balance` của ví Seller (`PAYOUT_TO_SELLER`).
-  3. Cập nhật `deposits.status = 'TRANSFERRED_TO_SELLER'`, `settlements.status = 'PAID'`, `auctions.status = 'COMPLETED'`.
-  4. Tự động sinh biên bản điện tử vào bảng `auction_minutes`.
-* **Trường hợp 2 – Người thắng bỏ cọc hoặc quá hạn (`CANCELED` / `OVERDUE`):**
-  1. Phạt mất cọc: `deposits.status` của người vi phạm chuyển sang `FORFEITED`, tiền cọc được chuyển cho Seller (`TRANSFERRED_TO_SELLER`).
-  2. Nếu là đấu giá **Tăng dần**: Xét trao quyền mua cho người trả giá cao liền kề. Nếu không còn ai đồng ý → `auctions.status = 'FAILED'`.
-  3. Nếu là đấu giá **Giảm dần**: Đưa phiên quay lại trạng thái `IN_PROGRESS` để tiếp tục giảm giá từ mức giá vừa bị hủy.
+### Chi Tiết Diễn Biến Dữ Liệu Qua Từng Giai Đoạn:
+1. **Giai đoạn 1 (Đăng bán & Mở phiên):**
+   * Người bán tạo bản ghi trong bảng `items` kèm album ảnh trong `item_images`.
+   * Khởi tạo phiên đấu giá trong `auctions` với trạng thái `ACTIVE`. Người bán có thể kích hoạt tính năng **Giá sàn ẩn** (`reserve_price`) và **Giá mua ngay** (`buy_now_price`).
+2. **Giai đoạn 2 (Trả giá tức thì & Proxy Bidding):**
+   * Người mua có thể trả giá trực tiếp (Instant Bid) hoặc đặt giá trần bí mật (Proxy Bid).
+   * Thuật toán Proxy Bidding tự động so sánh hai mức giá trần cao nhất:
+     $$\text{current\_price} = \min(\text{MaxBid}_1, \text{MaxBid}_2 + \text{step\_price})$$
+   * Bảng `proxy_bids` lưu trữ giá trần tối đa; bảng `bids` ghi nhận các bước giá công khai hiển thị trên giao diện người dùng.
+3. **Giai đoạn 3 (Đóng phiên tự động & Kiểm tra giá sàn):**
+   * Khi đến mốc `end_time`, `AuctionScheduler` tự động quét và đóng phiên.
+   * Nếu có người bấm **Mua ngay (Buy It Now)** trong lúc phiên đang chạy, phiên lập tức kết thúc sớm mà không cần chờ hết giờ.
+   * Hệ thống kiểm tra điều kiện: Nếu `current_price >= reserve_price`, phiên chuyển sang `ENDED_SOLD` và tự động sinh bản ghi trong bảng `orders`. Nếu không đạt, phiên chuyển thành `ENDED_UNSOLD` và cho phép Relist.
+4. **Giai đoạn 4 (Thanh toán bảo chứng Escrow):**
+   * Người thắng cuộc có thời hạn quy định (48h - 72h) để thanh toán đơn hàng.
+   * Tiền thanh toán không chuyển ngay cho Người bán mà được chuyển vào ví trung gian bảo chứng (`SYSTEM_ESCROW`), trạng thái đơn hàng chuyển sang `PAID_IN_ESCROW`.
+5. **Giai đoạn 5 (Giao hàng & Hoàn tất giải ngân):**
+   * Người bán chuyển hàng và cập nhật mã bưu vận (`tracking_number`).
+   * Khi Người mua xác nhận đã nhận hàng đúng mô tả, hệ thống tự động giải ngân tiền hàng vào ví Người bán và trích thu phí hoa hồng sàn vào ví `SYSTEM_REVENUE`. Đơn hàng chuyển sang `COMPLETED`.
+6. **Giai đoạn 6 (Hậu mãi, Đánh giá & Xử lý bùng hàng):**
+   * Hai bên đánh giá uy tín lẫn nhau trong bảng `reviews`.
+   * Nếu Người thắng không thanh toán trong thời hạn quy định, hệ thống tự động hủy đơn (`CANCELLED_UNPAID`), phạt 1 gậy vi phạm (`unpaid_strikes_count += 1`), và hỗ trợ người bán đăng lại sản phẩm (`Relist`).
 
 ---
 
-## 4. PHÂN TÍCH MỞ RỘNG: CHUYỂN ĐỔI ERD SANG MÔ HÌNH ĐẤU GIÁ eBay
+## 4. LÝ DO TỐI ƯU HÓA & LOẠI BỎ CÁC BẢNG HÀNH CHÍNH CŨ
 
-> [!IMPORTANT]
-> **Kết luận đánh giá:** ERD gốc của `project_1` chỉ phù hợp khoảng **40% – 50%** nếu áp dụng cho sàn thương mại điện tử đấu giá kiểu **eBay**.
-> * **`project_1`:** Mô hình **Đấu giá tài sản pháp lý/nhà nước** (tiền kiểm chặt chẽ, bắt buộc đăng ký trước 2 ngày làm việc, nộp tiền đặt trước 5%–20%, lập biên bản pháp lý).
-> * **eBay:** Mô hình **Thương mại điện tử kết hợp Đấu giá tự do (C2C/B2C Marketplace & Proxy Bidding)** (không đăng ký trước, không đặt cọc, trả giá tự động, mua đứt ngay, giao nhận vận chuyển và đánh giá uy tín 2 chiều).
+Trong phiên bản thiết kế ban đầu, hệ thống từng dự kiến áp dụng mô hình đấu giá tài sản hành chính/nhà nước với **19 bảng**. Tuy nhiên, mô hình này đã được loại bỏ và tối ưu hóa thành mô hình sàn thương mại điện tử đấu giá hiện đại với **15 bảng** vì các lý do sau:
 
-### 4.1. 6 Điểm không phù hợp của ERD gốc khi áp vào eBay
-1. **Bắt buộc đăng ký trước & Đặt cọc (`registrations` & `deposits`):** Trên eBay, người mua thấy món hàng là bấm trả giá ngay lập tức (kể cả ở giây cuối cùng), không phải nộp hồ sơ trước 2 ngày hay đóng băng 5%–20% tiền cọc.
-2. **Thiếu cơ chế Đấu giá tự động (`Proxy Bidding` / `Max Bid`):** Người mua trên eBay nhập mức giá tối đa sẵn sàng trả (giữ bí mật), hệ thống tự động trả giá hộ từng bước nhỏ nhất để thắng đối thủ. Bảng `bids` hiện tại chỉ lưu giá trực tiếp.
-3. **Thiếu giá Mua ngay (`buy_it_now_price`) và Giá sàn ẩn (`reserve_price`):** Trên eBay, người mua có thể mua đứt món hàng ngay lập tức với giá `Buy It Now`, và người bán có thể đặt mức giá kỳ vọng tối thiểu ẩn (`Reserve Price`) mà nếu chưa chạm tới thì không bắt buộc phải bán.
-4. **Ràng buộc cứng 1 Tài sản – 1 Phiên (`UNIQUE(asset_id)` trên bảng `auctions`):** Trên eBay, một món hàng đấu giá thất bại có thể được đăng đấu giá lại (**Relist**) nhiều lần (quan hệ `1 - N`).
-5. **Quy trình duyệt tay & Lịch nghỉ lễ (`holidays`, `auction_minutes`, `listing_change_requests`):** eBay hoạt động tự động 24/7/365 toàn cầu theo số ngày thực (3, 5, 7, 10 ngày), không trừ ngày lễ nhà nước và không cần Admin duyệt từng bài đăng.
-6. **Thiếu phân hệ Giao vận, Đơn hàng & Đánh giá uy tín (`orders`, `reviews`):** Sau khi thắng trên eBay, tiền phải được giữ trong ví ký quỹ (`SYSTEM_ESCROW`) chờ đóng gói, vận chuyển (`tracking_number`), giao hàng thành công (`DELIVERED`) rồi mới giải ngân cho Seller, kèm hệ thống chấm điểm uy tín 2 chiều (Feedback Score) để chống bùng hàng.
-
-### 4.2. Cách thức chỉnh sửa ERD sang mô hình eBay
-
-| Thao tác | Bảng tác động | Chi tiết chỉnh sửa |
+| Bảng Đã Loại Bỏ | Lý Do Nghiệp Vụ Loại Bỏ | Giải Pháp Thay Thế Trong Mô Hình Hiện Tại |
 | :--- | :--- | :--- |
-| **1. Loại bỏ** | `holidays`, `auction_minutes`, `listing_change_requests`, `registrations`, `deposits` | Loại bỏ quy trình đăng ký trước, đặt cọc bắt buộc và lịch nghỉ lễ để cho phép người dùng vào trả giá tức thì (Instant Bidding). |
-| **2. Chỉnh sửa** | `assets` $\rightarrow$ `items` | Bỏ `asset_type`; thêm `category_id` (danh mục), `item_condition` (`NEW`, `USED`, `REFURBISHED`), `weight_grams` (tính phí ship). |
-| **3. Chỉnh sửa** | `auctions` | Bỏ `UNIQUE(asset_id)` (hỗ trợ Relist), bỏ `deposit_*`, `registration_deadline`. Thêm `buy_it_now_price`, `reserve_price`, `is_reserve_met`, `bid_count`. |
-| **4. Thêm mới & Nâng cấp** | `proxy_bids` & `bids` | Thêm bảng `proxy_bids` lưu mức trần bí mật (`max_amount`) của từng Bidder; thêm cột `is_auto_bid` vào bảng `bids` để ghi nhận các bước nhảy giá tự động. |
-| **5. Nâng cấp** | `settlements` $\rightarrow$ `orders` | Mở rộng thành bảng Đơn hàng TMĐT: thêm `purchase_type` (`AUCTION_WIN`, `BUY_IT_NOW`), `shipping_fee`, `shipping_address`, `tracking_number`, và trạng thái giao vận (`AWAITING_PAYMENT` $\rightarrow$ `PAID_IN_ESCROW` $\rightarrow$ `SHIPPED` $\rightarrow$ `DELIVERED` $\rightarrow$ `COMPLETED`). |
-| **6. Thêm mới** | `categories`, `reviews` | Thêm `categories` (danh mục đa cấp) và `reviews` (đánh giá uy tín 2 chiều Buyer $\leftrightarrow$ Seller sau khi hoàn tất đơn hàng). |
-
-### 4.3. Sơ đồ ERD sau khi chuyển sang mô hình eBay
-
-```mermaid
-erDiagram
-    users ||--o{ items : "đăng bán"
-    users ||--o{ proxy_bids : "cài giá trần tự động"
-    users ||--o{ bids : "lịch sử bước giá"
-    users ||--o{ orders : "mua / thanh toán"
-    users ||--o{ reviews : "đánh giá uy tín"
-    users ||--o| wallets : "sở hữu ví"
-
-    categories ||--o{ items : "phân loại"
-    items ||--o{ item_images : "có nhiều ảnh"
-    items ||--o{ auctions : "được đấu giá (1-N, hỗ trợ Relist)"
-
-    auctions ||--o{ proxy_bids : "nhận mức trần"
-    auctions ||--o{ bids : "sinh bước giá"
-    auctions ||--o| orders : "tạo đơn hàng khi thắng"
-
-    orders ||--o{ reviews : "đánh giá 2 chiều"
-    wallets ||--o{ transactions : "biến động số dư"
-
-    items {
-        bigint id PK
-        bigint seller_id FK
-        bigint category_id FK
-        varchar name
-        varchar item_condition "NEW, USED, REFURBISHED"
-        int weight_grams
-    }
-
-    auctions {
-        bigint id PK
-        bigint item_id FK "Bỏ UNIQUE để Relist"
-        bigint starting_price
-        bigint step_price
-        bigint reserve_price "Giá sàn ẩn"
-        bigint buy_it_now_price "Giá mua đứt"
-        boolean is_reserve_met
-        bigint current_price
-        bigint highest_bidder_id FK
-        int bid_count
-        datetime start_time
-        datetime end_time
-        varchar status
-    }
-
-    proxy_bids {
-        bigint id PK
-        bigint auction_id FK
-        bigint bidder_id FK
-        bigint max_amount "Giá tối đa bí mật"
-        datetime updated_at
-    }
-
-    orders {
-        bigint id PK
-        bigint auction_id FK "UK"
-        bigint buyer_id FK
-        bigint seller_id FK
-        varchar purchase_type "AUCTION_WIN, BUY_IT_NOW"
-        bigint item_price
-        bigint shipping_fee
-        bigint total_amount
-        text shipping_address
-        varchar tracking_number
-        varchar status "AWAITING_PAYMENT, PAID_IN_ESCROW, SHIPPED, DELIVERED, COMPLETED"
-    }
-
-    reviews {
-        bigint id PK
-        bigint order_id FK
-        bigint reviewer_id FK
-        bigint reviewee_id FK
-        int rating
-        text comment
-    }
-```
-
-### 4.4. So sánh Điểm mạnh & Điểm yếu giữa 2 Mô hình (Trade-offs)
-
-| Tiêu chí | Mô hình ERD gốc (`project_1` - Đấu giá Pháp lý) | Mô hình ERD cải tiến (Kiểu eBay - Đấu giá TMĐT) |
-| :--- | :--- | :--- |
-| **Rào cản tham gia** | **Cao:** Phải đăng ký trước 2 ngày làm việc và nộp tiền đặt trước 5%–20%. | **Rất thấp (Điểm mạnh lớn nhất):** Thấy hàng là bấm trả giá ngay trong 1 giây, tỷ lệ chuyển đổi (Conversion Rate) cực cao. |
-| **Rủi ro bùng hàng (Non-paying Bidder)** | **Rất thấp (Điểm mạnh lớn nhất):** Người thắng bỏ cuộc sẽ bị tịch thu ngay khoản tiền đặt trước (`FORFEITED`) đền bù cho Seller. | **Cao (Điểm yếu lớn nhất):** Không giữ tiền cọc trước nên người thắng dễ bỏ chạy. Phải khắc phục bằng khóa tài khoản (`unpaid_strikes`), giới hạn hạn mức bid hoặc yêu cầu liên kết thẻ trước. |
-| **Tiện ích cho người mua & người bán** | Đấu giá thủ công trực tiếp trong khung giờ cố định. | **Rất linh hoạt:** Có `Proxy Bidding` tự động trả giá hộ, `Buy It Now` mua đứt ngay, `Reserve Price` bảo vệ người bán khỏi bán lỗ. |
-| **Khả năng mở rộng (Scalability)** | Giới hạn bởi khâu Admin duyệt từng hồ sơ đăng ký và duyệt từng phiên đấu giá. | **Tự động hóa 100%:** Mở rộng lên hàng triệu phiên đấu giá đồng thời mà không cần Admin duyệt tay. |
-| **Tải xử lý đồng thời (Concurrency)** | Ổn định do số lượng Bidder trong 1 phòng đã được chốt cố định trước 2 ngày làm việc. | **Rất khắc nghiệt ở giây cuối (Auction Sniping):** Hàng trăm người có thể nhảy vào đặt lệnh ở 5 giây cuối cùng kết hợp tính toán `proxy_bids`, đòi hỏi khóa bi quan (`FOR UPDATE`) hoặc hàng đợi Redis. |
-| **Tính tuân thủ pháp luật VN** | **Đạt chuẩn:** Phù hợp đấu giá tài sản công, đất đai, biển số xe, tài sản thi hành án theo Luật Đấu giá tài sản. | **Không áp dụng được cho tài sản công pháp lý:** Chỉ phù hợp làm sàn thương mại điện tử dân sự (C2C/B2C). |
+| `registrations` | Bắt buộc người mua phải nộp hồ sơ xét duyệt trước 2 ngày tạo rào cản lớn, làm mất tính sôi động của sàn đấu giá trực tuyến. | Áp dụng cơ chế **Instant Bidding**: Người dùng đã kích hoạt tài khoản có thể tham gia trả giá ngay lập tức chỉ với một thao tác. |
+| `deposits` | Thu tiền đặt cọc trước (5%–20%) gây đóng băng vốn của người mua và làm tăng gánh nặng thủ tục đối soát hoàn cọc. | Áp dụng cơ chế **Ví bảo chứng Escrow** sau khi thắng đấu giá kết hợp chế tài xử phạt bùng hàng (**Unpaid Item Strike**). |
+| `seller_profiles` | Bắt buộc nộp hồ sơ pháp lý công chứng rườm rà làm hạn chế người dùng đăng bán hàng hóa. | Tích hợp quyền đăng bán cho toàn bộ tài khoản `ROLE_USER`, bảo đảm an toàn qua cơ chế đánh giá uy tín và giữ tiền bảo chứng. |
+| `listing_change_requests` | Thủ tục gửi đơn xin thay đổi thông tin niêm yết chờ Admin duyệt gây chậm trễ vận hành. | Người bán được quyền tự chỉnh sửa mô tả món hàng khi phiên chưa có lượt trả giá nào. |
+| `auction_minutes` | Thủ tục lập biên bản đấu giá bằng văn bản chỉ phù hợp với đấu giá công sản nhà nước. | Thay thế bằng bản chụp kết quả số hóa tự động trong bảng `orders` và nhật ký `audit_logs`. |
+| `holidays` | Quy định dừng đếm ngược vào ngày thứ Bảy, Chủ Nhật và ngày lễ nhà nước không phù hợp với sàn TMĐT hoạt động 24/7 toàn cầu. | Hệ thống sử dụng đồng hồ đếm ngược liên tục 24/7/365 chính xác đến từng mili-giây. |
 
 ---
 
-## 5. GHI CHÚ TRỌNG TÂM KHI BÁO CÁO / VẤN ĐÁP ĐỒ ÁN (NOTES)
+## 5. BỘ CÂU HỎI & GHI CHÚ TRỌNG TÂM KHI BÁO CÁO / VẤN ĐÁP ĐỒ ÁN
 
-> [!TIP]
-> Dưới đây là 5 câu hỏi phản biện thường gặp nhất khi bảo vệ ERD của `project_1` và gợi ý trả lời ngắn gọn:
+### Câu 1: Tại sao hệ thống sử dụng thuật toán Proxy Bidding thay vì chỉ lưu một mức giá đơn thuần?
+* **Trả lời:** Proxy Bidding là tiêu chuẩn của các sàn đấu giá hàng đầu thế giới (eBay, Yahoo Auctions). Cơ chế này giúp người mua không phải tốn thời gian canh chừng màn hình liên tục. Người mua chỉ cần đặt mức giá tối đa mà họ sẵn sàng trả (Max Bid), hệ thống sẽ đóng vai trò là đại diện tự động nâng giá từng bước giá tối thiểu để người mua luôn dẫn đầu nhưng với mức chi phí thấp nhất có thể.
 
-1. **Câu hỏi 1: Tại sao trong bảng `auctions` đã có quan hệ với bảng `bids`, mà lại lưu thêm `current_price` và `highest_bidder_id` gây dư thừa dữ liệu (Denormalization)?**
-   * **Trả lời:** Đây là kỹ thuật **Denormalization có chủ đích để tối ưu hiệu năng đọc thời gian thực**. Trong phòng đấu giá có hàng trăm client truy vấn liên tục mỗi giây, việc đọc trực tiếp `current_price` và `highest_bidder_id` trên 1 dòng của bảng `auctions` (O(1)) nhanh hơn rất nhiều so với việc phải chạy truy vấn `SELECT MAX(amount) FROM bids WHERE auction_id = ? AND is_valid = TRUE` trên bảng lịch sử lớn. Đồng thời, khóa dòng (`SELECT ... FOR UPDATE`) trên `auctions` cũng giúp kiểm soát Concurrency tại một điểm duy nhất.
+### Câu 2: Giá sàn bảo lưu (Reserve Price) hoạt động như thế nào và mang lại lợi ích gì cho người bán?
+* **Trả lời:** Khi đăng bán, người bán thường muốn đặt giá khởi điểm thấp (ví dụ: 100.000 đ) để thu hút đông đảo người tham gia trả giá. Tuy nhiên, nếu không có giá sàn bảo lưu, món hàng giá trị cao có nguy cơ bị bán rẻ nếu phiên có ít người tham gia. Với `reserve_price` được ẩn bí mật, phiên chỉ công nhận kết quả bán nếu giá thắng đạt hoặc vượt ngưỡng này. Nếu kết thúc phiên mà giá cao nhất chưa chạm giá sàn, người bán không bị bắt buộc phải giao hàng và có thể đăng lại (Relist).
 
-2. **Câu hỏi 2: Tại sao những lượt trả giá bị lỗi/không hợp lệ vẫn lưu vào bảng `bids` (`is_valid = FALSE`) mà không chặn và bỏ đi ở tầng Service?**
-   * **Trả lời:** Trong nghiệp vụ đấu giá trực tuyến, người mua rất hay khiếu nại: *"Tôi đã bấm trả giá cao hơn trước khi hết giờ, tại sao không được ghi nhận?"*. Việc lưu lại cả các lượt trả giá bị từ chối kèm `server_time` (độ chính xác mili-giây) và `invalid_reason` vào bảng bất biến `bids` giúp hệ thống có **bằng chứng pháp lý không thể chối cãi** khi giải quyết khiếu nại (`complaints`).
+### Câu 3: Làm thế nào hệ thống giải quyết vấn đề sai số tài chính và chống lặp giao dịch?
+* **Trả lời:**
+  1. **Không dùng số thực:** Sử dụng kiểu dữ liệu `BIGINT` (đơn vị: VNĐ) cho toàn bộ các cột tiền tệ, loại trừ hoàn toàn lỗi sai số dấu phẩy động (floating-point rounding error).
+  2. **Ràng buộc kiểm tra:** `CHECK (available_balance >= 0)` ngăn chặn triệt để tình trạng số dư bị âm.
+  3. **Chống lặp giao dịch:** Sử dụng cột `idempotency_key` duy nhất tại bảng `transactions`. Khi client gửi request lặp do mạng lag, server từ chối thực hiện giao dịch trùng lặp.
+  4. **Kiểm toán bất biến:** Toàn bộ bảng biến động số dư `transactions` và lịch sử trả giá `bids` là dạng chỉ ghi thêm (Append-only), không bao giờ sửa hoặc xóa.
 
-3. **Câu hỏi 3: Làm sao đảm bảo tiền trong ví (`wallets`) không bao giờ bị âm hoặc bị trừ 2 lần khi người dùng bấm đúp chuột (Double-click)?**
-   * **Trả lời:** Hệ thống kết hợp 3 lớp bảo vệ:
-     1. Ở tầng Database: Ràng buộc `CHECK (available_balance >= 0)` và `CHECK (frozen_balance >= 0)`.
-     2. Ở tầng Giao dịch (`transactions`): Cột `idempotency_key` có ràng buộc `UNIQUE` chặn mọi request trùng lặp.
-     3. Ở tầng Thực thi Backend: Sử dụng Transaction cô lập kèm khóa dòng ví khi chuyển tiền giữa `available_balance` và `frozen_balance`.
-
-4. **Câu hỏi 4: Tại sao không gộp bảng `registrations` và `deposits` làm một vì chúng có quan hệ 1-1?**
-   * **Trả lời:** Tách riêng để đảm bảo **Nguyên lý Đơn trách nhiệm (Single Responsibility Principle - SRP)** và tách biệt 2 vòng đời trạng thái độc lập ([STATE_MACHINES.md](./STATE_MACHINES.md)):
-     * `registrations` quản lý **tư cách pháp lý và điểm danh phòng đấu giá** (`PENDING_REVIEW` → `VALID` → `ATTENDED` / `DISQUALIFIED`).
-     * `deposits` quản lý **nghĩa vụ tài chính và dòng tiền ký quỹ** (`SUBMITTED`/`HELD` → `REFUNDED` / `CONVERTED_TO_DEPOSIT` / `FORFEITED` → `TRANSFERRED_TO_SELLER`).
-
-5. **Câu hỏi 5: Tại sao bảng `transactions` dùng `reference_type` và `reference_id` thay vì tạo khóa ngoại cứng (`FK`) tới `deposits` và `settlements`?**
-   * **Trả lời:** Vì một giao dịch ví có thể phát sinh từ nhiều nguồn nghiệp vụ khác nhau: nạp/rút tiền trực tiếp (`TOPUP`/`WITHDRAW`), phong tỏa tiền đặt trước (`DEPOSIT`), hoặc thanh toán kết quả trúng đấu giá (`SETTLEMENT`). Thiết kế **Polymorphic Association (`reference_type` + `reference_id`)** giúp bảng sổ cái `transactions` gọn gàng, không bị chứa nhiều cột khóa ngoại `NULL` và dễ dàng mở rộng thêm các loại giao dịch mới trong tương lai.
-
+### Câu 4: Cơ chế ví bảo chứng (Escrow) bảo vệ quyền lợi hai bên như thế nào?
+* **Trả lời:** Sau khi thắng đấu giá, tiền thanh toán của người mua được chuyển vào ví trung gian bảo chứng (`SYSTEM_ESCROW`) của sàn. Người bán yên tâm đóng gói giao hàng vì biết người mua đã nộp đủ tiền. Người mua yên tâm kiểm tra hàng hóa vì tiền chưa về tay người bán. Chỉ khi người mua bấm xác nhận đã nhận hàng đúng mô tả (hoặc quá thời hạn khiếu nại quy định), tiền mới được hệ thống tự động giải ngân cho người bán kèm theo việc trích thu phí hoa hồng sàn.
