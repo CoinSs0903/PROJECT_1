@@ -1,20 +1,19 @@
 @echo off
-chcp 65001 > nul
-title KIỂM THỬ TỰ ĐỘNG - ONLINE AUCTION SYSTEM
-
+title AUTOMATED TEST RUNNER - ONLINE AUCTION SYSTEM
 echo =======================================================================
-echo    🧪 CHẠY BỘ KIỂM THỬ TỰ ĐỘNG (AUTOMATED TEST SUITE)
-echo    Dự án: Hệ Thống Đấu Giá Trực Tuyến - Spring Boot & JUnit 5
+echo    KIEM THU TU DONG - AUTOMATED TEST SUITE
+echo    Du an: He Thong Dau Gia Truc Tuyen - Spring Boot JUnit 5
 echo =======================================================================
 echo.
-echo Đang quét và thực thi toàn bộ test cases tự động...
+echo Dang thuc thi 41 test cases tu dong... Vui long doi giay lat...
 echo.
 
-cd /d "%~dp0backend"
-call .\mvnw.cmd test -Dtest=*Test
+set "SCRIPT_DIR=%~dp0"
+cd /d "%SCRIPT_DIR%backend"
+call .\mvnw.cmd test -DforkCount=0 "-Dtest=*Test"
 
 echo.
 echo =======================================================================
-echo    🎉 HOÀN TẤT KIỂM THỬ! Bạn có thể xem kết quả chi tiết ở trên.
+echo    HOAN TAT KIEM THU!
 echo =======================================================================
 pause
