@@ -1,0 +1,586 @@
+\documentclass[aspectratio=169, 10pt]{beamer}
+
+% --- GÓI TIẾNG VIỆT & PHÔNG CHỮ ---
+\usepackage[utf8]{inputenc}
+\usepackage[vietnamese]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows, positioning}
+\usepackage{colortbl}
+\usepackage{xcolor}
+
+% --- THIẾT KẾ GIAO DIỆN BEAMER (NAVY & CLEAN THEME) ---
+\usetheme{Madrid}
+\usecolortheme{whale}
+
+\definecolor{primaryNavy}{RGB}{27, 54, 93}
+\definecolor{secondarySlate}{RGB}{75, 107, 148}
+\definecolor{lightBg}{RGB}{245, 247, 250}
+\definecolor{accentGold}{RGB}{212, 160, 23}
+\definecolor{warmBg}{RGB}{253, 246, 236}
+\definecolor{warmBorder}{RGB}{217, 119, 6}
+
+\setbeamercolor{palette primary}{bg=primaryNavy, fg=white}
+\setbeamercolor{palette secondary}{bg=secondarySlate, fg=white}
+\setbeamercolor{palette tertiary}{bg=primaryNavy!90, fg=white}
+\setbeamercolor{titlelike}{parent=palette primary}
+\setbeamercolor{structure}{fg=primaryNavy}
+\setbeamercolor{block title}{bg=primaryNavy, fg=white}
+\setbeamercolor{block body}{bg=lightBg, fg=black}
+
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[frame number]
+
+% --- THÔNG TIN BÁO CÁO ---
+\title[Chương 3 (Phần 3): Áp dụng vào Hệ thống Đấu giá]{\textbf{PHÁT TRIỂN PHẦN MỀM HƯỚNG ĐỐI TƯỢNG}}
+\subtitle{\textbf{Chương 3 (Phần 3): Ví dụ minh họa -- Áp dụng 8 nhóm yêu cầu}\\
+\small Bộ hồ sơ yêu cầu thật cho \textbf{Hệ thống Đấu giá Trực tuyến Tự động (PROJECT\_1)}\\
+với đầy đủ 8 nhóm yêu cầu và bảng phân chia trách nhiệm Người dùng $\leftrightarrow$ Phần mềm}
+\author[Nhóm 3]{GVLT: \textbf{Phạm Thi Vương}\\
+Nhóm thực hiện: \textbf{Nhóm 3} (Thanh Thảo $\bullet$ Gia Bảo $\bullet$ Đăng Khoa $\bullet$ Bảo Như)}
+\institute[OOAD]{Học phần: Phát Triển Phần Mềm Hướng Đối Tượng (OOAD)}
+\date{\today}
+
+\begin{document}
+
+% ==================== SLIDE 1 ====================
+\begin{frame}
+    \titlepage
+\end{frame}
+
+% ==================== SLIDE 2 ====================
+\begin{frame}{Nội dung Phần 3 (Áp dụng cho Hệ thống Đấu giá)}
+    \begin{columns}[t]
+        \begin{column}{0.48\textwidth}
+            \begin{block}{\textbf{1. Yêu cầu nghiệp vụ}}
+                Biểu mẫu (tạo phiên, đặt giá, đơn hàng), quy định (\texttt{BR-01..25}) và bảng trách nhiệm.
+            \end{block}
+            \vspace{0.3cm}
+            \begin{block}{\textbf{3. Bảo mật, an toàn dữ liệu \& kỹ thuật}}
+                Phân quyền 4 vai trò, toàn vẹn dữ liệu ví/phiên, bảo trì và tái sử dụng.
+            \end{block}
+        \end{column}
+        
+        \begin{column}{0.48\textwidth}
+            \begin{block}{\textbf{2. Yêu cầu chất lượng}}
+                Tiến hóa, hiệu quả, tiện dụng và tương thích theo tiêu chuẩn nghiệm thu.
+            \end{block}
+            \vspace{0.3cm}
+            \begin{block}{\textbf{4. Tổng hợp \& thảo luận}}
+                Nhìn lại bức tranh 8 nhóm yêu cầu và bài tập mở rộng đặc tả hệ thống.
+            \end{block}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% ==================== SLIDE 3 ====================
+\begin{frame}
+    \begin{center}
+        \vspace{1.5cm}
+        {\Large \textbf{\color{primaryNavy}PHẦN 1}}\\[0.5cm]
+        {\huge \textbf{\color{primaryNavy}Yêu cầu nghiệp vụ}}\\[0.6cm]
+        \textit{\color{secondarySlate}Áp dụng cho Hệ thống Đấu giá Trực tuyến Tự động (PROJECT\_1)}
+    \end{center}
+\end{frame}
+
+% ==================== SLIDE 4 ====================
+\begin{frame}{Tổ chức bộ yêu cầu của Hệ thống Đấu giá}
+    \begin{itemize}
+        \item Bộ yêu cầu được tổ chức thành \textbf{8 nhóm} để dễ đặc tả, kiểm tra và phân công trách nhiệm giữa \textbf{Người dùng} $\leftrightarrow$ \textbf{Phần mềm}:
+    \end{itemize}
+    \vspace{0.3cm}
+    \begin{block}{4 trụ cột chính phân rã thành 8 nhóm chi tiết}
+        \begin{itemize}
+            \item \textbf{Yêu cầu nghiệp vụ:} các chức năng cốt lõi hệ thống phải hỗ trợ (Đăng bán, Proxy Bidding, Chốt đơn, Escrow).
+            \item \textbf{Yêu cầu chất lượng:} tiến hóa, hiệu quả, tiện dụng, tương thích.
+            \item \textbf{Yêu cầu an ninh \& an toàn dữ liệu:} phân quyền 4 vai trò, nhật ký bất biến, chống trừ tiền lặp, khóa dữ liệu.
+            \item \textbf{Yêu cầu chất lượng kỹ thuật:} dễ sửa lỗi, dễ bảo trì, tái sử dụng, dễ thích nghi/mang chuyển.
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+% ==================== SLIDE 5 ====================
+\begin{frame}{Bảng yêu cầu nghiệp vụ}
+    \footnotesize
+    \begin{table}[h]
+        \centering
+        \begin{tabular}{c l c c p{4.2cm}}
+            \toprule
+            \textbf{Stt} & \textbf{Tên yêu cầu} & \textbf{Biểu mẫu} & \textbf{Qui định} & \textbf{Ghi chú} \\
+            \midrule
+            1 & Niêm yết \& tạo phiên đấu giá & BM1 & QĐ1 & Liên kết \texttt{BR-02, BR-11} \\
+            \midrule
+            2 & Đặt giá trần tự động (Proxy Bidding) & BM2 & QĐ2 & Liên kết \texttt{BR-03..BR-08} \\
+            \midrule
+            3 & Đóng phiên \& khởi tạo đơn hàng & BM3 & QĐ3 & Liên kết \texttt{BR-12..BR-15} \\
+            \midrule
+            4 & Thanh toán ký quỹ \& giải ngân & BM4 & QĐ4 & Liên kết \texttt{BR-16..BR-23} \\
+            \midrule
+            5 & Tra cứu \& theo dõi phiên đấu giá & -- & -- & Tìm kiếm, lọc, xem đồng hồ live \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+\end{frame}
+
+% ==================== SLIDE 6 ====================
+\begin{frame}{BM1 -- Biểu mẫu Tạo phiên đấu giá (Listing)}
+    \begin{block}{\centering \textbf{Phiếu tạo phiên đấu giá (Auction Listing)}}
+        \vspace{0.15cm}
+        \begin{columns}[t]
+            \begin{column}{0.48\textwidth}
+                \textbf{Tên món hàng:} \hrulefill \\[0.25cm]
+                \textbf{Danh mục:} \hrulefill \\[0.25cm]
+                \textbf{Giá khởi điểm:} \hrulefill \\[0.25cm]
+                \textbf{Bước giá:} \hrulefill
+            \end{column}
+            \begin{column}{0.48\textwidth}
+                \textbf{Tình trạng \& Album ảnh:} \hrulefill \\[0.25cm]
+                \textbf{Thời lượng (3 / 5 / 7 ngày):} \hrulefill \\[0.25cm]
+                \textbf{Giá sàn bảo lưu ẩn (tùy chọn):} \hrulefill \\[0.25cm]
+                \textbf{Giá mua ngay (tùy chọn):} \hrulefill
+            \end{column}
+        \end{columns}
+        \vspace{0.15cm}
+    \end{block}
+    \vspace{0.25cm}
+    \centering
+    \textit{\small \textbf{QĐ1 -- Quy định (\texttt{BR-02, BR-11}):} Giá khởi điểm $\ge 0$; bước giá $> 0$; giá sàn ẩn $\ge$ giá khởi điểm; giá mua ngay $>$ giá sàn ẩn. Seller chỉ được sửa/hủy khi chưa có lượt trả giá nào.}
+\end{frame}
+
+% ==================== SLIDE 7 ====================
+\begin{frame}{BM2 -- Biểu mẫu Đặt giá trần (Proxy Bidding)}
+    \begin{block}{\centering \textbf{Phiếu đặt giá trần tự động (Proxy Bid)}}
+        \vspace{0.15cm}
+        \begin{columns}[t]
+            \begin{column}{0.48\textwidth}
+                \textbf{Mã phiên đấu giá:} \hrulefill \\[0.25cm]
+                \textbf{Giá hiện tại công khai:} \hrulefill \\[0.25cm]
+                \textbf{Trạng thái giá sàn:} \hrulefill
+            \end{column}
+            \begin{column}{0.48\textwidth}
+                \textbf{Bước giá tối thiểu theo bậc:} \hrulefill \\[0.25cm]
+                \textbf{Giá trần bí mật (\texttt{max\_amount}):} \hrulefill \\[0.25cm]
+                \textbf{Lịch sử trả giá ẩn danh (\texttt{u***1}):} \hrulefill
+            \end{column}
+        \end{columns}
+        \vspace{0.15cm}
+    \end{block}
+    \vspace{0.25cm}
+    \centering
+    \textit{\small \textbf{QĐ2 -- Quy định (\texttt{BR-03..BR-08}):} \texttt{max\_amount} $\ge$ giá hiện tại + bước giá (bậc 5k / 20k / 100k / 500k). Seller không được tự bid; hai giá trần bằng nhau thì người đặt trước theo \texttt{DATETIME(3)} dẫn đầu.}
+\end{frame}
+
+% ==================== SLIDE 8 ====================
+\begin{frame}{BM3 -- Biểu mẫu Đơn hàng \& Thanh toán Escrow}
+    \begin{block}{\centering \textbf{Đơn hàng trúng giá \& Chứng từ ví bảo chứng (Order \& Escrow)}}
+        \vspace{0.15cm}
+        \begin{columns}[t]
+            \begin{column}{0.48\textwidth}
+                \textbf{Mã đơn hàng:} \hrulefill \\[0.25cm]
+                \textbf{Người thắng cuộc:} \hrulefill \\[0.25cm]
+                \textbf{Giá chốt phiên + Phí ship:} \hrulefill
+            \end{column}
+            \begin{column}{0.48\textwidth}
+                \textbf{Địa chỉ nhận hàng:} \hrulefill \\[0.25cm]
+                \textbf{Hạn thanh toán (72 giờ):} \hrulefill \\[0.25cm]
+                \textbf{Trạng thái ví bảo chứng:} \hrulefill
+            \end{column}
+        \end{columns}
+        \vspace{0.15cm}
+    \end{block}
+    \vspace{0.25cm}
+    \centering
+    \textit{\small \textbf{QĐ3 -- Quy định (\texttt{BR-16..BR-23}):} Quá 72h chưa thanh toán $\rightarrow$ hủy đơn (\texttt{CANCELLED\_UNPAID}) và phạt 1 gậy (3 gậy cấm đấu giá 30 ngày). Khi nhận hàng: thu 5\% phí sàn, giải ngân 95\% cho Seller.}
+\end{frame}
+
+% ==================== SLIDE 9 ====================
+\begin{frame}{Bảng trách nhiệm -- Yêu cầu nghiệp vụ}
+    \scriptsize
+    \begin{table}[h]
+        \centering
+        \begin{tabular}{p{2.3cm} p{3.4cm} p{3.8cm} p{3.2cm}}
+            \toprule
+            \textbf{Nghiệp vụ} & \textbf{Người dùng} & \textbf{Phần mềm} & \textbf{Ghi chú} \\
+            \midrule
+            Niêm yết \& tạo phiên & Seller cung cấp thông tin món hàng, giá, thời lượng 3/5/7 ngày & Kiểm tra QĐ1, lưu \texttt{Item/Auction}, mở phiên theo lịch & Cho phép sửa/hủy trước bid đầu; hỗ trợ \textit{Relist} \\
+            \midrule
+            Đặt giá trần tự động & Buyer nhập mức giá trần bí mật (\texttt{max\_amount}) & Khóa phiên, kiểm tra QĐ2, so khớp tự động \& báo \texttt{OUTBID} & Hỗ trợ rút giá trước $\ge 12$h nếu nhập nhầm \\
+            \midrule
+            Đóng phiên \& tạo đơn & Không thao tác (tự động) hoặc Buyer bấm Mua ngay & Scheduler quét 5s; kiểm tra giá sàn; tạo \texttt{Order} \texttt{AWAITING\_PAYMENT} & Nếu chưa đạt giá sàn $\rightarrow$ \texttt{ENDED\_UNSOLD} \\
+            \midrule
+            Thanh toán \& giải ngân & Buyer thanh toán trong 72h \& xác nhận đã nhận hàng & Tạm giữ tiền vào ví Escrow; quá 72h phạt 1 gậy; giải ngân 95\% / 5\% & Tự động hoàn tất sau 7 ngày nếu không khiếu nại \\
+            \midrule
+            Tra cứu phiên đấu giá & Nhập từ khóa, chọn danh mục, khoảng giá & Tìm kiếm, lọc, hiển thị đồng hồ đếm ngược \& nhãn giá sàn & Ẩn danh người trả giá dạng \texttt{u***1} \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+    \vspace{0.1cm}
+    \centering \textit{\footnotesize Bảng trách nhiệm tách rõ phần Người dùng phải làm và phần Phần mềm phải hỗ trợ -- xác định ranh giới phạm vi hệ thống.}
+\end{frame}
+
+% ==================== SLIDE 10 ====================
+\begin{frame}
+    \begin{center}
+        \vspace{1.5cm}
+        {\Large \textbf{\color{primaryNavy}PHẦN 2}}\\[0.5cm]
+        {\huge \textbf{\color{primaryNavy}Yêu cầu chất lượng}}\\[0.6cm]
+        \textit{\color{secondarySlate}Tiến hóa, hiệu quả, tiện dụng, tương thích -- lượng hóa để kiểm tra khi nghiệm thu}
+    \end{center}
+\end{frame}
+
+% ==================== SLIDE 11 ====================
+\begin{frame}{Bảng yêu cầu tiến hóa}
+    \footnotesize
+    \begin{table}[h]
+        \centering
+        \begin{tabular}{c p{3.5cm} p{4.2cm} p{3.6cm}}
+            \toprule
+            \textbf{Stt} & \textbf{Nghiệp vụ} & \textbf{Tham số cần thay đổi} & \textbf{Miền giá trị cần thay đổi} \\
+            \midrule
+            1 & Thay đổi qui định bậc bước giá tối thiểu & Ngưỡng giá trị sản phẩm, mức bước giá tương ứng & Bảng cấu hình \texttt{system\_configs} \\
+            \midrule
+            2 & Thay đổi qui định thời hạn \& phí dịch vụ & Thời lượng phiên (3/5/7 ngày), hạn thanh toán (72h), tỷ lệ phí sàn (5\%) & Cấu hình tham số hệ thống bởi Admin \\
+            \midrule
+            3 & Thay đổi qui định xử phạt bùng hàng & Số gậy vi phạm tối đa (3 gậy), số ngày khóa tài khoản (30 ngày) & Quy chế xử phạt trong \texttt{system\_configs} \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+\end{frame}
+
+% ==================== SLIDE 12 ====================
+\begin{frame}{Bảng trách nhiệm -- Yêu cầu tiến hóa}
+    \footnotesize
+    \begin{table}[h]
+        \centering
+        \begin{tabular}{p{3.0cm} p{3.5cm} p{3.8cm} p{2.8cm}}
+            \toprule
+            \textbf{Nghiệp vụ} & \textbf{Người dùng (Admin)} & \textbf{Phần mềm} & \textbf{Ghi chú} \\
+            \midrule
+            Thay đổi bậc bước giá & Cung cấp ngưỡng giá mới và bước giá tương ứng & Ghi nhận cấu hình mới và áp dụng ngay cho các phiên mới & Không ảnh hưởng phiên đang chạy \\
+            \midrule
+            Thay đổi thời hạn \& phí sàn & Nhập hạn thanh toán mới (giờ) hoặc tỷ lệ phí (\%) & Ghi nhận giá trị mới và tự động tính lại khi giải ngân & Lưu vết thay đổi vào \texttt{audit\_logs} \\
+            \midrule
+            Thay đổi qui định xử phạt & Cập nhật ngưỡng gậy phạt và thời gian khóa & Ghi nhận tham số mới và áp dụng khi quét đơn quá hạn & Cho phép mở khóa thủ công khi cần \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+\end{frame}
+
+% ==================== SLIDE 13 ====================
+\begin{frame}{Bảng yêu cầu hiệu quả}
+    \footnotesize
+    \begin{table}[h]
+        \centering
+        \begin{tabular}{c p{3.2cm} p{3.4cm} p{2.8cm} p{2.5cm}}
+            \toprule
+            \textbf{Stt} & \textbf{Nghiệp vụ} & \textbf{Tốc độ xử lý} & \textbf{Dung lượng / Ràng buộc} & \textbf{Ghi chú} \\
+            \midrule
+            1 & Đặt giá trần \& so khớp tự động & Phản hồi $\le 200\text{ ms}$ & Khóa dòng \texttt{SELECT ... FOR UPDATE} & Thời gian phản hồi (\texttt{NFR-01}) \\
+            \midrule
+            2 & Đồng bộ bước giá trực tiếp & Đẩy tới phòng đấu giá $< 1\text{ giây}$ & Giao thức WebSocket STOMP & Thời gian thực (\texttt{NFR-02}) \\
+            \midrule
+            3 & Đóng phiên tự động & Scheduler quét mỗi 5 giây & Đúng mốc \texttt{end\_time} (Hard-close) & Xử lý định kỳ ngầm \\
+            \midrule
+            4 & Tra cứu \& lọc phiên đấu giá & $\le 2\text{ giây}$ cho 95\% lượt tra cứu & Hỗ trợ phân trang dữ liệu & Thời gian phản hồi \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+    \vspace{0.15cm}
+    \centering \textit{\footnotesize Cần phân biệt rõ năng suất nghiệp vụ (chu kỳ quét Scheduler) với thời gian phản hồi tức thì của phần mềm.}
+\end{frame}
+
+% ==================== SLIDE 14 ====================
+\begin{frame}{Bảng trách nhiệm -- Yêu cầu hiệu quả}
+    \footnotesize
+    \begin{table}[h]
+        \centering
+        \begin{tabular}{p{3.0cm} p{3.2cm} p{4.2cm} p{2.5cm}}
+            \toprule
+            \textbf{Nghiệp vụ} & \textbf{Người dùng} & \textbf{Phần mềm} & \textbf{Ghi chú} \\
+            \midrule
+            Đặt giá trần tự động & Gửi lệnh đặt giá qua kết nối mạng ổn định & Thực hiện đúng $\le 200\text{ ms}$ với khóa bi quan & Kiểm thử chịu tải giây cuối \\
+            \midrule
+            Đồng bộ bước giá & Mở trang chi tiết phiên trên trình duyệt & Đẩy thông điệp WebSocket $< 1\text{ giây}$ không cần F5 & Cập nhật tức thì cho mọi client \\
+            \midrule
+            Đóng phiên \& tra cứu & Nhập điều kiện lọc (nếu tra cứu) & Quét Scheduler mỗi 5s; trả kết quả tra cứu $\le 2\text{ giây}$ & -- \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+\end{frame}
+
+% ==================== SLIDE 15 ====================
+\begin{frame}{Bảng yêu cầu tiện dụng}
+    \footnotesize
+    \begin{table}[h]
+        \centering
+        \begin{tabular}{c p{3.0cm} p{2.8cm} p{3.8cm} p{2.5cm}}
+            \toprule
+            \textbf{Stt} & \textbf{Nghiệp vụ} & \textbf{Mức độ dễ học} & \textbf{Mức độ dễ sử dụng} & \textbf{Ghi chú} \\
+            \midrule
+            1 & Tạo phiên \& đăng lại (\textit{Relist}) & $\le 10$ phút hướng dẫn & Tính năng \textit{Relist} 1 cú nhấp chuột tải lại thông tin \& ảnh cũ & Giao diện Bootstrap 5 trực quan \\
+            \midrule
+            2 & Đặt giá trần \& Mua ngay & Không cần hướng dẫn & Tự động nâng giá; hiển thị đồng hồ đếm ngược trực tiếp & Tỷ lệ lỗi thao tác $\le 1\%$ \\
+            \midrule
+            3 & Tra cứu phiên đấu giá & Không cần hướng dẫn & Lọc theo danh mục, mức giá, sắp xếp theo giờ kết thúc & Đầy đủ thông tin phiên \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+\end{frame}
+
+% ==================== SLIDE 16 ====================
+\begin{frame}{Bảng trách nhiệm -- Yêu cầu tiện dụng}
+    \footnotesize
+    \begin{table}[h]
+        \centering
+        \begin{tabular}{p{3.0cm} p{3.5cm} p{3.8cm} p{2.6cm}}
+            \toprule
+            \textbf{Nghiệp vụ} & \textbf{Người dùng} & \textbf{Phần mềm} & \textbf{Ghi chú} \\
+            \midrule
+            Tạo phiên \& đăng lại & Đọc hướng dẫn quy định tạo phiên (3/5/7 ngày) & Thực hiện đúng giao diện mẫu, hỗ trợ tải sẵn dữ liệu khi Relist & -- \\
+            \midrule
+            Đặt giá trần \& Mua ngay & Thao tác theo nút bấm và gợi ý bước giá hợp lệ & Hiển thị rõ giá tối thiểu tiếp theo và thông báo Outbid & Cảnh báo khi nhập sai định dạng \\
+            \midrule
+            Tra cứu phiên đấu giá & -- & Thực hiện đúng giao diện tìm kiếm, lọc và đồng hồ live & -- \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+\end{frame}
+
+% ==================== SLIDE 17 ====================
+\begin{frame}{Bảng yêu cầu tương thích}
+    \footnotesize
+    \begin{table}[h]
+        \centering
+        \begin{tabular}{c p{3.4cm} p{4.2cm} p{3.8cm}}
+            \toprule
+            \textbf{Stt} & \textbf{Nghiệp vụ} & \textbf{Đối tượng liên quan} & \textbf{Ghi chú} \\
+            \midrule
+            1 & Đồng bộ giá thời gian thực & Trình duyệt hỗ trợ WebSocket STOMP & Hoạt động đa trình duyệt (Chrome, Edge, Firefox) \\
+            \midrule
+            2 & Hiển thị giao diện đa thiết bị & PC/Laptop và Điện thoại thông minh & Tự động co giãn nhờ Bootstrap 5 \\
+            \midrule
+            3 & Quản lý phiên bản CSDL & MySQL 8.0 (XAMPP) \& Flyway Migration & Độc lập môi trường triển khai \\
+            \midrule
+            4 & Mô phỏng thanh toán ví nội bộ & Hệ thống ví nội bộ (\texttt{SYSTEM\_ESCROW}) & Không phụ thuộc cổng thanh toán ngoài \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+    \vspace{0.15cm}
+    \centering \textit{\footnotesize Ghi rõ phạm vi theo SRS: sử dụng ví nội bộ mô phỏng thay vì tích hợp cổng thanh toán ngân hàng thực tế.}
+\end{frame}
+
+% ==================== SLIDE 18 ====================
+\begin{frame}
+    \begin{center}
+        \vspace{1.5cm}
+        {\Large \textbf{\color{primaryNavy}PHẦN 3}}\\[0.5cm]
+        {\huge \textbf{\color{primaryNavy}Bảo mật, an toàn dữ liệu \& chất lượng kỹ thuật}}\\[0.6cm]
+        \textit{\color{secondarySlate}Phân quyền, toàn vẹn dữ liệu, khả năng bảo trì và thích nghi}
+    \end{center}
+\end{frame}
+
+% ==================== SLIDE 19 ====================
+\begin{frame}{Bảng yêu cầu bảo mật -- Phân quyền}
+    \footnotesize
+    \begin{table}[h]
+        \centering
+        \begin{tabular}{c l c c c c}
+            \toprule
+            \textbf{Stt} & \textbf{Nghiệp vụ} & \textbf{Admin} & \textbf{Seller} & \textbf{Buyer} & \textbf{Guest} \\
+            \midrule
+            1 & Cấu hình hệ thống, danh mục \& khóa tài khoản & X & & & \\
+            \midrule
+            2 & Tạo món hàng, tạo phiên, Relist \& Second Chance & & X & & \\
+            \midrule
+            3 & Đặt giá trần (Proxy Bid), Mua ngay, rút giá & & & X & \\
+            \midrule
+            4 & Thanh toán Escrow, xác nhận nhận hàng, khiếu nại & & & X & \\
+            \midrule
+            5 & Xử lý khiếu nại (hoàn tiền / giải ngân) & X & & & \\
+            \midrule
+            6 & Xem danh sách, tìm kiếm, xem chi tiết phiên & X & X & X & X \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+    \vspace{0.15cm}
+    \centering \textit{\footnotesize ``X'' đánh dấu vai trò được phép thực hiện nghiệp vụ tương ứng -- kiểm soát bằng Spring Security.}
+\end{frame}
+
+% ==================== SLIDE 20 ====================
+\begin{frame}{Bảng trách nhiệm -- Yêu cầu bảo mật}
+    \footnotesize
+    \begin{table}[h]
+        \centering
+        \begin{tabular}{p{2.8cm} p{3.5cm} p{4.0cm} p{2.5cm}}
+            \toprule
+            \textbf{Vai trò / Nghiệp vụ} & \textbf{Người dùng} & \textbf{Phần mềm} & \textbf{Ghi chú} \\
+            \midrule
+            Quản trị viên (Admin) & Cung cấp tài khoản Admin và thông số phân quyền & Xác thực BCrypt, ghi nhận và thực thi đúng quyền hạn & Giám sát \texttt{audit\_logs} \\
+            \midrule
+            Người bán (Seller) & Cung cấp tên đăng nhập, mật khẩu & Xác thực, chặn tuyệt đối quyền tự bid phiên của mình & -- \\
+            \midrule
+            Người mua (Buyer) & Cung cấp tên đăng nhập, mật khẩu & Xác thực, ẩn \texttt{max\_amount} \& \texttt{reserve\_price} khỏi API & Che tên dạng \texttt{u***1} \\
+            \midrule
+            Khách vãng lai (Guest) & Không cần đăng nhập & Chỉ cho phép xem thông tin công khai & -- \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+\end{frame}
+
+% ==================== SLIDE 21 ====================
+\begin{frame}{Bảng yêu cầu an toàn dữ liệu}
+    \footnotesize
+    \begin{table}[h]
+        \centering
+        \begin{tabular}{c p{3.2cm} p{3.8cm} p{4.2cm}}
+            \toprule
+            \textbf{Stt} & \textbf{Nghiệp vụ / Quy tắc} & \textbf{Đối tượng} & \textbf{Ghi chú} \\
+            \midrule
+            1 & Nhật ký bất biến (Append-only) & Bảng \texttt{transactions}, \texttt{bids}, \texttt{audit\_logs} & Chỉ cho phép thêm mới, tuyệt đối không sửa/xóa (\texttt{BR-25}) \\
+            \midrule
+            2 & Chống trừ tiền lặp \& số dư âm & Ví tiền \& giao dịch (\texttt{wallets}, \texttt{transactions}) & Dùng \texttt{idempotency\_key} và ràng buộc số dư $\ge 0$ (\texttt{NFR-04}) \\
+            \midrule
+            3 & Không cho phép sửa/xóa phiên & Phiên đấu giá (\texttt{auctions}) khi đã có lượt bid & Bảo toàn lịch sử trả giá \\
+            \midrule
+            4 & Định dạng tiền tệ chính xác & Toàn bộ cột số tiền VNĐ & Dùng kiểu \texttt{BIGINT} triệt tiêu sai số làm tròn \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+\end{frame}
+
+% ==================== SLIDE 22 ====================
+\begin{frame}{Bảng trách nhiệm -- Yêu cầu an toàn dữ liệu}
+    \footnotesize
+    \begin{table}[h]
+        \centering
+        \begin{tabular}{p{3.0cm} p{3.2cm} p{4.2cm} p{2.5cm}}
+            \toprule
+            \textbf{Nghiệp vụ} & \textbf{Người dùng} & \textbf{Phần mềm} & \textbf{Ghi chú} \\
+            \midrule
+            Nhật ký giao dịch ví & Gửi yêu cầu nạp/rút/thanh toán với thao tác hợp lệ & Ghi nhận giao dịch bất biến; khóa chống lặp \texttt{idempotency\_key} & Đảm bảo số dư không âm \\
+            \midrule
+            Bảo vệ phiên đang chạy & Seller yêu cầu sửa/hủy phiên (nếu cần) & Kiểm tra điều kiện chưa có bid; từ chối xóa nếu đã có người bid & -- \\
+            \midrule
+            Lưu trữ tiền tệ VNĐ & Nhập giá tiền bằng số nguyên VNĐ & Lưu bằng \texttt{BIGINT} và kiểm tra hợp lệ ở tầng CSDL & -- \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+\end{frame}
+
+% ==================== SLIDE 23 ====================
+\begin{frame}{Bảng yêu cầu chất lượng kỹ thuật}
+    \footnotesize
+    \begin{table}[h]
+        \centering
+        \begin{tabular}{c p{2.6cm} p{4.8cm} p{3.8cm}}
+            \toprule
+            \textbf{Stt} & \textbf{Yêu cầu} & \textbf{Mô tả chi tiết} & \textbf{Ghi chú} \\
+            \midrule
+            1 & Dễ sửa lỗi & Khoanh vùng lỗi nhanh theo 11 module độc lập \& tra cứu \texttt{audit\_logs} & Sửa lỗi 1 module không ảnh hưởng module khác \\
+            \midrule
+            2 & Dễ bảo trì & Kiến trúc Modular Monolith, giao tiếp liên module qua Facade Pattern & Dễ nâng cấp nghiệp vụ mới \\
+            \midrule
+            3 & Tái sử dụng & Dùng chung module \texttt{common} (\texttt{MoneyUtil}, \texttt{StringUtil}) và \texttt{wallet} & Tái sử dụng cho Proxy Bid, Buy It Now, Second Chance \\
+            \midrule
+            4 & Dễ thích nghi / mang chuyển & Dùng Spring Data JPA, Flyway Migration và Maven Wrapper (\texttt{mvnw}) & Độc lập hệ điều hành, dễ chuyển đổi hệ quản trị CSDL \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+    \vspace{0.15cm}
+    \centering \textit{\footnotesize Ràng buộc công nghệ cụ thể: Java 17, Spring Boot 3, MySQL 8.0, Thymeleaf + Bootstrap 5, WebSocket STOMP.}
+\end{frame}
+
+% ==================== SLIDE 24 ====================
+\begin{frame}
+    \begin{center}
+        \vspace{1.5cm}
+        {\Large \textbf{\color{primaryNavy}PHẦN 4}}\\[0.5cm]
+        {\huge \textbf{\color{primaryNavy}Tổng hợp \& Thảo luận}}\\[0.6cm]
+        \textit{\color{secondarySlate}Nhìn lại toàn bộ bức tranh 8 nhóm yêu cầu của Hệ thống Đấu giá Trực tuyến}
+    \end{center}
+\end{frame}
+
+% ==================== SLIDE 25 ====================
+\begin{frame}{Tám nhóm đặc tả yêu cầu đã áp dụng cho PROJECT\_1}
+    \begin{columns}[t]
+        \begin{column}{0.24\textwidth}
+            \begin{block}{\centering \textbf{1. Nghiệp vụ}}
+                \footnotesize Listing, Proxy Bid, Đóng phiên, Escrow (\texttt{BR-01..25}).
+            \end{block}
+            \vspace{0.2cm}
+            \begin{block}{\centering \textbf{5. Tương thích}}
+                \footnotesize WebSocket STOMP, Bootstrap 5, Flyway, Ví nội bộ.
+            \end{block}
+        \end{column}
+        \begin{column}{0.24\textwidth}
+            \begin{block}{\centering \textbf{2. Tiến hóa}}
+                \footnotesize Cấu hình động bậc bước giá, phí 5\%, hạn 72h, 3 gậy.
+            \end{block}
+            \vspace{0.2cm}
+            \begin{block}{\centering \textbf{6. Bảo mật}}
+                \footnotesize Phân quyền 4 Actor, BCrypt, ẩn giá trần \& giá sàn.
+            \end{block}
+        \end{column}
+        \begin{column}{0.24\textwidth}
+            \begin{block}{\centering \textbf{3. Hiệu quả}}
+                \footnotesize Phản hồi $\le 200\text{ ms}$, WebSocket $< 1\text{ s}$, quét 5s.
+            \end{block}
+            \vspace{0.2cm}
+            \begin{block}{\centering \textbf{7. An toàn dữ liệu}}
+                \footnotesize Bất biến \texttt{bids/transactions}, \texttt{BIGINT}, \texttt{idempotency\_key}.
+            \end{block}
+        \end{column}
+        \begin{column}{0.24\textwidth}
+            \begin{block}{\centering \textbf{4. Tiện dụng}}
+                \footnotesize Relist 1 click, đồng hồ đếm ngược live, lỗi $\le 1\%$.
+            \end{block}
+            \vspace{0.2cm}
+            \begin{block}{\centering \textbf{8. Chất lượng KT}}
+                \footnotesize Modular Monolith, Facade, 41/41 Unit Test JUnit 5.
+            \end{block}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% ==================== SLIDE 26 ====================
+\begin{frame}{THẢO LUẬN: Thử đặc tả 1 nhóm yêu cầu mở rộng}
+    \begin{block}{Tình huống mở rộng cho Hệ thống Đấu giá}
+        \textit{Nếu bổ sung yêu cầu mới: ``Gửi thông báo qua Email/SMS cho Người mua khi bị vượt giá (Outbid) hoặc sắp hết phiên 15 phút'', nhóm sẽ điền gì vào bảng yêu cầu và bảng trách nhiệm?}
+    \end{block}
+    \vspace{0.3cm}
+    \textbf{Gợi ý phân tích áp dụng:}
+    \begin{itemize}
+        \item \textbf{Phân loại:} Thuộc cả \textbf{Yêu cầu nghiệp vụ} (tạo thông báo tự động) và \textbf{Yêu cầu tương thích} (kết nối cổng gửi Email SMTP / SMS API bên ngoài).
+        \item \textbf{Bảng yêu cầu:} Gửi tin trong vòng $< 30\text{ giây}$ kể từ sự kiện kích hoạt; không gửi trùng lặp.
+        \item \textbf{Bảng trách nhiệm:} \textit{Người dùng} cung cấp Email/SĐT hợp lệ và bật nhận thông báo; \textit{Phần mềm} lắng nghe sự kiện, định dạng nội dung và gọi dịch vụ gửi tin.
+    \end{itemize}
+\end{frame}
+
+% ==================== SLIDE 27 ====================
+\begin{frame}{Tổng kết Chương 3}
+    \begin{itemize}
+        \item Khảo sát hiện trạng (\textbf{tổ chức -- nghiệp vụ -- tin học}) là bước nền tảng trước khi đặc tả yêu cầu.
+        \item Kết hợp các kỹ thuật khảo sát: nghiên cứu tài liệu chuẩn (\texttt{SRS.md}, \texttt{ERD.md}), tham khảo sàn eBay và đối chiếu mô hình dữ liệu.
+        \item Bộ hồ sơ yêu cầu hoàn chỉnh cho \texttt{PROJECT\_1} bao gồm đầy đủ \textbf{8 nhóm yêu cầu}, được lượng hóa rõ ràng để kiểm chứng bằng \textbf{41/41 Unit Tests (JUnit 5)}.
+        \item \textbf{Bảng trách nhiệm (Người dùng $\leftrightarrow$ Phần mềm)} xác định rành mạch ranh giới phạm vi và trách nhiệm của hệ thống.
+    \end{itemize}
+    \vspace{0.3cm}
+    \begin{center}
+        \textit{\color{secondarySlate}Chương 4: Mô hình hóa yêu cầu (Use Case, Activity, Sequence, Class Diagram)}
+    \end{center}
+\end{frame}
+
+% ==================== SLIDE 28 ====================
+\begin{frame}
+    \begin{center}
+        \vspace{1.5cm}
+        {\huge \textbf{\color{primaryNavy}Câu hỏi \& Thảo luận}}\\[0.8cm]
+        {\large \textbf{Cảm ơn cô Phạm Thi Vương và các bạn đã lắng nghe!}}\\[0.5cm]
+        \textit{\color{secondarySlate}Chương 4: Mô hình hóa yêu cầu -- hẹn gặp lại!}
+    \end{center}
+\end{frame}
+
+\end{document}

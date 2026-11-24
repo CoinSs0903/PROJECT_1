@@ -100,7 +100,7 @@ h1, h2, h3, h4, .brand-font {
   align-items: center;
   gap: 0.5rem;
   padding: 0.6rem 1.25rem;
-  border-radius: 8px;
+  border-radius: 0;
   font-size: 0.9rem;
   font-weight: 600;
   text-decoration: none;

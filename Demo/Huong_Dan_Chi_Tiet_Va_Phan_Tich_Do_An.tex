@@ -1,0 +1,177 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[vietnamese,english]{babel}
+\usepackage[top=2cm,bottom=2cm,left=2.2cm,right=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{float}
+\usepackage{titlesec}
+
+% Section formatting
+\titleformat{\section}{\large\bfseries\color{darkblue}}{\thesection.}{0.5em}{}
+\titleformat{\subsection}{\normalsize\bfseries\color{darkblue}}{\thesubsection.}{0.5em}{}
+\titleformat{\subsubsection}{\small\bfseries\color{darkgray}}{\thesubsubsection.}{0.5em}{}
+
+\definecolor{darkblue}{RGB}{10, 30, 60}
+\definecolor{warningred}{RGB}{180, 40, 40}
+\definecolor{successgreen}{RGB}{30, 130, 60}
+\definecolor{lightgray}{RGB}{246, 248, 250}
+\definecolor{bordergray}{RGB}{209, 213, 219}
+\definecolor{darkgray}{RGB}{55, 65, 81}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=darkblue,
+    citecolor=green!50!black,
+    urlcolor=blue!70!black,
+    pdftitle={Huong Dan Chi Tiet Va Phan Tich Do An Project 1},
+    pdfauthor={Senior Software Design Analyst}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\footnotesize \textcolor{darkgray}{HỌC PHẦN PHÁT TRIỂN PHẦN MỀM HƯỚNG ĐỐI TƯỢNG}}
+\rhead{\footnotesize \textcolor{darkblue}{\textbf{Audit Report \& Guidebook -- Project 1}}}
+\cfoot{\thepage}
+
+\begin{document}
+\selectlanguage{vietnamese}
+
+\begin{center}
+    {\large \textbf{BỘ MÔN CÔNG NGHỆ PHẦN MỀM -- BÁO CÁO THẨM ĐỊNH CHUYÊN SÂU}}\\[0.2cm]
+    {\LARGE \textbf{CẨM NANG HƯỚNG DẪN HOÀN THIỆN HỒ SƠ THIẾT KẾ}}\\[0.15cm]
+    {\normalsize \textit{Đánh giá chi tiết ĐÚNG / THIẾU / THỪA \& Kịch bản Vấn đáp Đồ án}}\\[0.4cm]
+    
+    \begin{tcolorbox}[colback=darkblue,colframe=warningred,arc=3mm,width=0.98\textwidth]
+        \centering \color{white}
+        \vspace{0.2cm}
+        {\large \textbf{ĐỀ TÀI:}}\\[0.15cm]
+        {\huge \textbf{HỆ THỐNG ĐẤU GIÁ TRỰC TUYẾN TỰ ĐỘNG (PROJECT\_1)}}\\[0.2cm]
+        {\small \textit{Tài liệu đối chiếu trực tiếp với Mẫu Hồ sơ Thiết kế Chuẩn Doanh nghiệp (Enterprise SDD)}}
+        \vspace{0.2cm}
+    \end{tcolorbox}
+\end{center}
+
+\vspace{0.3cm}
+
+\noindent \textbf{\large THÔNG TIN THẨM ĐỊNH}
+\begin{table}[H]
+    \centering
+    \small
+    \begin{tabularx}{\textwidth}{|l|X|}
+        \hline
+        \textbf{Thuộc tính} & \textbf{Chi tiết} \\ \hline
+        Chuyên gia thẩm định & Senior Software Design Dossier Analyst \\ \hline
+        Dự án đối chiếu & PROJECT\_1 -- Hệ Thống Đấu Giá Trực Tuyến Tự Động \\ \hline
+        Mục tiêu & Rà soát 100\% các tiêu chí chất lượng, hướng dẫn từng vai trò thành viên \\ \hline
+        Ngày phát hành & 06/11/2026 \\ \hline
+    \end{tabularx}
+\end{table}
+
+\newpage
+\tableofcontents
+\newpage
+
+\section{TỔNG QUAN ĐÁNH GIÁ HIỆN TRẠNG DỰ ÁN PROJECT\_1}
+
+\subsection{Những yếu tố nhóm đang làm ĐÚNG (Điểm mạnh vượt trội)}
+\begin{enumerate}[leftmargin=*]
+    \item \textbf{Đúng tinh thần nghiệp vụ phức tạp (Không phải CRUD đơn thuần):} Các Use Case trọng tâm giải quyết bài toán cốt lõi của sàn đấu giá: thuật toán tự động trả giá trần bí mật (\textit{Proxy Bidding}), giá sàn ẩn bảo vệ người bán (\textit{Reserve Price}), mua đứt ngay tức thì (\textit{Buy It Now}) và thanh toán bảo chứng qua ví (\textit{Escrow Wallet}).
+    \item \textbf{Cơ sở dữ liệu chuẩn hóa xuất sắc:} 15 bảng chuẩn hóa 3NF; phân tách rạch ròi giữa bảng `proxy_bids` (giá trần bí mật tối đa) và `bids` (bước giá công khai); tiền tệ dùng kiểu `BIGINT` đơn vị VNĐ và ràng buộc `CHECK (available_balance >= 0)`.
+    \item \textbf{Bộ kiểm thử tự động (Unit Tests) hoàn chỉnh:} 12 bộ test suites JUnit 5 bao phủ Happy path, Boundary (chạm giá sàn) và Exception (tự bid hàng mình, bùng hàng quá 72h).
+    \item \textbf{Kiến trúc Modular Monolith chuẩn mực:} Giao tiếp liên module duy nhất qua Facade (`WalletFacade`, `NotificationFacade`) và kích hoạt Domain Events.
+\end{enumerate}
+
+\subsection{Những yếu tố và chức năng nhóm đang THIẾU (Cần bổ sung)}
+\begin{enumerate}[leftmargin=*]
+    \item \textbf{Thiếu Sơ đồ Lớp (Class Diagrams) -- *Lỗi mất điểm lớn nhất trong môn OOAD*:}
+    \begin{itemize}
+        \item \textit{Thiếu 01 Sơ đồ lớp phân tích (Analysis/Domain Class Diagram):} Mô hình hóa thực thể nghiệp vụ (`User`, `Item`, `Auction`, `ProxyBid`, `Bid`, `Order`, `Wallet`, `Transaction`) độc lập công nghệ.
+        \item \textit{Thiếu 01 Sơ đồ lớp thiết kế (Design Class Diagram):} Mô hình hóa cụ thể Controller $\rightarrow$ Facade/Service $\rightarrow$ Entity/DTO $\rightarrow$ Repository trong Spring Boot.
+    \end{itemize}
+    \item \textbf{Thiếu Sơ đồ Hoạt động (Activity Diagrams) có rẽ nhánh điều kiện:}
+    Chưa có sơ đồ hoạt động trực quan cho 2 quy trình: (1) Quy trình so khớp giá trần Proxy Bidding; (2) Quy trình đóng phiên tự động, thanh toán Escrow và xử lý bùng hàng (Relist / Second Chance).
+    \item \textbf{Thiếu Sơ đồ Kiến trúc Logic và Sơ đồ Triển khai 3 tầng vật lý:}
+    Mới có các quyết định kiến trúc (`DECISIONS.md`) nhưng chưa trực quan hóa thành sơ đồ Layer View và Deployment Tier View.
+    \item \textbf{Thiếu Ma trận Phân quyền (Role-Permission Matrix) \& Ma trận Truy vết (RTM):}
+    Cần bổ sung bảng ma trận 2 chiều ánh xạ quyền hạn của 4 vai trò và bảng truy vết end-to-end từ Requirement $\rightarrow$ Use Case $\rightarrow$ Design Class $\rightarrow$ API/Table $\rightarrow$ Test Case.
+\end{enumerate}
+
+\subsection{Những yếu tố DƯ THỪA / MÂU THUẪN nhóm cần LOẠI BỎ NGAY}
+\begin{tcolorbox}[colback=warningred!10,colframe=warningred,title=\textbf{CẢNH BÁO: CÁC ĐIỂM DỄ BỊ TRỪ ĐIỂM DO LỆCH PHA TÀI LIỆU}]
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Xóa hoặc cập nhật lại 2 file CSDL cũ 19 bảng:} File `PROJECT_1/docs/database_diagram.html` và `.drawio` vẫn lưu schema 19 bảng cũ (có `seller_profiles`, `holidays`... và thiếu `proxy_bids`). Giảng viên đối chiếu sẽ phát hiện mâu thuẫn dữ liệu ngay.
+    \item \textbf{Xóa dòng chữ Luật 01/2016 ở footer web:} Trong file `PROJECT_1/frontend/web_app/index.html` tại dòng 61, cần xóa bỏ dòng *"Tuân thủ Luật Đấu giá tài sản số 01/2016/QH14..."* vì dự án đã chuyển hẳn sang mô hình đấu giá thương mại tự động.
+    \item \textbf{Lược bỏ phần so sánh quá khứ:} Trong file `PROJECT_1/docs/ERD_EXPLANATION_AND_COMPARISON.md`, chỉ giữ lại phần giải thích 15 bảng hiện hành và bộ câu hỏi vấn đáp; lược bỏ các đoạn giải thích dài dòng về 19 bảng cũ để tài liệu nộp ngắn gọn, sắc bén.
+\end{itemize}
+\end{tcolorbox}
+
+\section{HƯỚNG DẪN CHI TIẾT TỪNG THÀNH VIÊN TRONG NHÓM KHI ĐỌC HỒ SƠ}
+
+Khi hội đồng giảng viên vấn đáp (Viva Defense), giảng viên sẽ hỏi xoáy theo từng vai trò chuyên trách của thành viên:
+
+\subsection{Thành viên 1: Business Analyst / Product Owner (BA)}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Phạm vi nắm vững trong hồ sơ:} Chương 1 (Overview, Scope, Stakeholders), Chương 2 (BRD/SRS, Business Rules).
+    \item \textbf{Câu hỏi giảng viên hay hỏi:} \textit{``Tại sao nhóm lại bỏ tiền đặt cọc trước? Làm sao chống được người trúng bùng hàng?''}
+    \item \textbf{Kịch bản trả lời chuẩn điểm 10:}
+    \begin{quote}
+        \small ``Thưa Thầy/Cô, việc bắt người mua nộp tiền cọc 5\%--20\% trước khi vào phòng đấu giá làm đóng băng vốn của người mua và phát sinh gánh nặng kế toán đối soát hoàn trả cọc. Nhóm đã nghiên cứu mô hình của sàn eBay và chuyển sang cơ chế \textbf{Instant Bidding}: cho phép người mua tham gia trả giá tức thì để tối đa hóa thanh khoản cho phiên. Để chống bùng hàng, hệ thống áp dụng cơ chế răn đe: người thắng có 72 giờ để thanh toán; nếu quá hạn, đơn hàng tự động bị hủy và người mua bị cộng \textbf{1 gậy vi phạm (Unpaid Strike)}. Khi tích lũy đủ 3 gậy, tài khoản bị khóa vĩnh viễn; đồng thời người bán được bảo vệ bằng quyền \textbf{Relist} (mở bán lại) hoặc chào bán cho người về nhì (\textbf{Second Chance Offer}).''
+    \end{quote}
+\end{itemize}
+
+\subsection{Thành viên 2: System \& Software Designer}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Phạm vi nắm vững trong hồ sơ:} Chương 3 (Use Cases, Sequence, Activity, State Machine), Chương 4 (Domain Model), Chương 5 (Architecture, ADR), Chương 6 (Detailed OO Design, Patterns).
+    \item \textbf{Câu hỏi giảng viên hay hỏi:} \textit{``Phân biệt Analysis Class Diagram và Design Class Diagram trong đồ án? Tại sao lại dùng Facade Pattern?''}
+    \item \textbf{Kịch bản trả lời chuẩn điểm 10:}
+    \begin{quote}
+        \small ``Thưa Thầy/Cô, \textbf{Analysis Class Diagram} là mô hình miền thuần túy, chỉ thể hiện các khái niệm thế giới thực (`User`, `Item`, `Auction`, `ProxyBid`) và thuộc tính nghiệp vụ độc lập hoàn toàn với công nghệ. Trong khi đó, \textbf{Design Class Diagram} là bản thiết kế chi tiết gắn liền với kiến trúc Spring Boot (Controller, Service, Facade, Repository, Entity), thể hiện kiểu dữ liệu cụ thể, visibility và các phương thức thực thi. Nhóm sử dụng \textbf{Facade Pattern} (`WalletFacade`) để đóng gói toàn bộ tính phức tạp của phân hệ tài chính ví, giúp phân hệ đấu giá gọi nghiệp vụ phong tỏa/giải ngân tiền mà không bị phụ thuộc vòng (Circular Dependency), đảm bảo nguyên tắc Low Coupling.''
+    \end{quote}
+\end{itemize}
+
+\subsection{Thành viên 3: Data, API \& UI/UX Engineer}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Phạm vi nắm vững trong hồ sơ:} Chương 7 (Database Design), Chương 8 (UI/UX Specification), Chương 9 (Interface \& API), Chương 11 (Deployment \& Environment).
+    \item \textbf{Câu hỏi giảng viên hay hỏi:} \textit{``Tại sao lại tách `proxy_bids` và `bids`? Giải quyết tranh chấp trả giá ở mili-giây cuối cùng bằng cách nào?''}
+    \item \textbf{Kịch bản trả lời chuẩn điểm 10:}
+    \begin{quote}
+        \small ``Thưa Thầy/Cô, bảng `proxy_bids` lưu trữ \textbf{giá trần tối đa bí mật} (`max_amount`) của người mua và chỉ được lưu trữ, tính toán ở server, tuyệt đối không trả ra ngoài API DTO để chống lộ bài. Còn bảng `bids` là \textbf{lịch sử các bước giá nhảy công khai} phục vụ hiển thị thời gian thực trên WebSocket STOMP. Để giải quyết tranh chấp mili-giây cuối cùng giữa nhiều người trả giá, nhóm áp dụng \textbf{Khóa bi quan Database (Pessimistic Locking)} với câu lệnh `SELECT ... FOR UPDATE` trên dòng dữ liệu của phiên trong suốt transaction, đảm bảo tính tuần tự hóa (Serializability) và không bao giờ bị nhảy sai giá.''
+    \end{quote}
+\end{itemize}
+
+\subsection{Thành viên 4: QA / Test \& Documentation Engineer}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Phạm vi nắm vững trong hồ sơ:} Chương 0 (Document Control), Chương 10 (Security Design), Chương 12 (Testing, RTM), Chương 13 (Risk Log), Phụ lục Checklist.
+    \item \textbf{Câu hỏi giảng viên hay hỏi:} \textit{``Ma trận truy vết (RTM) chứng minh điều gì? Bộ test suites đã kiểm thử những trường hợp biên nào?''}
+    \item \textbf{Kịch bản trả lời chuẩn điểm 10:}
+    \begin{quote}
+        \small ``Thưa Thầy/Cô, \textbf{Ma trận truy vết (RTM)} chứng minh tính nhất quán 100\% của đồ án: mỗi Yêu cầu chức năng (FR) đều được hiện thực hóa qua Use Case, thể hiện ở Sơ đồ tuần tự, cài đặt bằng Design Class, lưu trữ tại Bảng CSDL, cung cấp qua API Endpoint và có Unit Test Case kiểm chứng tự động. Nhóm đã xây dựng 12 test suites JUnit 5 bao phủ: (1) Happy path (nhảy bước giá chính xác); (2) Boundary (Max Bid chạm đúng giá sàn Reserve Price thì giá hiện tại nhảy thẳng lên giá sàn); (3) Exception (Người bán tự bid hàng mình bị ném lỗi 403, rút tiền quá số dư ví bị từ chối, quá hạn 72h đơn hàng bị hủy bùng hàng).''
+    \end{quote}
+\end{itemize}
+
+\section{HƯỚNG DẪN BIÊN DỊCH VÀ XUẤT RA FILE PDF HOÀN CHỈNH}
+
+Nhóm có thể biên dịch file LaTeX sang PDF bằng 2 cách:
+
+\subsection{Cách 1: Sử dụng Overleaf (Khuyên dùng -- Nhanh, Đẹp \& Chuẩn nhất)}
+\begin{enumerate}
+    \item Truy cập \url{https://www.overleaf.com} và đăng nhập tài khoản.
+    \item Chọn **New Project** $\rightarrow$ **Upload Project** (hoặc tạo Blank Project rồi tải file lên).
+    \item Tải file `Software_Design_Dossier_PROJECT_1.tex` lên Overleaf.
+    \item Vào mục **Menu (góc trái trên)**, tại mục **Compiler** chọn **pdfLaTeX** hoặc **XeLaTeX**.
+    \item Nhấn nút **Recompile** (hoặc phím tắt Ctrl + S) để tải về file PDF tuyệt đẹp, chuẩn mực theo định dạng doanh nghiệp.
+\end{enumerate}
+
+\subsection{Cách 2: Sử dụng MiKTeX / TeXworks trên máy tính cá nhân}
+Mở file `.tex` bằng phần mềm **TeXworks** hoặc **VS Code (cài extension LaTeX Workshop)**, chọn trình biên dịch `pdfLaTeX` và bấm nút **Run** (mũi tên màu xanh) để xuất file PDF cục bộ.
+
+\end{document}

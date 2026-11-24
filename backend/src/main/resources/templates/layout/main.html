@@ -9,50 +9,499 @@
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <style>
+        :root {
+            --sakai-blue: #0f5c57;
+            --sakai-blue-dark: #0a423e;
+            --sakai-blue-header: #134e4a;
+            --sakai-topbar: #1e2328;
+            --sakai-sidebar-bg: #f3f6f5;
+            --sakai-canvas-bg: #eaeff0;
+            --sakai-border: #cfd8d7;
+            --sakai-text: #1f2933;
+            --sakai-muted: #5b6770;
+            --sakai-today-bg: #fef3c7;
+            --sakai-sidebar-width: 225px;
+            --sakai-topbar-height: 48px;
+        }
+
         body {
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            background-color: #f8f9fa;
+            background-color: var(--sakai-canvas-bg);
+            color: var(--sakai-text);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-size: 0.92rem;
+            margin: 0;
         }
+
+        /* Global Sakai Square UI Overrides */
+        .btn,
+        .btn-sm,
+        .btn-lg,
+        .card,
+        .alert,
+        .form-control,
+        .form-select,
+        .input-group-text,
+        .dropdown-menu,
+        .modal-content,
+        .badge:not(.rounded-pill),
+        .nav-tabs .nav-link,
+        .list-group-item,
+        .table,
+        .rounded,
+        .rounded-1,
+        .rounded-2,
+        .rounded-3,
+        .rounded-4 {
+            border-radius: 0 !important;
+        }
+
+        .shadow-sm,
+        .shadow {
+            box-shadow: none !important;
+        }
+
+        .card {
+            border: 1px solid var(--sakai-border) !important;
+            box-shadow: none !important;
+            background-color: #ffffff;
+        }
+
+        .bg-primary {
+            background-color: var(--sakai-blue) !important;
+        }
+
+        .text-primary {
+            color: var(--sakai-blue) !important;
+        }
+
+        .btn-primary {
+            background-color: var(--sakai-blue);
+            border-color: var(--sakai-blue);
+        }
+
+        .btn-primary:hover,
+        .btn-primary:focus {
+            background-color: var(--sakai-blue-dark);
+            border-color: var(--sakai-blue-dark);
+        }
+
+        .btn-outline-primary {
+            color: var(--sakai-blue);
+            border-color: var(--sakai-blue);
+        }
+
+        .btn-outline-primary:hover {
+            background-color: var(--sakai-blue);
+            border-color: var(--sakai-blue);
+            color: #fff;
+        }
+
+        .table thead th {
+            background-color: #f2f4f7;
+            border-bottom: 2px solid var(--sakai-border);
+            color: var(--sakai-text);
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        /* Topbar */
+        .sakai-topbar {
+            height: var(--sakai-topbar-height);
+            background-color: var(--sakai-topbar);
+            color: #ffffff;
+            display: flex;
+            align-items: stretch;
+            position: sticky;
+            top: 0;
+            z-index: 1030;
+            border-bottom: 1px solid #1e2124;
+        }
+
+        .sakai-brand-zone {
+            width: var(--sakai-sidebar-width);
+            background-color: var(--sakai-blue);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 0.75rem 0 1rem;
+            flex-shrink: 0;
+        }
+
+        .sakai-brand-link {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.05rem;
+            letter-spacing: 0.3px;
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+        }
+
+        .sakai-sidebar-toggle {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            width: 30px;
+            height: 30px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .sakai-sidebar-toggle:hover {
+            background-color: rgba(255, 255, 255, 0.12);
+        }
+
+        .sakai-header-main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+            padding: 0 1rem;
+            min-width: 0;
+        }
+
+        .sakai-breadcrumb {
+            color: #e2e6ea;
+            font-size: 0.9rem;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            min-width: 0;
+        }
+
+        .sakai-breadcrumb span.sep {
+            color: #8f969d;
+            margin: 0 0.4rem;
+        }
+
+        .sakai-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            flex-shrink: 0;
+        }
+
+        .sakai-header-actions .btn {
+            white-space: nowrap;
+        }
+
+        .sakai-icon-btn {
+            color: #d8dde2;
+            background: transparent;
+            border: none;
+            padding: 0.25rem 0.4rem;
+            font-size: 1.1rem;
+            cursor: pointer;
+            position: relative;
+            text-decoration: none;
+        }
+
+        .sakai-icon-btn:hover {
+            color: #ffffff;
+        }
+
+        .sakai-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #d97706;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-transform: uppercase;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+
+        /* App Shell */
+        .sakai-shell {
+            display: flex;
+            flex: 1;
+            min-height: calc(100vh - var(--sakai-topbar-height));
+        }
+
+        .sakai-sidebar {
+            width: var(--sakai-sidebar-width);
+            background-color: var(--sakai-sidebar-bg);
+            border-right: 1px solid var(--sakai-border);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            transition: margin-left 0.2s ease;
+        }
+
+        body.sidebar-collapsed .sakai-sidebar {
+            margin-left: calc(-1 * var(--sakai-sidebar-width));
+        }
+
+        .sakai-sidebar-section-header {
+            background-color: var(--sakai-blue-header);
+            color: #ffffff;
+            padding: 0.65rem 1rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .sakai-nav-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .sakai-nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            padding: 0.58rem 1rem;
+            color: var(--sakai-text);
+            text-decoration: none;
+            font-size: 0.88rem;
+            border-bottom: 1px solid #e6e8ec;
+            transition: background-color 0.15s ease;
+        }
+
+        .sakai-nav-link:hover {
+            background-color: #e1eae8;
+            color: #000000;
+        }
+
+        .sakai-nav-link.active {
+            background-color: #0f5c57;
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .sakai-pinned-header {
+            padding: 0.75rem 1rem 0.35rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--sakai-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            border-top: 1px solid var(--sakai-border);
+            margin-top: 0.5rem;
+        }
+
+        .sakai-pinned-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.48rem 1rem;
+            color: var(--sakai-blue);
+            text-decoration: none;
+            font-size: 0.83rem;
+        }
+
+        .sakai-pinned-link:hover {
+            background-color: #e4e7ec;
+            text-decoration: underline;
+        }
+
+        .sakai-sidebar-footer {
+            margin-top: auto;
+            border-top: 1px solid var(--sakai-border);
+            background-color: #e9ecef;
+        }
+
+        .sakai-content-wrap {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sakai-main {
+            flex: 1;
+            padding: 1.25rem;
+        }
+
+        /* Sakai Panel Widget */
+        .sakai-panel {
+            background-color: #ffffff;
+            border: 1px solid var(--sakai-border);
+            margin-bottom: 1.25rem;
+        }
+
+        .sakai-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.65rem 1rem;
+            border-bottom: 1px solid #e7e9ed;
+            background-color: #ffffff;
+        }
+
+        .sakai-panel-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--sakai-text);
+            margin: 0;
+        }
+
+        .sakai-panel-btn {
+            border: 1px solid #c9cdd2;
+            background-color: #ffffff;
+            color: #333;
+            font-size: 0.78rem;
+            padding: 0.22rem 0.6rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .sakai-panel-btn:hover {
+            background-color: #f1f3f5;
+            color: #000;
+        }
+
+        .sakai-panel-body {
+            padding: 1rem;
+        }
+
         .auction-card {
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            transition: border-color 0.2s ease;
         }
+
         .auction-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15) !important;
+            border-color: var(--sakai-blue) !important;
         }
+
         .badge-reserve-met {
             background-color: #198754;
             color: white;
         }
+
         .badge-reserve-not-met {
             background-color: #6c757d;
             color: white;
         }
+
+        @media (max-width: 991.98px) {
+            .sakai-brand-zone {
+                width: auto;
+                padding: 0 0.65rem;
+                gap: 0.5rem;
+            }
+            .sakai-header-main {
+                padding: 0 0.65rem;
+            }
+            .sakai-breadcrumb {
+                display: none;
+            }
+            .sakai-header-actions {
+                margin-left: auto;
+                gap: 0.45rem;
+            }
+            .sakai-sidebar {
+                position: fixed;
+                top: var(--sakai-topbar-height);
+                bottom: 0;
+                left: 0;
+                z-index: 1040;
+                margin-left: 0;
+                transform: translateX(-100%);
+                transition: transform 0.2s ease;
+            }
+            body.sidebar-open-mobile .sakai-sidebar {
+                transform: translateX(0);
+                box-shadow: 4px 0 16px rgba(0, 0, 0, 0.25);
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            .sakai-header-actions .btn {
+                padding: 0.2rem 0.45rem;
+                font-size: 0.78rem;
+            }
+            .sakai-header-actions {
+                gap: 0.3rem;
+            }
+        }
     </style>
 </head>
 <body>
-    <!-- Navbar Fragment -->
+    <!-- Topbar Fragment -->
     <div th:replace="~{layout/navbar :: navbar}"></div>
 
-    <!-- Main Container -->
-    <main class="container my-4 flex-grow-1">
-        <!-- Messages Fragment -->
-        <div th:replace="~{layout/messages :: messages}"></div>
+    <!-- Sakai Shell -->
+    <div class="sakai-shell">
+        <!-- Left Sidebar Fragment -->
+        <aside th:replace="~{layout/navbar :: sidebar}"></aside>
 
-        <!-- Dynamic Content -->
-        <div th:replace="${content}"></div>
-    </main>
+        <!-- Main Workspace Area -->
+        <div class="sakai-content-wrap">
+            <main class="sakai-main">
+                <!-- Messages Fragment -->
+                <div th:replace="~{layout/messages :: messages}"></div>
 
-    <!-- Footer Fragment -->
-    <div th:replace="~{layout/footer :: footer}"></div>
+                <!-- Dynamic Content -->
+                <div th:replace="${content}"></div>
+            </main>
+        </div>
+    </div>
 
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Notification Poll / WebSocket helper -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            // Sidebar toggle
+            const toggleBtn = document.getElementById('sidebarToggleBtn');
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', function () {
+                    if (window.innerWidth < 992) {
+                        document.body.classList.toggle('sidebar-open-mobile');
+                    } else {
+                        document.body.classList.toggle('sidebar-collapsed');
+                    }
+                });
+            }
+
+            // Highlight active sidebar link (longest matching path only)
+            const currentPath = window.location.pathname;
+            let bestMatch = null;
+            let bestLen = -1;
+            document.querySelectorAll('.sakai-nav-list .sakai-nav-link').forEach(link => {
+                const href = link.getAttribute('href');
+                if (!href) return;
+                const isMatch = (href === currentPath) || (href !== '/' && currentPath.startsWith(href + '/'));
+                if (isMatch && href.length > bestLen) {
+                    bestMatch = link;
+                    bestLen = href.length;
+                }
+            });
+            if (bestMatch) {
+                bestMatch.classList.add('active');
+            }
+
+            // Dynamic breadcrumb page title
+            const bcPage = document.getElementById('breadcrumbPage');
+            if (bcPage && document.title) {
+                bcPage.innerText = document.title;
+            }
+
+            // User avatar initials
+            const avatarEl = document.getElementById('userAvatarInitials');
+            const userNameEl = document.getElementById('topbarUserName');
+            if (avatarEl && userNameEl) {
+                const name = userNameEl.innerText.trim();
+                avatarEl.innerText = name ? name.substring(0, 2).toUpperCase() : 'U';
+            }
+
             // Check unread notifications if logged in
             const badge = document.getElementById('unreadNotifBadge');
             if (badge) {
@@ -81,4 +530,3 @@
     </script>
 </body>
 </html>
-

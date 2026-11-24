@@ -7,6 +7,7 @@
 ---
 
 ## MỤC LỤC
+
 1. [Nguyên Tắc Thiết Kế Cốt Lõi (Database Conventions)](#1-nguyên-tắc-thiết-kế-cốt-lõi-database-conventions)
 2. [Chi Tiết 15 Bảng Dữ Liệu Theo 5 Phân Hệ Nghiệp Vụ](#2-chi-tiết-15-bảng-dữ-liệu-theo-5-phân-hệ-nghiệp-vụ)
 3. [Luồng Nghiệp Vụ & Biến Đổi Dữ Liệu 6 Giai Đoạn](#3-luồng-nghiệp-vụ--biến-đổi-dữ-liệu-6-giai-đoạn)
@@ -35,6 +36,7 @@ Cơ sở dữ liệu của hệ thống tuân thủ **6 nguyên tắc kỹ thu�
 Cơ sở dữ liệu hoàn chỉnh của hệ thống bao gồm **15 bảng** (khởi tạo qua Flyway `V1__init.sql` và `V2__audit_logs.sql`), được phân định rõ ràng theo 5 phân hệ nghiệp vụ:
 
 ### 2.1. Phân hệ Tài khoản & Danh mục (`users`, `categories`)
+
 * **`users` (Người dùng hệ thống):**
   * Quản lý thông tin định danh cá nhân (`username`, `email` duy nhất), mật khẩu băm (`password_hash`), thông tin giao hàng (`shipping_address`), thông tin ngân hàng phục vụ rút tiền (`bank_name`, `bank_account_number`).
   * Phân quyền linh hoạt: Mọi tài khoản thông thường đều mang vai trò `ROLE_USER` và có đầy đủ quyền làm Người mua (Buyer) hoặc Người bán (Seller); Quản trị viên mang vai trò `ROLE_ADMIN`.
@@ -44,6 +46,7 @@ Cơ sở dữ liệu hoàn chỉnh của hệ thống bao gồm **15 bảng** (k
   * Quản lý đường dẫn thân thiện (`slug` duy nhất) và thứ tự hiển thị (`display_order`).
 
 ### 2.2. Phân hệ Hàng hóa & Phiên đấu giá (`items`, `item_images`, `auctions`)
+
 * **`items` (Món hàng đăng bán):**
   * Thuộc sở hữu của người bán (`seller_id` trỏ tới `users.id`) và thuộc danh mục `category_id`.
   * Lưu trữ thông tin tình trạng món hàng (`item_condition`: `NEW`, `LIKE_NEW`, `USED`), tiêu đề, mô tả và ảnh đại diện.
@@ -62,6 +65,7 @@ Cơ sở dữ liệu hoàn chỉnh của hệ thống bao gồm **15 bảng** (k
     * `status`: Trạng thái phiên (`DRAFT`, `ACTIVE`, `ENDED_SOLD`, `ENDED_UNSOLD`, `CANCELED`).
 
 ### 2.3. Phân hệ Trả giá tự động (`proxy_bids`, `bids`)
+
 * **`proxy_bids` (Cài đặt mức giá trần tự động):**
   * Ghi nhận mức giá tối đa bí mật (`max_amount`) mà người mua sẵn sàng chi trả cho một phiên (`auction_id`, `bidder_id`).
   * Hệ thống sử dụng thuật toán Proxy Bidding để tự động nâng giá cho người mua từng bước một (`step_price`) mỗi khi có đối thủ trả giá cạnh tranh.
@@ -70,6 +74,7 @@ Cơ sở dữ liệu hoàn chỉnh của hệ thống bao gồm **15 bảng** (k
   * Cột `is_proxy`: Đánh dấu bước giá này do người dùng tự gõ tay trực tiếp hay do máy tự động nhảy bước giá thay người mua.
 
 ### 2.4. Phân hệ Đơn hàng & Tài chính bảo chứng (`orders`, `wallets`, `transactions`)
+
 * **`orders` (Đơn hàng sau đấu giá):**
   * Được tự động tạo khi phiên kết thúc có người trúng (`ENDED_SOLD`) hoặc khi có người bấm Mua ngay (`BUY_IT_NOW`).
   * Lưu trữ giá chốt (`final_price`), phí vận chuyển (`shipping_fee`), tổng tiền thanh toán (`total_amount`), địa chỉ giao hàng và mã vận đơn (`tracking_number`).
@@ -84,6 +89,7 @@ Cơ sở dữ liệu hoàn chỉnh của hệ thống bao gồm **15 bảng** (k
   * Tích hợp `idempotency_key` đảm bảo không bao giờ xử lý lặp giao dịch tài chính.
 
 ### 2.5. Phân hệ Tương tác & Vận hành (`reviews`, `notifications`, `complaints`, `system_configs`, `audit_logs`)
+
 * **`reviews` (Đánh giá uy tín):** Đánh giá số sao (1-5) và nhận xét của người mua dành cho người bán sau khi hoàn tất đơn hàng.
 * **`notifications` (Hệ thống thông báo):** Gửi thông báo tức thì cho người dùng khi bị vượt giá, khi trúng đấu giá, khi có đơn hàng mới hoặc khi đơn hàng được cập nhật trạng thái.
 * **`complaints` (Tiếp nhận khiếu nại):** Cho phép người mua hoặc người bán khiếu nại về món hàng, thanh toán hoặc giao vận kèm bằng chứng hình ảnh; Admin tiếp nhận và đưa ra phán quyết xử lý.
@@ -137,7 +143,8 @@ sequenceDiagram
     end
 ```
 
-### Chi Tiết Diễn Biến Dữ Liệu Qua Từng Giai Đoạn:
+### Chi Tiết Diễn Biến Dữ Liệu Qua Từng Giai Đoạn
+
 1. **Giai đoạn 1 (Đăng bán & Mở phiên):**
    * Người bán tạo bản ghi trong bảng `items` kèm album ảnh trong `item_images`.
    * Khởi tạo phiên đấu giá trong `auctions` với trạng thái `ACTIVE`. Người bán có thể kích hoạt tính năng **Giá sàn ẩn** (`reserve_price`) và **Giá mua ngay** (`buy_now_price`).
@@ -180,12 +187,15 @@ Trong phiên bản thiết kế ban đầu, hệ thống từng dự kiến áp 
 ## 5. BỘ CÂU HỎI & GHI CHÚ TRỌNG TÂM KHI BÁO CÁO / VẤN ĐÁP ĐỒ ÁN
 
 ### Câu 1: Tại sao hệ thống sử dụng thuật toán Proxy Bidding thay vì chỉ lưu một mức giá đơn thuần?
+
 * **Trả lời:** Proxy Bidding là tiêu chuẩn của các sàn đấu giá hàng đầu thế giới (eBay, Yahoo Auctions). Cơ chế này giúp người mua không phải tốn thời gian canh chừng màn hình liên tục. Người mua chỉ cần đặt mức giá tối đa mà họ sẵn sàng trả (Max Bid), hệ thống sẽ đóng vai trò là đại diện tự động nâng giá từng bước giá tối thiểu để người mua luôn dẫn đầu nhưng với mức chi phí thấp nhất có thể.
 
 ### Câu 2: Giá sàn bảo lưu (Reserve Price) hoạt động như thế nào và mang lại lợi ích gì cho người bán?
+
 * **Trả lời:** Khi đăng bán, người bán thường muốn đặt giá khởi điểm thấp (ví dụ: 100.000 đ) để thu hút đông đảo người tham gia trả giá. Tuy nhiên, nếu không có giá sàn bảo lưu, món hàng giá trị cao có nguy cơ bị bán rẻ nếu phiên có ít người tham gia. Với `reserve_price` được ẩn bí mật, phiên chỉ công nhận kết quả bán nếu giá thắng đạt hoặc vượt ngưỡng này. Nếu kết thúc phiên mà giá cao nhất chưa chạm giá sàn, người bán không bị bắt buộc phải giao hàng và có thể đăng lại (Relist).
 
 ### Câu 3: Làm thế nào hệ thống giải quyết vấn đề sai số tài chính và chống lặp giao dịch?
+
 * **Trả lời:**
   1. **Không dùng số thực:** Sử dụng kiểu dữ liệu `BIGINT` (đơn vị: VNĐ) cho toàn bộ các cột tiền tệ, loại trừ hoàn toàn lỗi sai số dấu phẩy động (floating-point rounding error).
   2. **Ràng buộc kiểm tra:** `CHECK (available_balance >= 0)` ngăn chặn triệt để tình trạng số dư bị âm.
@@ -193,4 +203,5 @@ Trong phiên bản thiết kế ban đầu, hệ thống từng dự kiến áp 
   4. **Kiểm toán bất biến:** Toàn bộ bảng biến động số dư `transactions` và lịch sử trả giá `bids` là dạng chỉ ghi thêm (Append-only), không bao giờ sửa hoặc xóa.
 
 ### Câu 4: Cơ chế ví bảo chứng (Escrow) bảo vệ quyền lợi hai bên như thế nào?
+
 * **Trả lời:** Sau khi thắng đấu giá, tiền thanh toán của người mua được chuyển vào ví trung gian bảo chứng (`SYSTEM_ESCROW`) của sàn. Người bán yên tâm đóng gói giao hàng vì biết người mua đã nộp đủ tiền. Người mua yên tâm kiểm tra hàng hóa vì tiền chưa về tay người bán. Chỉ khi người mua bấm xác nhận đã nhận hàng đúng mô tả (hoặc quá thời hạn khiếu nại quy định), tiền mới được hệ thống tự động giải ngân cho người bán kèm theo việc trích thu phí hoa hồng sàn.

@@ -37,7 +37,8 @@ echo   🌐 SAU KHI SERVER CHẠY XONG, HÃY MỞ TRÌNH DUYỆT TRUY CẬP:
 echo      👉 Trang chủ / Đấu giá: http://localhost:8080
 echo      👉 Trang quản trị Admin: http://localhost:8080/admin/dashboard
 echo      👉 Đăng nhập Admin: admin / admin123
-echo      👉 Đăng nhập Người mua: buyer1 / password
+echo      👉 Đăng nhập Người mua: buyer1 / 123456
+echo      👉 Đăng nhập Người bán: seller1 / 123456
 echo -----------------------------------------------------------------------
 echo.
 

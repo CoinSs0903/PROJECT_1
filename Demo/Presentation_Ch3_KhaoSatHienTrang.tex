@@ -1,0 +1,604 @@
+\documentclass[aspectratio=169, 10pt]{beamer}
+
+% --- GÓI TIẾNG VIỆT & PHÔNG CHỮ ---
+\usepackage[utf8]{inputenc}
+\usepackage[vietnamese]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows, positioning}
+\usepackage{colortbl}
+\usepackage{xcolor}
+
+% --- THIẾT KẾ GIAO DIỆN BEAMER (NAVY & CLEAN THEME) ---
+\usetheme{Madrid}
+\usecolortheme{whale}
+
+\definecolor{primaryNavy}{RGB}{27, 54, 93}
+\definecolor{secondarySlate}{RGB}{75, 107, 148}
+\definecolor{lightBg}{RGB}{245, 247, 250}
+\definecolor{accentGold}{RGB}{212, 160, 23}
+
+\setbeamercolor{palette primary}{bg=primaryNavy, fg=white}
+\setbeamercolor{palette secondary}{bg=secondarySlate, fg=white}
+\setbeamercolor{palette tertiary}{bg=primaryNavy!90, fg=white}
+\setbeamercolor{titlelike}{parent=palette primary}
+\setbeamercolor{structure}{fg=primaryNavy}
+\setbeamercolor{block title}{bg=primaryNavy, fg=white}
+\setbeamercolor{block body}{bg=lightBg, fg=black}
+
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[frame number]
+
+% --- THÔNG TIN BÁO CÁO ---
+\title[Khảo sát hiện trạng - Hệ thống Đấu giá]{\textbf{PHÁT TRIỂN PHẦN MỀM HƯỚNG ĐỐI TƯỢNG}}
+\subtitle{\textbf{Chương 3 (Phần 1): Khảo sát hiện trạng \& Phân loại yêu cầu}\\\small Đề tài: Hệ thống Sàn Đấu giá Trực tuyến Tự động}
+\author[Nhóm 01]{Giảng viên phụ trách: \textbf{Phạm Thi Vương}\\Nhóm thực hiện: \textbf{Nhóm 01}}
+\institute[OOAD]{Học phần: Phát Triển Phần Mềm Hướng Đối Tượng (OOAD)}
+\date{\today}
+
+\begin{document}
+
+% ==================== SLIDE 1 ====================
+\begin{frame}
+    \titlepage
+\end{frame}
+
+% ==================== SLIDE 2 ====================
+\begin{frame}{Nội dung Phần 1}
+    \begin{columns}[t]
+        \begin{column}{0.48\textwidth}
+            \begin{block}{1. Giai đoạn khảo sát hiện trạng}
+                Ba mảng cần tìm hiểu trước khi phân tích:\\
+                Tổ chức -- Nghiệp vụ -- Tin học.
+            \end{block}
+            \vspace{0.3cm}
+            \begin{block}{3. Hiện trạng Tin học}
+                Hạ tầng máy chủ, công nghệ Java Spring Boot, MySQL và năng lực con người.
+            \end{block}
+        \end{column}
+        
+        \begin{column}{0.48\textwidth}
+            \begin{block}{2. Ví dụ minh họa nghiệp vụ sàn}
+                Quy trình Đấu giá ủy quyền tự động \& Chốt đơn, Ví bảo chứng thanh toán.
+            \end{block}
+            \vspace{0.3cm}
+            \begin{block}{4. Xác định và phân loại yêu cầu}
+                Chuyển từ khảo sát hiện trạng sang đặc tả yêu cầu (Chức năng \& Phi chức năng).
+            \end{block}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% ==================== SLIDE 3 ====================
+\begin{frame}
+    \begin{center}
+        \vspace{1.5cm}
+        {\Large \textbf{\color{primaryNavy}PHẦN 1}}\\[0.5cm]
+        {\huge \textbf{\color{primaryNavy}Giai đoạn khảo sát hiện trạng}}\\[0.6cm]
+        \textit{\color{secondarySlate}Trước khi đặc tả yêu cầu, cần hiểu rõ hiện trạng tổ chức và nghiệp vụ của sàn}
+    \end{center}
+\end{frame}
+
+% ==================== SLIDE 4 ====================
+\begin{frame}{Ba mảng cần khảo sát}
+    \begin{columns}[t]
+        \begin{column}{0.32\textwidth}
+            \begin{block}{\centering \textbf{Hiện trạng tổ chức}}
+                Cơ cấu sàn giao dịch giữa người dùng với người dùng, tương tác giữa Ban quản trị, Kế toán và Khách hàng.
+            \end{block}
+        \end{column}
+        \begin{column}{0.32\textwidth}
+            \begin{block}{\centering \textbf{Hiện trạng nghiệp vụ}}
+                Luồng tạo phiên, đấu giá ủy quyền tự động, giá sàn bảo lưu ẩn và thanh toán ví bảo chứng.
+            \end{block}
+        \end{column}
+        \begin{column}{0.32\textwidth}
+            \begin{block}{\centering \textbf{Hiện trạng Tin học}}
+                Máy chủ, CSDL MySQL, giao thức đồng bộ thời gian thực và năng lực công nghệ người dùng.
+            \end{block}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% ==================== SLIDE 5 ====================
+\begin{frame}{Hiện trạng tổ chức (Sàn Đấu giá Trực tuyến)}
+    \begin{itemize}
+        \item \textbf{Đối nội -- Cơ cấu tổ chức nội bộ của sàn:}
+        \begin{itemize}
+            \item \textbf{Ban Quản trị sàn:} Giám sát toàn hệ thống, quản lý danh mục món hàng, áp dụng chế tài xử phạt người bùng hàng (\textit{Thẻ phạt bùng hàng}).
+            \item \textbf{Bộ phận Kế toán / Tài chính:} Quản lý ví doanh thu sàn (\textit{Ví Doanh thu}), trích thu 5\% phí dịch vụ và kiểm soát ví ký quỹ trung gian (\textit{Ví Bảo chứng}).
+            \item \textbf{Bộ phận Trọng tài khiếu nại:} Tiếp nhận bằng chứng khiếu nại, phân xử tranh chấp giữa Người mua và Người bán.
+        \end{itemize}
+        \vspace{0.3cm}
+        \item \textbf{Đối ngoại -- Mối quan hệ với môi trường xung quanh:}
+        \begin{itemize}
+            \item \textbf{Người bán:} Đăng tải món hàng, thiết lập mức giá sàn bảo lưu ẩn.
+            \item \textbf{Người mua:} Đặt mức giá trần tối đa bí mật, thanh toán và kiểm tra nhận hàng.
+            \item \textbf{Đối tác thanh toán / Ngân hàng:} Thực hiện liên kết nạp/rút tiền điện tử an toàn.
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+% ==================== SLIDE 6 ====================
+\begin{frame}{Hiện trạng nghiệp vụ}
+    \begin{itemize}
+        \item \textbf{Mục tiêu số 1:} Thấu hiểu quy trình trả giá và tháo gỡ khó khăn của khách hàng (không phải túc trực canh màn hình liên tục, loại trừ rủi ro bùng hàng).
+        \item \textbf{Các quy trình nghiệp vụ chính:}
+        \begin{enumerate}
+            \item Quản lý danh mục \& Đăng bán món hàng (\textit{Niêm yết sản phẩm}).
+            \item Đấu giá ủy quyền tự động \& Mua đứt ngay.
+            \item Chốt phiên tự động (\textit{Tiến trình hẹn giờ}) \& Khởi tạo Đơn hàng trúng giá.
+            \item Thanh toán tạm giữ bảo chứng \& Tự động giải ngân.
+            \item Xử lý vi phạm bùng hàng \& Hỗ trợ đăng lại phiên đấu giá.
+        \end{enumerate}
+        \item \textbf{Tần suất \& thời điểm thực hiện:}
+        \begin{itemize}
+            \item Trả giá: Diễn ra từng giây, đặc biệt dồn dập ở 5 phút cuối phiên.
+            \item Quét kết thúc: Tự động mỗi 5 giây chạy ngầm trong hệ thống.
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+% ==================== SLIDE 7 ====================
+\begin{frame}{Hiện trạng nghiệp vụ -- Đánh giá \& Khó khăn}
+    \begin{itemize}
+        \item \textbf{Khối lượng tác vụ:} Hàng ngàn lượt đặt giá và cập nhật trạng thái phiên mỗi ngày.
+        \item \textbf{Khó khăn thực tế từ người tham gia:}
+        \begin{itemize}
+            \item \textit{Người mua:} Bị ``bắn tỉa cướp giá'' ở giây cuối, không thể canh màn hình liên tục.
+            \item \textit{Người bán:} Bị người thắng bỏ chạy, không trả tiền làm đóng băng hàng hóa.
+        \end{itemize}
+        \vspace{0.2cm}
+        \item \textbf{Nguyên tắc giải quyết nghiệp vụ độc lập với công nghệ:}
+        \begin{alertblock}{Cần chuẩn hóa quy chế trước khi phần mềm hóa}
+            \begin{itemize}
+                \item Không thu cọc trước để tăng độ thanh khoản; áp dụng quy chế nghiêm khắc: \textbf{``3 gậy bùng hàng = Khóa vĩnh viễn tài khoản''}.
+                \item Áp dụng quy tắc \textbf{Giá sàn bảo lưu ẩn} để bảo vệ người bán không bị bán lỗ.
+            \end{itemize}
+        \end{alertblock}
+    \end{itemize}
+\end{frame}
+
+% ==================== SLIDE 8 ====================
+\begin{frame}{Những câu hỏi cốt lõi khi khảo sát sàn đấu giá}
+    \begin{columns}[t]
+        \begin{column}{0.24\textwidth}
+            \begin{block}{\centering \textbf{Làm gì?}}
+                \footnotesize Sàn đấu giá tăng dần, tự động nâng giá và giữ tiền bảo chứng an toàn.
+            \end{block}
+        \end{column}
+        \begin{column}{0.24\textwidth}
+            \begin{block}{\centering \textbf{Ai, ở đâu?}}
+                \footnotesize Người mua \& Người bán giao dịch trực tuyến; Ban quản trị điều hành tập trung.
+            \end{block}
+        \end{column}
+        \begin{column}{0.24\textwidth}
+            \begin{block}{\centering \textbf{Dữ liệu nào?}}
+                \footnotesize Món hàng, Giá trần bí mật, Lịch sử trả giá công khai, Số dư ví, Đơn hàng.
+            \end{block}
+        \end{column}
+        \begin{column}{0.24\textwidth}
+            \begin{block}{\centering \textbf{Thách thức?}}
+                \footnotesize Tranh chấp xung đột ở mili-giây cuối, đòi hỏi kỹ thuật khóa dòng dữ liệu.
+            \end{block}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% ==================== SLIDE 9 ====================
+\begin{frame}
+    \begin{center}
+        \vspace{1.5cm}
+        {\Large \textbf{\color{primaryNavy}PHẦN 2}}\\[0.5cm]
+        {\huge \textbf{\color{primaryNavy}Ví dụ minh họa hiện trạng nghiệp vụ}}\\[0.6cm]
+        \textit{\color{secondarySlate}Hai quy trình cốt lõi: Đấu giá ủy quyền tự động \& Chốt đơn Ví bảo chứng}
+    \end{center}
+\end{frame}
+
+% ==================== SLIDE 10 ====================
+\begin{frame}{Sơ đồ hiện trạng: Đấu giá ủy quyền tự động (Proxy Bidding -- Tự động nâng giá)}
+    \begin{center}
+    \resizebox{0.92\textwidth}{!}{
+    \begin{tikzpicture}[
+        >=stealth,
+        role/.style={rectangle, draw=primaryNavy, fill=primaryNavy, text=white, font=\bfseries\small, minimum width=3.8cm, minimum height=0.65cm, rounded corners=2pt, align=center},
+        stepbox/.style={rectangle, draw=primaryNavy!30, fill=primaryNavy!85, text=white, font=\footnotesize, rounded corners=3pt, minimum width=3.6cm, minimum height=0.8cm, align=center},
+        alertbox/.style={rectangle, draw=red!40, fill=red!75!primaryNavy, text=white, font=\footnotesize, rounded corners=3pt, minimum width=3.6cm, minimum height=0.8cm, align=center},
+        livebox/.style={rectangle, draw=teal!40, fill=teal!70!primaryNavy, text=white, font=\footnotesize, rounded corners=3pt, minimum width=3.6cm, minimum height=0.8cm, align=center}
+    ]
+        % --- NỀN CÁC LÀN BƠI HIỆN TRẠNG (SWIMLANES) ---
+        \fill[black!3]        (-0.1, 0.45) rectangle (3.9, -4.8);
+        \fill[primaryNavy!3]   (4.1, 0.45) rectangle (8.1, -4.8);
+        \fill[black!3]        (8.3, 0.45) rectangle (12.3, -4.8);
+
+        % --- ĐƯỜNG PHÂN CÁCH LÀN (DASHED DIVIDERS) ---
+        \draw[dashed, gray!40, thick] (4.0, 0.45) -- (4.0, -4.8);
+        \draw[dashed, gray!40, thick] (8.2, 0.45) -- (8.2, -4.8);
+
+        % --- TIÊU ĐỀ 3 VAI TRÒ CHỊU TRÁCH NHIỆM ---
+        \node[role] (r1) at (1.9, 0.0) {Người mua mới (Bidder)};
+        \node[role] (r2) at (6.1, 0.0) {Bộ máy xử lý Sàn (System)};
+        \node[role] (r3) at (10.3, 0.0) {Người dẫn đầu cũ (Outbid)};
+
+        % --- CÁC BƯỚC DIỄN TIẾN BẬC THANG THEO THỜI GIAN ---
+        % Bước 1: Người mua mới đặt giá trần bí mật (Max Bid)
+        \node[stepbox] (s1) at (1.9, -1.0) {
+            \textbf{1. Đặt giá trần bí mật (Max Bid)}\\[2pt]
+            \scriptsize Tối đa: 16.000.000đ $\rightarrow$ Gửi lệnh
+        };
+
+        % Bước 2: Sàn khóa phiên & so khớp tự động
+        \node[stepbox] (s2) at (6.1, -2.1) {
+            \textbf{2. Khóa phiên, so khớp tự động}\\[2pt]
+            \scriptsize Tự động nhảy giá lên \textbf{14.200.000đ}
+        };
+
+        % Bước 3: Thông báo đẩy cho người cũ bị vượt giá (Outbid Alert)
+        \node[alertbox] (s3) at (10.3, -3.2) {
+            \textbf{3. Bị vượt giá! (Outbid Alert)}\\[2pt]
+            \scriptsize (Đã bị vượt, có thể nâng Max Bid)
+        };
+
+        % Bước 4: Phát sóng WebSocket cập nhật toàn sàn (Broadcast)
+        \node[livebox] (s4) at (6.1, -4.2) {
+            \textbf{4. Phát sóng toàn sàn (Broadcast)}\\[2pt]
+            \scriptsize WebSocket đồng bộ giá mới tức thời
+        };
+
+        % --- MŨI TÊN KẾT NỐI BẬC THANG CHUẨN ZÍCH ZẮC (-| VÀ --) ---
+        % s1 -> s2: Đi ngang sang cột 2 rồi cắm thẳng vào đỉnh s2
+        \draw[->, thick, primaryNavy!85] (s1.east) -| (s2.north)
+            node[above, pos=0.35, font=\scriptsize\bfseries\color{primaryNavy}] {Gửi giá (Place Bid)};
+
+        % s2 -> s3: Đi ngang sang cột 3 rồi cắm thẳng vào đỉnh s3
+        \draw[->, thick, primaryNavy!85] (s2.east) -| (s3.north)
+            node[above, pos=0.35, font=\scriptsize\bfseries\color{primaryNavy}] {Báo vượt (Outbid)};
+
+        % s2 -> s4: Đi thẳng xuống s4 trong cùng cột Sàn
+        \draw[->, thick, primaryNavy!85] (s2.south) -- (s4.north)
+            node[right, pos=0.5, font=\scriptsize\bfseries\color{primaryNavy}] {Đồng bộ (Broadcast)};
+
+    \end{tikzpicture}
+    }
+    \end{center}
+    \vspace{0.05cm}
+    \begin{center}
+        \textit{\small\color{secondarySlate}Mỗi bước gắn với đúng một vai trò chịu trách nhiệm --- đây chính là ``sơ đồ hiện trạng'' kinh điển trong khảo sát nghiệp vụ.}
+    \end{center}
+\end{frame}
+
+% ==================== SLIDE 11 ====================
+\begin{frame}{Sơ đồ hiện trạng: Chốt phiên, Ví bảo chứng \& Giải ngân}
+    \begin{center}
+    \resizebox{0.92\textwidth}{!}{
+    \begin{tikzpicture}[
+        >=stealth,
+        role/.style={rectangle, draw=primaryNavy, fill=primaryNavy, text=white, font=\bfseries\small, minimum width=3.8cm, minimum height=0.65cm, rounded corners=2pt, align=center},
+        stepbox/.style={rectangle, draw=primaryNavy!30, fill=primaryNavy!85, text=white, font=\footnotesize, rounded corners=3pt, minimum width=3.6cm, minimum height=0.8cm, align=center},
+        successbox/.style={rectangle, draw=teal!40, fill=teal!70!primaryNavy, text=white, font=\footnotesize, rounded corners=3pt, minimum width=3.6cm, minimum height=0.8cm, align=center}
+    ]
+        % --- NỀN CÁC LÀN BƠI HIỆN TRẠNG (SWIMLANES) ---
+        \fill[black!3]        (-0.1, 0.45) rectangle (3.9, -5.6);
+        \fill[primaryNavy!3]   (4.1, 0.45) rectangle (8.1, -5.6);
+        \fill[black!3]        (8.3, 0.45) rectangle (12.3, -5.6);
+
+        % --- ĐƯỜNG PHÂN CÁCH LÀN (DASHED DIVIDERS) ---
+        \draw[dashed, gray!40, thick] (4.0, 0.45) -- (4.0, -5.6);
+        \draw[dashed, gray!40, thick] (8.2, 0.45) -- (8.2, -5.6);
+
+        % --- TIÊU ĐỀ 3 VAI TRÒ CHỊU TRÁCH NHIỆM ---
+        \node[role] (r1) at (1.9, 0.0) {Người mua (Buyer)};
+        \node[role] (r2) at (6.1, 0.0) {Hệ thống Sàn (Escrow)};
+        \node[role] (r3) at (10.3, 0.0) {Người bán (Seller)};
+
+        % --- CÁC BƯỚC BẬC THANG THEO THỜI GIAN ---
+        % Bước 1: Sàn chốt phiên & sinh đơn
+        \node[stepbox] (s1) at (6.1, -0.9) {
+            \textbf{1. Hết giờ $\rightarrow$ Đạt giá sàn}\\[2pt]
+            \scriptsize Tự động lập \textbf{Đơn hàng trúng giá}
+        };
+
+        % Bước 2: Người mua thanh toán ví bảo chứng
+        \node[stepbox] (s2) at (1.9, -2.0) {
+            \textbf{2. Thanh toán đơn hàng}\\[2pt]
+            \scriptsize Tiền tạm giữ vào \textbf{Ví bảo chứng}
+        };
+
+        % Bước 3: Người bán giao hàng
+        \node[stepbox] (s3) at (10.3, -3.1) {
+            \textbf{3. Nhận thông báo tiền đã giữ}\\[2pt]
+            \scriptsize Đóng gói \& Giao cho vận chuyển
+        };
+
+        % Bước 4: Người mua nhận hàng & xác nhận
+        \node[stepbox] (s4) at (1.9, -4.2) {
+            \textbf{4. Kiểm tra hàng $\rightarrow$ Xác nhận}\\[2pt]
+            \scriptsize Bấm ``Đã nhận hàng thành công''
+        };
+
+        % Bước 5: Sàn giải ngân & thu phí
+        \node[successbox] (s5) at (6.1, -5.1) {
+            \textbf{5. Trích thu phí sàn \& Giải ngân}\\[2pt]
+            \scriptsize Thu 5\% phí $\rightarrow$ Giải ngân 95\% cho Seller
+        };
+
+        % --- MŨI TÊN KẾT NỐI BẬC THANG CHUẨN ZÍCH ZẮC ---
+        \draw[->, thick, primaryNavy!85] (s1.west) -| (s2.north)
+            node[above, pos=0.35, font=\scriptsize\bfseries\color{primaryNavy}] {Báo nộp tiền};
+
+        \draw[->, thick, primaryNavy!85] (s2.east) -| (s3.north)
+            node[above, pos=0.35, font=\scriptsize\bfseries\color{primaryNavy}] {Báo giao hàng};
+
+        \draw[->, thick, primaryNavy!85] (s3.west) -| (s4.north)
+            node[above, pos=0.35, font=\scriptsize\bfseries\color{primaryNavy}] {Phát hàng};
+
+        \draw[->, thick, primaryNavy!85] (s4.east) -| (s5.north)
+            node[above, pos=0.35, font=\scriptsize\bfseries\color{primaryNavy}] {Xác nhận nhận hàng};
+
+    \end{tikzpicture}
+    }
+    \end{center}
+    \vspace{0.05cm}
+    \begin{center}
+        \textit{\small\color{secondarySlate}Cơ chế ví bảo chứng thanh toán: Người mua nhận đúng hàng mới giải ngân, loại trừ 100\% rủi ro lừa đảo.}
+    \end{center}
+\end{frame}
+
+% ==================== SLIDE 12 ====================
+\begin{frame}{Bảng mô tả hồ sơ quản lý đấu giá \& đơn hàng}
+    \small
+    \begin{table}[h]
+        \centering
+        \begin{tabular}{c l p{7.5cm}}
+            \toprule
+            \textbf{Mã HS} & \textbf{Tên hồ sơ / Dữ liệu} & \textbf{Vai trò \& Mục đích sử dụng} \\
+            \midrule
+            \textbf{D1} & Phiếu Món hàng & Lưu thông tin sản phẩm, danh mục, tình trạng, album ảnh. \\
+            \textbf{D2} & Phiếu Phiên đấu giá & Thông số: Giá khởi điểm, bước giá, giá sàn ẩn, giá mua ngay. \\
+            \textbf{D3} & Lệnh đặt giá trần & Mức giá tối đa bí mật mà người mua cài đặt để hệ thống tự động trả giá thay. \\
+            \textbf{D4} & Sổ nhật ký bước giá & Nhật ký lịch sử các bước nhảy giá công khai cho toàn sàn. \\
+            \textbf{D5} & Đơn hàng trúng giá & Xác nhận kết quả, địa chỉ nhận hàng, thời hạn thanh toán 72 giờ. \\
+            \textbf{D6} & Chứng từ giao dịch ví & Lưu biến động tài chính: nạp tiền, thanh toán, ký quỹ, giải ngân, phí sàn. \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+\end{frame}
+
+% ==================== SLIDE 13 ====================
+\begin{frame}{Bảng mô tả công việc là gì?}
+    \begin{itemize}
+        \item Liệt kê chi tiết các thông tin liên quan đến từng tác vụ trong sơ đồ hiện trạng.
+        \item \textbf{Tên công việc:} Đặt tên chính xác, rõ nghĩa (\textit{So khớp giá tự động, Quét chốt phiên, Thanh toán đơn hàng}).
+        \item \textbf{Điều kiện kích hoạt:} Hành động người dùng bấm nút hoặc sự kiện hẹn giờ tự động của hệ thống.
+        \item \textbf{Tần suất \& thời lượng:} Đo lường tải hệ thống theo giá trị trung bình (giao dịch/phút, thời gian phản hồi $< 100\text{ms}$).
+        \item \textbf{Quy tắc chi phối:} Các quy định về giá sàn, bước giá theo bậc, thời hạn 72h thanh toán.
+    \end{itemize}
+    \vspace{0.2cm}
+    \textit{\color{secondarySlate}Bảng mô tả công việc là cầu nối trực tiếp để xây dựng các lớp Dịch vụ nghiệp vụ (Service) trong mã nguồn.}
+\end{frame}
+
+% ==================== SLIDE 14 ====================
+\begin{frame}{Ví dụ: Bảng mô tả công việc (Hệ thống đấu giá)}
+    \small
+    \begin{table}[h]
+        \centering
+        \begin{tabular}{p{3.2cm} p{3cm} p{2cm} p{4.6cm}}
+            \toprule
+            \textbf{Công việc} & \textbf{Điều kiện kích hoạt} & \textbf{Tần suất} & \textbf{Quy tắc liên quan} \\
+            \midrule
+            \textbf{So khớp giá đấu tự động} & Có người mua gửi mức giá trần mới & 500 -- 2.000 lượt/ngày & Bước giá theo bậc quy định; Người bán không được tự đấu giá hàng của mình \\
+            \midrule
+            \textbf{Tự động đóng phiên \& lập đơn} & Đồng hồ điểm hết giờ hoặc có lệnh Mua ngay & Quét mỗi 5 giây & Kiểm tra đạt giá sàn ẩn; Cấp thời hạn thanh toán 72 giờ \\
+            \midrule
+            \textbf{Giải ngân tiền bán hàng} & Người mua bấm ``Đã nhận hàng'' & 50 -- 200 đơn/ngày & Phí sàn 5\% chuyển về doanh thu; 95\% chuyển về ví Người bán \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+\end{frame}
+
+% ==================== SLIDE 15 ====================
+\begin{frame}{THẢO LUẬN 1: Phân tích quy trình Mua đứt ngay}
+    \begin{block}{Nội dung thảo luận}
+        \textit{Mô tả luồng xử lý khi người mua quyết định sở hữu món hàng ngay lập tức mà không cần chờ phiên đếm ngược hết giờ.}
+    \end{block}
+    \vspace{0.3cm}
+    \textbf{Gợi ý hướng phân tích luồng:}
+    \begin{itemize}
+        \item \textbf{Bước 1 -- Người mua:} Bấm chọn nút ``Mua ngay'' với mức giá cố định được niêm yết sẵn.
+        \item \textbf{Bước 2 -- Hệ thống sàn:} Kiểm tra điều kiện hợp lệ $\rightarrow$ Lập tức khóa phiên $\rightarrow$ Đổi trạng thái sang \textbf{ĐÃ BÁN THÀNH CÔNG} $\rightarrow$ Khởi tạo Đơn hàng.
+        \item \textbf{Bước 3 -- Các người tham gia khác:} Nút Mua ngay lập tức biến mất; màn hình cập nhật trạng thái đã bán thành công theo thời gian thực.
+    \end{itemize}
+\end{frame}
+
+% ==================== SLIDE 16 ====================
+\begin{frame}
+    \begin{center}
+        \vspace{1.5cm}
+        {\Large \textbf{\color{primaryNavy}PHẦN 3}}\\[0.5cm]
+        {\huge \textbf{\color{primaryNavy}Hiện trạng Tin học}}\\[0.6cm]
+        \textit{\color{secondarySlate}Phần cứng, phần mềm và năng lực con người đáp ứng triển khai hệ thống}
+    \end{center}
+\end{frame}
+
+% ==================== SLIDE 17 ====================
+\begin{frame}{Ba mảng khảo sát Tin học}
+    \begin{columns}[t]
+        \begin{column}{0.32\textwidth}
+            \begin{block}{\centering \textbf{Phần cứng}}
+                \begin{itemize}
+                    \item Máy chủ Web và Cơ sở dữ liệu tiêu chuẩn, đường truyền Internet tốc độ cao.
+                    \item Người dùng truy cập qua máy tính cá nhân hoặc điện thoại thông minh.
+                \end{itemize}
+            \end{block}
+        \end{column}
+        \begin{column}{0.32\textwidth}
+            \begin{block}{\centering \textbf{Phần mềm}}
+                \begin{itemize}
+                    \item Nền tảng: \textbf{Java 17}, \textbf{Spring Boot 3}.
+                    \item Cơ sở dữ liệu: \textbf{MySQL 8.0}.
+                    \item Giao diện: Bootstrap 5 kết hợp truyền dữ liệu thời gian thực WebSocket.
+                \end{itemize}
+            \end{block}
+        \end{column}
+        \begin{column}{0.32\textwidth}
+            \begin{block}{\centering \textbf{Con người}}
+                \begin{itemize}
+                    \item Đội ngũ phát triển: Nắm vững kiến trúc khối mô-đun, kỹ thuật khóa dòng dữ liệu.
+                    \item Khách hàng: Đã quen thuộc với mua sắm online và thanh toán ví điện tử.
+                \end{itemize}
+            \end{block}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% ==================== SLIDE 18 ====================
+\begin{frame}
+    \begin{center}
+        \vspace{1.5cm}
+        {\Large \textbf{\color{primaryNavy}PHẦN 4}}\\[0.5cm]
+        {\huge \textbf{\color{primaryNavy}Xác định và phân loại yêu cầu}}\\[0.6cm]
+        \textit{\color{secondarySlate}Bước chuyển từ khảo sát hiện trạng sang đặc tả yêu cầu hệ thống}
+    \end{center}
+\end{frame}
+
+% ==================== SLIDE 19 ====================
+\begin{frame}{Yêu cầu hệ thống là gì?}
+    \begin{itemize}
+        \item Một yêu cầu diễn tả một \textbf{chức năng} hệ thống phải thực hiện (\textit{ví dụ: Tự động nhảy bước giá}) hoặc một \textbf{đặc điểm/ràng buộc} mà hệ thống phải có (\textit{ví dụ: Ẩn tuyệt đối giá sàn}).
+        \item Yêu cầu chính là \textbf{``cầu nối ngôn ngữ''} giữa mong muốn của bài toán kinh doanh và mã nguồn đội phát triển sẽ xây dựng.
+    \end{itemize}
+    \vspace{0.4cm}
+    \begin{center}
+        \colorbox{primaryNavy!10}{\textbf{Khảo sát thực tế} $\longrightarrow$ \textbf{Đặc tả yêu cầu phần mềm} $\longrightarrow$ \textbf{Thiết kế Hướng đối tượng}}
+    \end{center}
+\end{frame}
+
+% ==================== SLIDE 20 ====================
+\begin{frame}{Phân loại yêu cầu hệ thống}
+    \begin{columns}[t]
+        \begin{column}{0.48\textwidth}
+            \begin{block}{\textbf{Yêu cầu chức năng}}
+                \begin{itemize}
+                    \item \textbf{Lưu trữ:} Thông tin hàng hóa, album ảnh, số dư ví, tài khoản.
+                    \item \textbf{Tra cứu:} Tìm kiếm món hàng, lọc theo danh mục, theo dõi giá.
+                    \item \textbf{Tính toán:} Thuật toán đấu giá tự động, trích thu phí sàn 5\%.
+                    \item \textbf{Kết xuất:} Báo cáo bảng điều khiển quản trị, đẩy giá tức thời qua mạng.
+                \end{itemize}
+            \end{block}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \begin{block}{\textbf{Yêu cầu phi chức năng}}
+                \begin{itemize}
+                    \item \textbf{Bảo mật:} Ẩn danh tính người trả giá, che giấu giá sàn bảo lưu.
+                    \item \textbf{Toàn vẹn:} Số dư không bao giờ âm, định dạng số nguyên lớn cho tiền tệ.
+                    \item \textbf{Hiệu năng:} Khóa bi quan chống tranh chấp dữ liệu ở giây cuối.
+                    \item \textbf{Khả dụng:} Giao diện trực quan, đồng hồ đếm ngược trực tiếp.
+                \end{itemize}
+            \end{block}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% ==================== SLIDE 21 ====================
+\begin{frame}{Yêu cầu phi chức năng trong Hệ thống Đấu giá}
+    \begin{itemize}
+        \item \textbf{Yêu cầu bảo mật dữ liệu:}
+        \begin{itemize}
+            \item Mật khẩu được mã hóa an toàn theo chuẩn quốc tế.
+            \item Tuyệt đối giấu kín mức giá sàn bảo lưu và giá trần tối đa trong dữ liệu gửi về giao diện.
+        \end{itemize}
+        \item \textbf{Yêu cầu an toàn tài chính:}
+        \begin{itemize}
+            \item Dùng kiểu số nguyên lớn cho tiền VNĐ (triệt tiêu hoàn toàn sai số làm tròn số thập phân).
+            \item Cơ chế khóa chống trùng lặp giúp không bao giờ bị trừ tiền hai lần khi bấm đúp chuột.
+        \end{itemize}
+        \item \textbf{Yêu cầu hiệu năng \& xử lý đồng thời:}
+        \begin{itemize}
+            \item Áp dụng kỹ thuật khóa dòng dữ liệu trực tiếp trong CSDL để xếp hàng xử lý các lệnh đặt giá dồn dập ở giây cuối cùng.
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+% ==================== SLIDE 22 ====================
+\begin{frame}{Tài liệu Đặc tả Yêu cầu Hệ thống}
+    \begin{itemize}
+        \item Là văn bản mô tả đầy đủ các yêu cầu chức năng và \textbf{25 Quy tắc nghiệp vụ} của hệ thống.
+        \item Là căn cứ chung để Chuyên viên phân tích, Thiết kế giao diện, Lập trình viên và Kiểm thử viên cùng thống nhất phạm vi.
+        \item Đầu vào bắt buộc cho các bước mô hình hóa hướng đối tượng: \textit{Sơ đồ ca sử dụng, Sơ đồ hoạt động, Sơ đồ tuần tự, Sơ đồ lớp}.
+        \item \textbf{Mục đích cốt lõi:} Xác định rõ ranh giới trách nhiệm giữa Người mua, Người bán và Hệ thống Sàn.
+    \end{itemize}
+\end{frame}
+
+% ==================== SLIDE 23 ====================
+\begin{frame}{Từ yêu cầu thu thập đến yêu cầu tốt}
+    \begin{columns}[t]
+        \begin{column}{0.32\textwidth}
+            \begin{block}{\centering \textbf{1. Phân loại \& Chuẩn hóa}}
+                Mã hóa yêu cầu rõ ràng, có thể kiểm chứng và đo lường độc lập.
+            \end{block}
+        \end{column}
+        \begin{column}{0.32\textwidth}
+            \begin{block}{\centering \textbf{2. Thu thập \& Xác nhận}}
+                Tham khảo từ các sàn quốc tế; xác nhận kỹ thuật đóng phiên và chế tài phạt bùng hàng.
+            \end{block}
+        \end{column}
+        \begin{column}{0.32\textwidth}
+            \begin{block}{\centering \textbf{3. Hoàn thiện \& Ưu tiên}}
+                Loại bỏ mâu thuẫn; xây dựng \textbf{41 bài kiểm thử tự động} để kiểm chứng 100\% yêu cầu.
+            \end{block}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% ==================== SLIDE 24 ====================
+\begin{frame}{THẢO LUẬN 2: Phân loại yêu cầu cho Hệ thống Đấu giá}
+    \begin{block}{Đề bài thảo luận}
+        \textit{Liệt kê 3 yêu cầu chức năng và 2 yêu cầu phi chức năng tiêu biểu cho sàn đấu giá.}
+    \end{block}
+    \vspace{0.2cm}
+    \begin{columns}[t]
+        \begin{column}{0.5\textwidth}
+            \textbf{3 Yêu cầu chức năng:}
+            \begin{enumerate}
+                \item Cho phép cài đặt giá trần và tự động nhảy bước giá trả thay người dùng.
+                \item Cho phép mua đứt ngay món hàng với mức giá niêm yết sẵn.
+                \item Cho phép Người bán đăng lại sản phẩm chưa bán được chỉ với 1 thao tác bấm.
+            \end{enumerate}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \textbf{2 Yêu cầu phi chức năng:}
+            \begin{enumerate}
+                \item \textbf{Bảo mật:} Ẩn hoàn toàn giá sàn bảo lưu trong toàn bộ dữ liệu trả về giao diện.
+                \item \textbf{Thời gian thực:} Đồng bộ bước giá mới tới tất cả người xem trong dưới 1 giây mà không cần tải lại trang.
+            \end{enumerate}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% ==================== SLIDE 25 ====================
+\begin{frame}{Tổng kết Phần 1}
+    \begin{itemize}
+        \item Khảo sát hiện trạng gồm 3 mảng: \textbf{Tổ chức, Nghiệp vụ và Tin học}.
+        \item \textbf{Sơ đồ hiện trạng} mô tả từng bước công việc gắn liền với đúng vai trò chịu trách nhiệm (Người mua, Người bán, Sàn).
+        \item \textbf{Bảng mô tả công việc \& hồ sơ} là nền tảng trực tiếp để chuẩn hóa 15 bảng cơ sở dữ liệu và các thực thể dữ liệu trong mã nguồn.
+        \item Yêu cầu hệ thống được phân định rành mạch thành \textbf{Yêu cầu chức năng} và \textbf{Yêu cầu phi chức năng}.
+        \item Toàn bộ 41 yêu cầu nghiệp vụ đã được kiểm chứng tự động qua bộ bài kiểm thử tự động.
+    \end{itemize}
+    \vspace{0.3cm}
+    \begin{center}
+        \textit{\color{secondarySlate}Chương tiếp theo: Kỹ thuật mô hình hóa Hướng đối tượng (UML \& Mẫu thiết kế)}
+    \end{center}
+\end{frame}
+
+% ==================== SLIDE 26 ====================
+\begin{frame}
+    \begin{center}
+        \vspace{1.5cm}
+        {\huge \textbf{\color{primaryNavy}CÂU HỎI \& THẢO LUẬN}}\\[0.8cm]
+        {\large \textbf{Cảm ơn cô và các bạn đã chú ý lắng nghe!}}\\[0.5cm]
+        \textit{\color{secondarySlate}Nhóm 01 sẵn sàng giải đáp thắc mắc về hiện trạng \& yêu cầu hệ thống.}
+    \end{center}
+\end{frame}
+
+\end{document}

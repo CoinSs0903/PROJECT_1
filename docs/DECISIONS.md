@@ -36,3 +36,5 @@
    - Xóa bỏ: `registrations`, `deposits`, `holidays`, `auction_minutes`, `listing_change_requests`, `seller_profiles`.
 3. **Tiền tệ & Toàn vẹn:** Kiểu `BIGINT` đơn vị VNĐ, `CHECK (available_balance >= 0)`.
 4. **Idempotency:** Cột `idempotency_key UNIQUE` trong `transactions` chống trừ tiền hoặc cộng tiền 2 lần khi mạng retry.
+5. **Tương thích MariaDB (XAMPP) & Hibernate Dialect:** Chỉ định tường minh `org.hibernate.dialect.MariaDBDialect` (`spring.jpa.database-platform` & `hibernate.dialect`) để `PESSIMISTIC_WRITE` sinh `FOR UPDATE` thay vì `FOR UPDATE OF <alias>` (vốn chỉ hỗ trợ trên MySQL 8+). Entity `Complaint` không kế thừa `BaseEntity` để khớp chính xác bảng `complaints` (chỉ có `created_at`, `resolved_at`, không có `updated_at`).
+6. **Giao diện Workspace & Phân tách UI theo Role:** Áp dụng thống nhất UI form vuông phẳng (`border-radius: 0`, bảng màu `#0f5c57` / `#1e2328` / `#d97706`), tách trang `/login` và `/register` thành thẻ độc lập, và ẩn các menu mua/bán đối với tài khoản `ROLE_ADMIN` để chỉ hiển thị đúng nghiệp vụ quản trị.

@@ -59,7 +59,7 @@
 .btn-sm {
   padding: 0.4rem 0.8rem;
   font-size: 0.85rem;
-  border-radius: 6px;
+  border-radius: 0;
   cursor: pointer;
   border: none;
   margin-right: 0.35rem;

@@ -181,5 +181,18 @@
 - Nạp sẵn các món hàng đa dạng danh mục và các phiên đấu giá đủ trạng thái (`ACTIVE`, `ENDED_SOLD`, có bid tự động proxy).
 - Toàn bộ hệ thống hoàn chỉnh, trơn tru, sẵn sàng nghiệm thu và báo cáo đồ án.
 
+### Ngày 27 – Chuẩn hóa Giao diện Sakai Workspace & Khắc phục lỗi MariaDB / Entity
+- **Thiết kế lại giao diện hệ thống theo phong cách Sakai Workspace (form vuông đồng bộ):**
+  - Cập nhật [layout/main.html](file:///d:/PTPMHĐT/PROJECT_1/backend/src/main/resources/templates/layout/main.html), [layout/navbar.html](file:///d:/PTPMHĐT/PROJECT_1/backend/src/main/resources/templates/layout/navbar.html), [index.html](file:///d:/PTPMHĐT/PROJECT_1/backend/src/main/resources/templates/index.html):
+    - Bố cục Topbar cố định + Sidebar trái thu gọn được + trang Overview 2 cột (giới thiệu sàn, danh sách phiên đấu giá, widget Calendar tương tác và bảng tính năng hệ thống).
+    - Bảng màu **Ngọc Lục Bảo (`#0f5c57`) – Xám Than (`#1e2328`) – Vàng Hổ Phách (`#d97706`)**; ép toàn bộ nút bấm, card, ô nhập liệu và các class `.rounded-*`, `.shadow-*` về form vuông phẳng (`border-radius: 0`, `box-shadow: none`).
+    - Loại bỏ phần chân trang (footer) khỏi layout chung.
+  - Trang xác thực độc lập ([auth/login.html](file:///d:/PTPMHĐT/PROJECT_1/backend/src/main/resources/templates/auth/login.html), [auth/register.html](file:///d:/PTPMHĐT/PROJECT_1/backend/src/main/resources/templates/auth/register.html)): thiết kế dạng thẻ căn giữa độc lập (không kèm sidebar/topbar) theo mẫu `Login Required` / `Create Account`.
+  - Tách biệt giao diện Admin ([admin/dashboard.html](file:///d:/PTPMHĐT/PROJECT_1/backend/src/main/resources/templates/admin/dashboard.html), [layout/navbar.html](file:///d:/PTPMHĐT/PROJECT_1/backend/src/main/resources/templates/layout/navbar.html)): tài khoản `ROLE_ADMIN` chỉ hiển thị các mục đúng nghiệp vụ quản trị (`/admin`, quản lý người dùng, xử lý khiếu nại, nhật ký kiểm toán, thông báo, hồ sơ Admin), ẩn các mục mua/bán của Buyer/Seller.
+  - Sửa lỗi hiển thị & responsive: sửa lỗi highlight trùng 2 mục sidebar (`/items` và `/items/new`), chống tràn nút Topbar trên màn hình nhỏ, sửa class `flex-direction-column` thành `flex-column` tại [catalog/my-items.html](file:///d:/PTPMHĐT/PROJECT_1/backend/src/main/resources/templates/catalog/my-items.html), và bổ sung hiển thị mã lỗi HTTP + đường dẫn tại [error.html](file:///d:/PTPMHĐT/PROJECT_1/backend/src/main/resources/templates/error.html).
+- **Khắc phục lỗi tương thích Cơ sở dữ liệu (MariaDB / XAMPP):**
+  - Thêm `spring.jpa.database-platform=org.hibernate.dialect.MariaDBDialect` và `spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MariaDBDialect` trong [application.properties](file:///d:/PTPMHĐT/PROJECT_1/backend/src/main/resources/application.properties) và [application-test.properties](file:///d:/PTPMHĐT/PROJECT_1/backend/src/main/resources/application-test.properties) để tránh lỗi cú pháp `FOR UPDATE OF <alias>` khi khóa ghi `PESSIMISTIC_WRITE` trên MariaDB.
+  - Cập nhật [Complaint.java](file:///d:/PTPMHĐT/PROJECT_1/backend/src/main/java/com/auction/complaint/entity/Complaint.java) bỏ kế thừa `BaseEntity` và khai báo trực tiếp `id`, `createdAt` khớp đúng schema bảng `complaints` (không có cột `updated_at`), khắc phục lỗi `Unknown column 'c1_0.updated_at'` khi vào trang `/admin`.
+
 ---
 **Tổng kết kiểm thử tự động toàn diện:** Toàn bộ **41/41 unit tests** của toàn hệ thống từ Task 5 đến Task 26 đều đạt **100% BUILD SUCCESS** (0 failures, 0 errors).

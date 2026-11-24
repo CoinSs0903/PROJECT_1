@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>HƯỚNG DẪN CHI TIẾT & ĐÁNH GIÁ CHẤT LƯỢNG HỒ SƠ THIẾT KẾ - PROJECT 1</title>
+<style>
+    @page {
+        size: A4;
+        margin: 18mm 15mm 18mm 15mm;
+    }
+    body {
+        font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+        font-size: 10pt;
+        line-height: 1.5;
+        color: #1e293b;
+        background-color: #ffffff;
+        margin: 0;
+        padding: 0;
+    }
+    .cover {
+        text-align: center;
+        padding: 50px 10px;
+        page-break-after: always;
+    }
+    .univ-header {
+        font-size: 12pt;
+        font-weight: bold;
+        letter-spacing: 1px;
+        color: #0f172a;
+        text-transform: uppercase;
+        border-bottom: 2px solid #0284c7;
+        padding-bottom: 6px;
+        display: inline-block;
+        margin-bottom: 30px;
+    }
+    .doc-type {
+        font-size: 13pt;
+        color: #475569;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-weight: 600;
+    }
+    .project-name {
+        font-size: 22pt;
+        font-weight: 800;
+        color: #0369a1;
+        margin: 20px 0 10px 0;
+        line-height: 1.25;
+    }
+    .project-sub {
+        font-size: 12pt;
+        color: #64748b;
+        font-style: italic;
+        margin-bottom: 35px;
+    }
+    .page-break {
+        page-break-before: always;
+    }
+    h1 {
+        font-size: 15pt;
+        font-weight: 700;
+        color: #0369a1;
+        border-bottom: 2px solid #0284c7;
+        padding-bottom: 4px;
+        margin-top: 24px;
+        margin-bottom: 12px;
+        page-break-after: avoid;
+    }
+    h2 {
+        font-size: 12.5pt;
+        font-weight: 700;
+        color: #0f172a;
+        margin-top: 18px;
+        margin-bottom: 8px;
+        border-left: 4px solid #0284c7;
+        padding-left: 8px;
+        page-break-after: avoid;
+    }
+    h3 {
+        font-size: 11pt;
+        font-weight: 600;
+        color: #1e293b;
+        margin-top: 14px;
+        margin-bottom: 6px;
+        page-break-after: avoid;
+    }
+    p, li {
+        text-align: justify;
+        margin-top: 4px;
+        margin-bottom: 6px;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 10px 0;
+        font-size: 9pt;
+        page-break-inside: avoid;
+    }
+    th, td {
+        border: 1px solid #cbd5e1;
+        padding: 6px 8px;
+        text-align: left;
+        vertical-align: top;
+    }
+    th {
+        background-color: #f1f5f9;
+        font-weight: 600;
+        color: #0f172a;
+    }
+    tr:nth-child(even) td {
+        background-color: #fcfdfe;
+    }
+    .callout {
+        border-left: 4px solid #0284c7;
+        background-color: #f0f9ff;
+        padding: 10px 14px;
+        margin: 12px 0;
+        border-radius: 0 4px 4px 0;
+        font-size: 9.5pt;
+    }
+    .callout.warning {
+        border-left-color: #f59e0b;
+        background-color: #fffbeb;
+    }
+    .callout.danger {
+        border-left-color: #ef4444;
+        background-color: #fef2f2;
+    }
+    .callout.success {
+        border-left-color: #10b981;
+        background-color: #f0fdf4;
+    }
+    .callout-title {
+        font-weight: bold;
+        margin-bottom: 4px;
+        color: #0f172a;
+        font-size: 10pt;
+    }
+    .role-badge {
+        display: inline-block;
+        padding: 3px 8px;
+        border-radius: 4px;
+        font-weight: bold;
+        font-size: 8.5pt;
+        color: #ffffff;
+    }
+    .badge-ba { background-color: #2563eb; }
+    .badge-arch { background-color: #7c3aed; }
+    .badge-dev { background-color: #0891b2; }
+    .badge-qa { background-color: #059669; }
+    .q-box {
+        background-color: #f8fafc;
+        border: 1px solid #cbd5e1;
+        border-left: 5px solid #0284c7;
+        border-radius: 4px;
+        padding: 10px 12px;
+        margin: 12px 0;
+        page-break-inside: avoid;
+    }
+    .q-title {
+        font-weight: 700;
+        color: #0369a1;
+        font-size: 10pt;
+        margin-bottom: 4px;
+    }
+    .q-ans {
+        color: #1e293b;
+        font-size: 9.5pt;
+    }
+</style>
+</head>
+<body>
+
+<!-- TRANG BÌA -->
+<div class="cover">
+    <div class="univ-header">
+        HỌC PHẦN: PHÁT TRIỂN PHẦN MỀM HƯỚNG ĐỐI TƯỢNG (OOAD / PTPMHĐT)
+    </div>
+    
+    <div style="margin: 40px 0;">
+        <div class="doc-type">TÀI LIỆU HƯỚNG DẪN CHI TIẾT & BẢN ĐÁNH GIÁ CHẤT LƯỢNG HỒ SƠ</div>
+        <div class="doc-type" style="font-size: 10.5pt; color: #64748b; margin-top: 6px;">COMPREHENSIVE AUDIT, GAP ANALYSIS & TEAM ONBOARDING HANDBOOK</div>
+        
+        <div class="project-name">ĐÁNH GIÁ VÀ HƯỚNG DẪN HOÀN THIỆN PROJECT_1</div>
+        <div class="project-sub">Căn cứ theo Chuẩn Dossier Doanh nghiệp & 6 Nguyên tắc Đánh giá Chất lượng OOAD</div>
+    </div>
+
+    <div style="width: 85%; margin: 0 auto; text-align: justify; font-size: 10pt; background-color: #f8fafc; padding: 18px 24px; border: 1px solid #cbd5e1; border-radius: 6px;">
+        <p><strong>Mục đích tài liệu:</strong></p>
+        <p>Tài liệu này được biên soạn bởi Chuyên gia Phân tích Thiết kế Hệ thống nhằm hỗ trợ nhóm phát triển <code>PROJECT_1</code>:</p>
+        <ul>
+            <li><strong>Chỉ rõ thực trạng:</strong> Nhóm đang làm đúng những gì? Đang thiếu sót những yếu tố và chức năng nào so với chuẩn mực môn học?</li>
+            <li><strong>Checklist hành động:</strong> Cần thêm những gì? Cần loại bỏ và dọn dẹp những tàn dư nào để hồ sơ đạt điểm tối đa?</li>
+            <li><strong>Cẩm nang từng thành viên (Team Onboarding):</strong> Mỗi vị trí (BA, Architect, Dev, QA) phải nắm chắc những kiến thức nào trong hồ sơ để tự tin bảo vệ đồ án trước Hội đồng Giảng viên.</li>
+            <li><strong>Kịch bản Vấn đáp (Viva Defense):</strong> 10 câu hỏi "xoáy" thường gặp nhất và cách trả lời mẫu đạt điểm 10.</li>
+        </ul>
+    </div>
+    
+    <div style="margin-top: 40px; color: #64748b; font-size: 9.5pt;">
+        Tháng 11 / 2026 — Tài liệu lưu hành nội bộ nhóm PROJECT_1
+    </div>
+</div>
+
+<!-- CHƯƠNG 1 -->
+<h1>1. ĐÁNH GIÁ TỔNG QUAN: NHÓM ĐANG LÀM ĐÚNG VÀ THIẾU NHỮNG GÌ?</h1>
+
+<h2>1.1. Những điểm bạn đang làm RẤT ĐÚNG và là THẾ MẠNH LỚN</h2>
+<div class="callout success">
+    <div class="callout-title">✓ Các điểm sáng vượt trội của PROJECT_1:</div>
+    <ul>
+        <li><strong>Nghiệp vụ đấu giá chuyên sâu (Không phải CRUD thông thường):</strong> Dự án đã áp dụng thành công thuật toán <strong>Proxy Bidding</strong> chuẩn eBay, cơ chế <strong>Reserve Price ẩn</strong>, <strong>Buy It Now</strong>, <strong>Ví bảo chứng Escrow</strong> và quy trình <strong>Relist / Second Chance Offer</strong>. Đây là các nghiệp vụ phức tạp, được đánh giá rất cao về tính thực tiễn.</li>
+        <li><strong>Thiết kế CSDL đạt chuẩn doanh nghiệp (Data Design):</strong> 14 bảng quan hệ được thiết kế rất chặt chẽ, sử dụng khóa chính <code>BIGINT AUTO_INCREMENT</code>, kiểu tiền tệ <code>BIGINT</code> (đồng VNĐ) chống sai số số thực, <code>DATETIME(3)</code> mili-giây, bảng lịch sử <code>bids</code> và <code>transactions</code> đạt chuẩn Append-only, có khóa chống trùng lặp giao dịch <code>idempotency_key UNIQUE</code>.</li>
+        <li><strong>Sơ đồ tuần tự và Máy trạng thái rất tốt:</strong> File <code>SEQUENCES.md</code> có tới 6 sơ đồ tuần tự chi tiết bằng Mermaid; file <code>STATE_MACHINES.md</code> có 5 máy trạng thái thể hiện rõ vòng đời của Phiên đấu giá, Đơn hàng, Giao dịch ví và Khiếu nại.</li>
+        <li><strong>Chất lượng mã nguồn & Kiểm thử (Testing):</strong> Bộ mã nguồn Java Spring Boot tổ chức theo Modular Monolith rất sạch, có 4 Facade liên module; 12 file test JUnit 5 bao phủ cả Happy path, giá trị biên (nhảy giá sàn) và ngoại lệ (người bán tự bid).</li>
+    </ul>
+</div>
+
+<h2>1.2. Những yếu tố và chức năng BẠN ĐANG THIẾU (Cần khắc phục ngay)</h2>
+<div class="callout danger">
+    <div class="callout-title">❌ Các lỗ hổng chí mạng có nguy cơ bị trừ điểm nặng:</div>
+    <ol>
+        <li><strong>Thiếu hoàn toàn Sơ đồ Lớp (Class Diagram) — Lỗ hổng lớn nhất:</strong>
+            <p>Môn học là <em>Phát triển Phần mềm Hướng đối tượng (OOAD)</em>, nhưng trong toàn bộ thư mục <code>docs/</code> không có bất kỳ Sơ đồ lớp nào (cả Analysis Class Diagram lẫn Design Class Diagram). Đây là lý do khiến bài thi dễ bị giảng viên đánh giá là "tiếp cận theo hướng dữ liệu/cấu trúc (Data-driven) thay vì hướng đối tượng".</p>
+        </li>
+        <li><strong>Thiếu Sơ đồ Hoạt động (Activity Diagram):</strong>
+            <p>Yêu cầu tối thiểu là $\ge 2$ quy trình có rẽ nhánh điều kiện và business rule. Dự án có logic nghiệp vụ Proxy Bidding và Đóng phiên rất hay nhưng lại không vẽ Sơ đồ hoạt động UML để trực quan hóa luồng rẽ nhánh này.</p>
+        </li>
+        <li><strong>Thiếu Ma trận Phân quyền (Role-Permission Matrix):</strong>
+            <p>Code đã có Spring Security nhưng trong tài liệu thiếu bảng ma trận 2 chiều ánh xạ quyền hạn giữa 4 Roles (Guest, Buyer, Seller, Admin) với từng tác vụ trên hệ thống.</p>
+        </li>
+        <li><strong>Thiếu Ma trận Truy vết Yêu cầu (Requirements Traceability Matrix - RTM):</strong>
+            <p>Chưa có bảng chứng minh mối liên kết xuyên suốt từ: <code>Business Rule / FR $\rightarrow$ Use Case $\rightarrow$ Class $\rightarrow$ DB Table $\rightarrow$ Test Case</code> cho ít nhất 2 nghiệp vụ cốt lõi.</p>
+        </li>
+        <li><strong>Thiếu Sơ đồ Kiến trúc Phân tầng (Logical Layer) và Triển khai (Deployment Tier):</strong>
+            <p>Chưa trực quan hóa mô hình 4 tầng logic (Presentation - Facade - Domain - Infrastructure) và mô hình 3 tầng vật lý (Client - Spring Boot Tomcat - MySQL Database).</p>
+        </li>
+    </ol>
+</div>
+
+<!-- CHƯƠNG 2 -->
+<div class="page-break"></div>
+<h1>2. DANH MỤC HÀNH ĐỘNG: CẦN THÊM GÌ VÀ BỎ GÌ?</h1>
+
+<h2>2.1. CẦN THÊM NHỮNG GÌ? (Checklist bổ sung vào hồ sơ)</h2>
+<table>
+    <thead><tr><th>STT</th><th>Hạng mục cần bổ sung</th><th>Vị trí đặt trong hồ sơ</th><th>Mô tả chi tiết nội dung cần làm</th></tr></thead>
+    <tbody>
+        <tr>
+            <td>1</td>
+            <td><strong>Sơ đồ Lớp phân tích (Analysis Class Diagram)</strong></td>
+            <td>Chương 4 (Mục 4.2)</td>
+            <td>Vẽ sơ đồ lớp khái niệm độc lập với CSDL gồm các thực thể: <code>User</code>, <code>Item</code>, <code>ItemImage</code>, <code>Auction</code>, <code>ProxyBid</code>, <code>Bid</code>, <code>Order</code>, <code>Wallet</code>. Thể hiện rõ thuộc tính và quan hệ bội số (1-1, 1-N).</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td><strong>Sơ đồ Lớp thiết kế (Design Class Diagram)</strong></td>
+            <td>Chương 6 (Mục 6.1)</td>
+            <td>Vẽ sơ đồ lớp phần mềm chi tiết phản ánh code Spring Boot: Các Controller, Facade (<code>WalletFacade</code>), Services (<code>ProxyBiddingService</code>, <code>OrderService</code>), Entities và Repositories.</td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td><strong>2 Sơ đồ Hoạt động (Activity Diagrams)</strong></td>
+            <td>Chương 3 (Mục 3.5)</td>
+            <td>• <em>Quy trình 1:</em> Đấu giá tự động Proxy Bidding (kiểm tra điều kiện, so sánh Max Bid, kiểm tra giá sàn, nhảy bước giá).<br>• <em>Quy trình 2:</em> Đóng phiên, thanh toán ví Escrow và xử lý bùng hàng (Strike & Relist).</td>
+        </tr>
+        <tr>
+            <td>4</td>
+            <td><strong>Sơ đồ Kiến trúc Logic & Triển khai</strong></td>
+            <td>Chương 5 (Mục 5.2, 5.3)</td>
+            <td>Vẽ sơ đồ 4 tầng phần mềm (Logical Layer) và sơ đồ triển khai 3 tầng phần cứng/mạng (Client Browser, Tomcat Server Port 8080, MySQL Port 3306).</td>
+        </tr>
+        <tr>
+            <td>5</td>
+            <td><strong>Ma trận Phân quyền (Role-Permission Matrix)</strong></td>
+            <td>Chương 10 (Mục 10.2)</td>
+            <td>Lập bảng 2 chiều giữa 4 Roles (GUEST, BUYER, SELLER, ADMIN) với 9 nhóm hành động chính trên hệ thống.</td>
+        </tr>
+        <tr>
+            <td>6</td>
+            <td><strong>Ma trận Truy vết Yêu cầu (RTM)</strong></td>
+            <td>Chương 12 (Mục 12.3, 12.4)</td>
+            <td>Lập bảng truy vết đầy đủ và bài thuyết minh end-to-end cho 2 luồng: (1) Đặt giá trần tự động Proxy Bidding; (2) Thanh toán đơn hàng & giải ngân qua ví Escrow.</td>
+        </tr>
+    </tbody>
+</table>
+
+<h2>2.2. CẦN LOẠI BỎ / DỌN DẸP NHỮNG GÌ? (Clean-up & Anti-contradiction)</h2>
+<div class="callout warning">
+    <div class="callout-title">⚠️ 3 "bẫy" tài liệu cũ cần dọn sạch ngay để tránh bị trừ điểm mâu thuẫn:</div>
+    <ul>
+        <li><strong>XÓA HOẶC CẬP NHẬT 2 FILE CSDL CŨ:</strong>
+            <p>Hai file <code>PROJECT_1/docs/database_diagram.html</code> và <code>PROJECT_1/docs/database_diagram.drawio</code> hiện vẫn đang chứa lược đồ **19 bảng cũ** (vẫn còn bảng cọc, thủ tục hành chính và không có bảng <code>proxy_bids</code>). Giảng viên mở 2 file này lên sẽ thấy mâu thuẫn 100% với file <code>ERD.md</code> (14 bảng mới). Hãy cập nhật hoặc xóa hẳn 2 file cũ này.</p>
+        </li>
+        <li><strong>SỬA DÒNG TEXT DƯ THỪA Ở CHÂN TRANG WEB:</strong>
+            <p>Mở file <code>PROJECT_1/frontend/web_app/index.html</code>, tại dòng 61 đang có đoạn: <em>"Tuân thủ Luật Đấu giá tài sản số 01/2016/QH14..."</em>. Hãy sửa thành: <em>"Hệ thống sàn thương mại điện tử Đấu giá trực tuyến tự động (Proxy Bidding & Escrow Wallet)"</em> để đồng bộ với định hướng hiện tại.</p>
+        </li>
+        <li><strong>RÚT GỌN TÀI LIỆU SO SÁNH QUÁ KHỨ:</strong>
+            <p>Trong file <code>ERD_EXPLANATION_AND_COMPARISON.md</code>, phần giải thích dài dòng về việc bỏ 19 bảng cũ chỉ nên xem như nhật ký nội bộ (CR-01). Khi đóng gói hồ sơ nộp chính thức, hãy tập trung 100% vào giải thích 14 bảng dữ liệu hiện hành.</p>
+        </li>
+    </ul>
+</div>
+
+<!-- CHƯƠNG 3 -->
+<div class="page-break"></div>
+<h1>3. CẨM NANG PHÂN CÔNG: TỪNG THÀNH VIÊN TRONG NHÓM PHẢI NẮM GÌ?</h1>
+<p>Để buổi vấn đáp đồ án đạt kết quả xuất sắc, các thành viên cần được phân công vai trò rõ ràng và làm chủ hoàn toàn mảng kiến thức tương ứng của mình:</p>
+
+<h2>3.1. Thành viên 1: Business / BA Lead <span class="role-badge badge-ba">BA LEAD</span></h2>
+<table>
+    <tr><td style="width: 25%; font-weight: 600;">Hồ sơ cần làm chủ</td><td><strong>Chương 1 (Tổng quan), Chương 2 (SRS / Business Rules), Chương 3 (Use Cases & Activity)</strong></td></tr>
+    <tr><td style="font-weight: 600;">Kiến thức bắt buộc nắm</td><td>
+        • Nắm vững 35 Business Rules (đặc biệt từ BR-01 đến BR-10).<br>
+        • Giải thích rành rọt thuật toán Proxy Bidding: Vì sao người mua không phải canh màn hình? Cách tính giá so khớp mới.<br>
+        • Bản chất của Reserve Price (Giá sàn ẩn): Vì sao người bán cần giá sàn? Điều kiện để nút Buy It Now biến mất.<br>
+        • Giải thích được vì sao bỏ nộp cọc trước mà hệ thống vẫn an toàn (chế tài Unpaid Strike + Ví Escrow).
+    </td></tr>
+    <tr><td style="font-weight: 600;">Nhiệm vụ trong buổi vấn đáp</td><td>Thuyết trình mở đầu (giới thiệu bài toán, giá trị kinh doanh) và trả lời toàn bộ các câu hỏi của Giảng viên về luồng nghiệp vụ, ngoại lệ và rẽ nhánh.</td></tr>
+</table>
+
+<h2>3.2. Thành viên 2: Software Architect / Design Lead <span class="role-badge badge-arch">ARCHITECT</span></h2>
+<table>
+    <tr><td style="width: 25%; font-weight: 600;">Hồ sơ cần làm chủ</td><td><strong>Chương 3 (Sequence, State Machine), Chương 4 (Domain Model), Chương 5 & 6 (Architecture & LLD)</strong></td></tr>
+    <tr><td style="font-weight: 600;">Kiến thức bắt buộc nắm</td><td>
+        • Phân biệt rành mạch giữa <strong>Analysis Class Diagram</strong> (Domain Model) và <strong>Design Class Diagram</strong>.<br>
+        • Nắm chắc các sơ đồ tuần tự (Sequence Diagrams) và các máy trạng thái (State Machines của Auction và Order).<br>
+        • Lý giải vì sao áp dụng <strong>Facade Pattern</strong> (<code>WalletFacade</code>) để giảm phụ thuộc vòng giữa module Auction và Wallet.<br>
+        • Bảo vệ quyết định kiến trúc <strong>ADR-01</strong>: Vì sao chọn Hard-close kết hợp Khóa bi quan (<code>SELECT FOR UPDATE</code>) để giải quyết xung đột giây cuối.
+    </td></tr>
+    <tr><td style="font-weight: 600;">Nhiệm vụ trong buổi vấn đáp</td><td>Bảo vệ tính hướng đối tượng của hệ thống, giải thích cấu trúc các tầng, các design pattern và nguyên tắc SOLID.</td></tr>
+</table>
+
+<h2>3.3. Thành viên 3: Data / API / UI Engineer <span class="role-badge badge-dev">DEV LEAD</span></h2>
+<table>
+    <tr><td style="width: 25%; font-weight: 600;">Hồ sơ cần làm chủ</td><td><strong>Chương 7 (Data Design), Chương 8 (UI/UX Specification), Chương 9 (Interface & API Contract)</strong></td></tr>
+    <tr><td style="font-weight: 600;">Kiến thức bắt buộc nắm</td><td>
+        • Nắm chắc cấu trúc 14 bảng dữ liệu, khóa chính (PK), khóa ngoại (FK) và các ràng buộc <code>CHECK</code>.<br>
+        • Trả lời vì sao dùng kiểu dữ liệu <code>BIGINT</code> cho tiền tệ thay vì <code>FLOAT/DOUBLE</code> (loại bỏ lỗi sai số dấu phẩy động).<br>
+        • Vì sao bảng <code>auctions</code> không đặt UNIQUE trên <code>item_id</code> (để phục vụ tính năng Relist nhiều lần cho 1 món hàng).<br>
+        • Hợp đồng API: Cách gửi payload JSON khi bid, cách xử lý mã lỗi HTTP 400/409, cơ chế đẩy tin WebSocket STOMP.
+    </td></tr>
+    <tr><td style="font-weight: 600;">Nhiệm vụ trong buổi vấn đáp</td><td>Demo trực tiếp sản phẩm (chạy <code>start-web.bat</code>), mở database MySQL kiểm tra dữ liệu và giải thích các câu hỏi về API/Database.</td></tr>
+</table>
+
+<h2>3.4. Thành viên 4: QA / Test / Documentation Lead <span class="role-badge badge-qa">QA LEAD</span></h2>
+<table>
+    <tr><td style="width: 25%; font-weight: 600;">Hồ sơ cần làm chủ</td><td><strong>Chương 0 (Document Control), Chương 10 (Security), Chương 12 (Testing & RTM), Chương 13 (Risk Log)</strong></td></tr>
+    <tr><td style="font-weight: 600;">Kiến thức bắt buộc nắm</td><td>
+        • Nắm chắc bảng <strong>Requirements Traceability Matrix (RTM)</strong>: Chỉ ra được đường đi từ FR $\rightarrow$ Use Case $\rightarrow$ Method $\rightarrow$ Test Case.<br>
+        • Giải thích chiến lược kiểm thử JUnit 5: Đã test Happy path nào? Giá trị biên nào (nhảy giá sàn)? Ngoại lệ nào (chống tự bid)?<br>
+        • Cơ chế bảo vệ <strong>Idempotency</strong>: Giải thích vì sao cột <code>idempotency_key UNIQUE</code> chống được việc trừ tiền hoặc nạp tiền 2 lần khi mạng retry.<br>
+        • Quản trị rủi ro (Risk Register) và Ma trận phân quyền (Role-Permission Matrix).
+    </td></tr>
+    <tr><td style="font-weight: 600;">Nhiệm vụ trong buổi vấn đáp</td><td>Trình chiếu báo cáo kiểm thử JUnit 5 (chạy <code>mvn test</code> thành công 100%), đối soát RTM và trả lời về kiểm toán bảo mật.</td></tr>
+</table>
+
+<!-- CHƯƠNG 4 -->
+<div class="page-break"></div>
+<h1>4. BỘ 10 CÂU HỎI "SÁT HẠCH" CỦA GIẢNG VIÊN VÀ KỊCH BẢN TRẢ LỜI MẪU</h1>
+
+<div class="q-box">
+    <div class="q-title">Câu 1 (Dành cho BA): "Tại sao hệ thống của nhóm lại dùng cơ chế Đấu giá tự động (Proxy Bidding) thay vì để người dùng tự gõ từng bước giá như truyền thống?"</div>
+    <div class="q-ans">
+        <strong>Trả lời mẫu:</strong> "Thưa Thầy/Cô, phương thức đấu giá gõ tay truyền thống bộc lộ 2 nhược điểm rất lớn: Thứ nhất, người mua phải canh chừng màn hình liên tục 24/7 gây mệt mỏi; Thứ hai, người mua thường có tâm lý đợi giây cuối cùng mới vào trả giá (Sniping) gây nghẽn hệ thống và dễ làm lộ chiến thuật giá. Cơ chế Proxy Bidding giải quyết triệt để vấn đề này: Người mua chỉ cần ủy quyền một mức giá tối đa bí mật mà họ sẵn sàng chi trả (Max Bid). Hệ thống sẽ tự động so khớp và nâng giá từng bước giá tối thiểu để người mua luôn dẫn đầu với chi phí rẻ nhất có thể. Đây là tiêu chuẩn vàng của các sàn thương mại điện tử lớn như eBay hay Yahoo Auctions."
+    </div>
+</div>
+
+<div class="q-box">
+    <div class="q-title">Câu 2 (Dành cho BA): "Nếu không bắt người tham gia nộp tiền đặt cọc trước (20%) thì làm sao ngăn chặn tình trạng người thắng cố tình bùng hàng, không chịu lấy đồ?"</div>
+    <div class="q-ans">
+        <strong>Trả lời mẫu:</strong> "Thưa Thầy/Cô, việc bắt nộp cọc trước tạo ra rào cản tham gia quá lớn, làm đóng băng vốn của khách hàng và phát sinh chi phí đối soát hoàn cọc rất phức tạp. Nhóm em giải quyết bài toán này bằng cơ chế kép: (1) <strong>Chế tài Unpaid Item Strike:</strong> Người thắng có 72h để thanh toán, nếu bùng hàng sẽ bị cộng 1 gậy vi phạm; tích lũy đủ 3 gậy sẽ bị khóa tài khoản vĩnh viễn; (2) <strong>Quyền lợi bảo vệ Người bán:</strong> Khi bị bùng hàng, người bán được quyền kích hoạt tính năng <em>Second Chance Offer</em> (bán cho người về nhì) hoặc <em>Relist</em> (mở lại phiên mới ngay lập tức) mà không bị mất phí."
+    </div>
+</div>
+
+<div class="q-box">
+    <div class="q-title">Câu 3 (Dành cho Architect): "Tại sao trong hồ sơ thiết kế OOAD lại phải phân biệt giữa Sơ đồ lớp phân tích (Analysis Class) và Sơ đồ lớp thiết kế (Design Class)? Chúng khác nhau ở điểm nào?"</div>
+    <div class="q-ans">
+        <strong>Trả lời mẫu:</strong> "Thưa Thầy/Cô: (1) <strong>Analysis Class Diagram</strong> là mô hình miền khái niệm (Domain Model), phản ánh các thực thể nghiệp vụ thực tế độc lập hoàn toàn với công nghệ, framework hay CSDL (chỉ tập trung vào thuộc tính nghiệp vụ và quan hệ ngữ nghĩa 1-N); (2) <strong>Design Class Diagram</strong> là mô hình phần mềm cụ thể, phản ánh kiến trúc code Java Spring Boot thực tế, bao gồm các lớp Boundary (Controller), Control (Service, Facade), Entity, DTO và Repository, thể hiện rõ kiểu dữ liệu, các phương thức thực thi và các design pattern như Facade hay State."
+    </div>
+</div>
+
+<div class="q-box">
+    <div class="q-title">Câu 4 (Dành cho Architect): "Khi có nhiều người cùng bấm đặt giá ở những giây cuối cùng của phiên, hệ thống xử lý tương tranh thế nào để không bị sai lệch dữ liệu?"</div>
+    <div class="q-ans">
+        <strong>Trả lời mẫu:</strong> "Thưa Thầy/Cô, nhóm em đã ghi nhận quyết định này trong <strong>ADR-01</strong>. Thay vì dùng Khóa lạc quan (Optimistic Lock) dễ gây lỗi Retry hàng loạt cho người dùng khi tỷ lệ va chạm cao, nhóm em sử dụng <strong>Khóa bi quan tầng CSDL (Pessimistic Write Lock: <code>SELECT ... FOR UPDATE</code>)</strong> trên bản ghi của phiên đấu giá trong <code>ProxyBiddingService</code>. Mọi yêu cầu bid trong cùng một mili-giây sẽ được hàng đợi CSDL tuần tự hóa tuyệt đối, đảm bảo tính toán giá so khớp chuẩn xác 100% trước khi mở khóa cho yêu cầu tiếp theo."
+    </div>
+</div>
+
+<div class="q-box">
+    <div class="q-title">Câu 5 (Dành cho Dev): "Tại sao toàn bộ các cột tiền tệ trong 14 bảng CSDL nhóm lại dùng kiểu BIGINT mà không dùng FLOAT hay DOUBLE?"</div>
+    <div class="q-ans">
+        <strong>Trả lời mẫu:</strong> "Thưa Thầy/Cô, kiểu số thực <code>FLOAT</code> hoặc <code>DOUBLE</code> trong máy tính biểu diễn theo chuẩn nhị phân IEEE 754, rất dễ gây ra sai số làm tròn số học dấu phẩy động (Floating-point rounding error) khi tính toán cộng trừ hoặc chia tỷ lệ phần trăm hoa hồng. Đối với dữ liệu tài chính của sàn, nhóm em chuẩn hóa sử dụng kiểu số nguyên <code>BIGINT</code> với đơn vị cơ bản là Đồng (VNĐ). Điều này loại trừ hoàn toàn sai số làm tròn, kết hợp với ràng buộc <code>CHECK (available_balance >= 0)</code> đảm bảo số dư ví không bao giờ bị âm."
+    </div>
+</div>
+
+<div class="q-box">
+    <div class="q-title">Câu 6 (Dành cho Dev): "Tại sao trong bảng auctions nhóm không đặt ràng buộc UNIQUE trên cột item_id?"</div>
+    <div class="q-ans">
+        <strong>Trả lời mẫu:</strong> "Thưa Thầy/Cô, đây là một quyết định thiết kế có chủ đích nhằm phục vụ tính năng <strong>Đăng lại phiên (Relist)</strong>. Một món hàng (`Item`) sau khi được tạo ra có thể trải qua phiên đấu giá đầu tiên nhưng không bán được (do chưa chạm giá sàn hoặc người thắng bùng hàng). Khi đó, người bán có thể mở tiếp một phiên đấu giá thứ hai từ chính món hàng này. Do đó, quan hệ giữa `Item` và `Auction` ở mức CSDL phải là quan hệ 1-N (một món hàng có thể gắn với nhiều phiên đấu giá trong lịch sử)."
+    </div>
+</div>
+
+<div class="q-box">
+    <div class="q-title">Câu 7 (Dành cho Dev): "Tại sao lại phải tách riêng bảng proxy_bids và bảng bids thay vì lưu chung vào một bảng?"</div>
+    <div class="q-ans">
+        <strong>Trả lời mẫu:</strong> "Thưa Thầy/Cô, việc tách 2 bảng này xuất phát từ 2 lý do bảo mật và nghiệp vụ: (1) <strong>Bảo mật:</strong> Bảng <code>proxy_bids</code> lưu mức giá trần tối đa bí mật (`max_amount`) của người mua, đây là dữ liệu tuyệt mật chỉ server được đọc; trong khi bảng <code>bids</code> lưu các bước giá hiển thị công khai trên giao diện sàn; (2) <strong>Bội số:</strong> Trong một phiên, mỗi người mua chỉ có duy nhất 1 bản ghi Max Bid hoạt động (<code>UNIQUE(auction_id, bidder_id)</code>), nhưng bảng <code>bids</code> là lịch sử Append-only có thể ghi nhận hàng trăm bước nhảy giá công khai."
+    </div>
+</div>
+
+<div class="q-box">
+    <div class="q-title">Câu 8 (Dành cho QA): "Cơ chế Ví bảo chứng (Escrow) hoạt động như thế nào và nhóm kiểm thử nó ra sao?"</div>
+    <div class="q-ans">
+        <strong>Trả lời mẫu:</strong> "Thưa Thầy/Cô, cơ chế Escrow bảo vệ an toàn cho cả hai bên: Khi người mua thanh toán đơn hàng, tiền không chuyển ngay cho người bán mà được phong tỏa vào ví trung gian <code>SYSTEM_ESCROW</code> của sàn (đơn hàng chuyển sang trạng thái <code>PAID</code>). Người bán yên tâm giao hàng, người mua yên tâm nhận và kiểm tra hàng. Chỉ khi người mua bấm 'Xác nhận đã nhận hàng', hệ thống mới trích 5% hoa hồng về ví sàn và giải ngân 95% còn lại vào ví người bán. Nhóm em đã kiểm thử tự động toàn bộ luồng này trong test case <code>OrderServiceTest: testConfirmReceivedReleases95Percent()</code>."
+    </div>
+</div>
+
+<div class="q-box">
+    <div class="q-title">Câu 9 (Dành cho QA): "Khái niệm Idempotency trong hệ thống của nhóm là gì và giải quyết vấn đề gì?"</div>
+    <div class="q-ans">
+        <strong>Trả lời mẫu:</strong> "Thưa Thầy/Cô, trong môi trường mạng thực tế, khi người dùng bấm nút nạp tiền hoặc thanh toán mà kết nối mạng bị chập chờn, trình duyệt có thể tự động gửi lại yêu cầu (retry) hoặc người dùng sốt ruột bấm 2 lần liên tiếp. Nhóm em thiết kế cột <code>idempotency_key VARCHAR(64) UNIQUE</code> trong bảng <code>transactions</code>. Nếu yêu cầu có cùng một mã khóa gửi đến lần thứ hai, CSDL sẽ kích hoạt chặn trùng khóa, giúp hệ thống không bao giờ bị trừ tiền hoặc cộng tiền 2 lần. Nhóm đã viết test kiểm thử thành công trong <code>WalletServiceTest: testDuplicateIdempotencyIgnored()</code>."
+    </div>
+</div>
+
+<div class="q-box">
+    <div class="q-title">Câu 10 (Dành cho QA): "Làm thế nào nhóm chứng minh được 100% yêu cầu chức năng đều đã được thiết kế và kiểm thử đầy đủ?"</div>
+    <div class="q-ans">
+        <strong>Trả lời mẫu:</strong> "Thưa Thầy/Cô, nhóm em sử dụng <strong>Ma trận truy vết yêu cầu (Requirements Traceability Matrix - RTM)</strong> tại Mục 12.1 của hồ sơ. Mỗi một yêu cầu chức năng (FR) và quy tắc nghiệp vụ (BR) đều được đánh mã định danh duy nhất và ánh xạ 1-1 xuyên suốt: Từ <code>Yêu cầu $\rightarrow$ Use Case $\rightarrow$ Sơ đồ Tuần tự $\rightarrow$ Phương thức xử lý trong Java Service $\rightarrow$ Bảng CSDL $\rightarrow$ Endpoint API $\rightarrow$ Unit Test Case</code>. Không có bất kỳ yêu cầu nào bị bỏ sót hay mồ côi."
+    </div>
+</div>
+
+<!-- CHƯƠNG 5 -->
+<div class="page-break"></div>
+<h1>5. LỘ TRÌNH 3 NGÀY HOÀN THIỆN ĐỒ ÁN ĐẠT ĐIỂM TỐI ĐA</h1>
+
+<table>
+    <thead><tr><th>Thời gian</th><th>Nhiệm vụ trọng tâm</th><th>Người phụ trách</th><th>Sản phẩm đầu ra cần nộp</th></tr></thead>
+    <tbody>
+        <tr>
+            <td><strong>Ngày 1: Đồng bộ tài liệu & Dọn dẹp</strong></td>
+            <td>• Xóa bỏ 2 file CSDL cũ 19 bảng trong <code>docs/</code>.<br>
+                • Sửa câu text Luật 01/2016 ở footer <code>index.html</code>.<br>
+                • Kiểm tra lại toàn bộ file trong <code>PROJECT_1/Demo/</code>.</td>
+            <td>Dev Lead & QA Lead</td>
+            <td>Cây thư mục sạch, 100% khớp schema 14 bảng, không còn mâu thuẫn.</td>
+        </tr>
+        <tr>
+            <td><strong>Ngày 2: In ấn hồ sơ & Chạy thử nghiệm</strong></td>
+            <td>• Xuất 2 bản PDF từ thư mục <code>PROJECT_1/Demo/</code>.<br>
+                • Đóng bìa tài liệu <em>Enterprise Software Design Dossier</em> theo đúng mẫu trường.<br>
+                • Chạy <code>mvn clean test</code> đảm bảo 12 file test pass 100%.<br>
+                • Chạy <code>start-web.bat</code> kiểm tra mượt mà trên trình duyệt.</td>
+            <td>Cả nhóm</td>
+            <td>02 tập tài liệu in ấn đẹp mắt + Bản demo phần mềm chạy trơn tru.</td>
+        </tr>
+        <tr>
+            <td><strong>Ngày 3: Tập dượt vấn đáp (Mock Viva)</strong></td>
+            <td>• Đọc kỹ <strong>Chương 3</strong> và <strong>Chương 4</strong> của tài liệu hướng dẫn này.<br>
+                • Phân vai hỏi - đáp thử 10 câu hỏi sát hạch trong nhóm.<br>
+                • Bấm giờ thuyết trình slide tổng quan trong 10-15 phút.</td>
+            <td>Cả nhóm</td>
+            <td>Tất cả thành viên tự tin, nắm chắc vai trò và sẵn sàng đạt điểm A/A+.</td>
+        </tr>
+    </tbody>
+</table>
+
+<div style="margin-top: 40px; text-align: center; color: #64748b; font-size: 9.5pt;">
+    --- HẾT TÀI LIỆU HƯỚNG DẪN CHI TIẾT & ĐÁNH GIÁ HỒ SƠ ---
+</div>
+
+</body>
+</html>

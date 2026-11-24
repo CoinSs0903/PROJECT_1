@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>HỒ SƠ PHÂN TÍCH - THIẾT KẾ PHẦN MỀM (ENTERPRISE DOSSIER) - PROJECT 1</title>
+<style>
+    @page {
+        size: A4;
+        margin: 18mm 15mm 18mm 15mm;
+    }
+    body {
+        font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+        font-size: 10pt;
+        line-height: 1.5;
+        color: #1e293b;
+        background-color: #ffffff;
+        margin: 0;
+        padding: 0;
+    }
+    .cover {
+        text-align: center;
+        padding: 40px 10px;
+        page-break-after: always;
+    }
+    .univ-header {
+        font-size: 12pt;
+        font-weight: bold;
+        letter-spacing: 1px;
+        color: #0f172a;
+        text-transform: uppercase;
+        border-bottom: 2px solid #0284c7;
+        padding-bottom: 6px;
+        display: inline-block;
+        margin-bottom: 40px;
+    }
+    .doc-type {
+        font-size: 13pt;
+        color: #475569;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-weight: 600;
+    }
+    .project-name {
+        font-size: 23pt;
+        font-weight: 800;
+        color: #0369a1;
+        margin: 20px 0 10px 0;
+        line-height: 1.25;
+    }
+    .project-sub {
+        font-size: 12pt;
+        color: #64748b;
+        font-style: italic;
+        margin-bottom: 40px;
+    }
+    table.meta-table {
+        width: 85%;
+        margin: 0 auto 30px auto;
+        border-collapse: collapse;
+    }
+    table.meta-table td {
+        padding: 6px 12px;
+        border: 1px solid #cbd5e1;
+        font-size: 9.5pt;
+    }
+    table.meta-table td.lbl {
+        background-color: #f8fafc;
+        font-weight: 600;
+        width: 35%;
+        color: #334155;
+    }
+    .page-break {
+        page-break-before: always;
+    }
+    h1 {
+        font-size: 15pt;
+        font-weight: 700;
+        color: #0369a1;
+        border-bottom: 2px solid #0284c7;
+        padding-bottom: 4px;
+        margin-top: 24px;
+        margin-bottom: 12px;
+        page-break-after: avoid;
+    }
+    h2 {
+        font-size: 12.5pt;
+        font-weight: 700;
+        color: #0f172a;
+        margin-top: 18px;
+        margin-bottom: 8px;
+        border-left: 4px solid #0284c7;
+        padding-left: 8px;
+        page-break-after: avoid;
+    }
+    h3 {
+        font-size: 11pt;
+        font-weight: 600;
+        color: #1e293b;
+        margin-top: 14px;
+        margin-bottom: 6px;
+        page-break-after: avoid;
+    }
+    p, li {
+        text-align: justify;
+        margin-top: 4px;
+        margin-bottom: 6px;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 10px 0;
+        font-size: 9pt;
+        page-break-inside: avoid;
+    }
+    th, td {
+        border: 1px solid #cbd5e1;
+        padding: 5px 8px;
+        text-align: left;
+        vertical-align: top;
+    }
+    th {
+        background-color: #f1f5f9;
+        font-weight: 600;
+        color: #0f172a;
+    }
+    tr:nth-child(even) td {
+        background-color: #fcfdfe;
+    }
+    .callout {
+        border-left: 4px solid #0284c7;
+        background-color: #f0f9ff;
+        padding: 8px 12px;
+        margin: 10px 0;
+        border-radius: 0 4px 4px 0;
+        font-size: 9pt;
+    }
+    .callout.warning {
+        border-left-color: #f59e0b;
+        background-color: #fffbeb;
+    }
+    .callout.success {
+        border-left-color: #10b981;
+        background-color: #f0fdf4;
+    }
+    .code-box {
+        background-color: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 4px;
+        padding: 8px;
+        font-family: 'Consolas', 'Courier New', monospace;
+        font-size: 8.5pt;
+        white-space: pre-wrap;
+        margin: 8px 0;
+        line-height: 1.4;
+    }
+    .diagram-card {
+        background-color: #ffffff;
+        border: 1.5px solid #cbd5e1;
+        border-radius: 6px;
+        padding: 12px;
+        margin: 12px 0;
+        text-align: center;
+        page-break-inside: avoid;
+    }
+    .diagram-caption {
+        font-weight: bold;
+        color: #0369a1;
+        margin-top: 8px;
+        font-size: 9.5pt;
+    }
+    .tag {
+        display: inline-block;
+        padding: 1px 5px;
+        font-size: 7.5pt;
+        font-weight: 600;
+        border-radius: 3px;
+        margin-right: 4px;
+    }
+    .tag-must { background-color: #fee2e2; color: #991b1b; }
+    .tag-should { background-color: #fef3c7; color: #92400e; }
+    .tag-could { background-color: #e0f2fe; color: #075985; }
+</style>
+</head>
+<body>
+
+<!-- TRANG BÌA -->
+<div class="cover">
+    <div class="univ-header">
+        HỌC PHẦN: PHÁT TRIỂN PHẦN MỀM HƯỚNG ĐỐI TƯỢNG (OOAD / PTPMHĐT)
+    </div>
+    
+    <div style="margin: 30px 0;">
+        <div class="doc-type">HỒ SƠ PHÂN TÍCH - THIẾT KẾ PHẦN MỀM HOÀN CHỈNH</div>
+        <div class="doc-type" style="font-size: 10pt; color: #64748b; margin-top: 5px;">ENTERPRISE-STYLE SOFTWARE DESIGN DOSSIER</div>
+        
+        <div class="project-name">HỆ THỐNG ĐẤU GIÁ TRỰC TUYẾN TỰ ĐỘNG</div>
+        <div class="project-sub">ONLINE AUCTION SYSTEM — PROXY BIDDING & ESCROW ENGINE</div>
+    </div>
+
+    <table class="meta-table">
+        <tr>
+            <td class="lbl">Mã dự án / Project ID</td>
+            <td><strong>PRJ-OOAD-AUCTION-01</strong></td>
+        </tr>
+        <tr>
+            <td class="lbl">Lớp học phần</td>
+            <td>Phát triển Phần mềm Hướng đối tượng</td>
+        </tr>
+        <tr>
+            <td class="lbl">Giảng viên phụ trách</td>
+            <td>Bộ môn Công nghệ Phần mềm</td>
+        </tr>
+        <tr>
+            <td class="lbl">Trạng thái hồ sơ</td>
+            <td><strong style="color: #15803d;">Approved / Final Submission</strong></td>
+        </tr>
+        <tr>
+            <td class="lbl">Phiên bản tài liệu</td>
+            <td><strong>Version 1.0 (Enterprise Standard)</strong></td>
+        </tr>
+        <tr>
+            <td class="lbl">Ngày phát hành</td>
+            <td>Tháng 11 / 2026</td>
+        </tr>
+    </table>
+
+    <div style="margin-top: 25px;">
+        <h3 style="color: #0f172a; text-transform: uppercase;">DANH SÁCH THÀNH VIÊN VÀ PHÂN CÔNG VAI TRÒ</h3>
+        <table class="meta-table" style="width: 90%;">
+            <thead>
+                <tr>
+                    <th style="width: 8%;">STT</th>
+                    <th style="width: 18%;">MSSV</th>
+                    <th style="width: 25%;">Họ và tên</th>
+                    <th style="width: 27%;">Vai trò phân công</th>
+                    <th style="width: 22%;">Nhiệm vụ chính</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="text-align: center;">1</td>
+                    <td>20210001</td>
+                    <td><strong>Trần Văn An</strong></td>
+                    <td><strong>Business / BA Lead</strong></td>
+                    <td>BRD/SRS, Use Case, Business Rules, Traceability</td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;">2</td>
+                    <td>20210002</td>
+                    <td><strong>Lê Thị Bình</strong></td>
+                    <td><strong>Software Architect / Design Lead</strong></td>
+                    <td>UML Modeling, Sequence, Class Diagrams, ADR</td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;">3</td>
+                    <td>20210003</td>
+                    <td><strong>Nguyễn Văn Cường</strong></td>
+                    <td><strong>Data / API / UI Engineer</strong></td>
+                    <td>Database 14 Tables, API Specs, Web Client, Facade</td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;">4</td>
+                    <td>20210004</td>
+                    <td><strong>Phạm Minh Đức</strong></td>
+                    <td><strong>QA / Test / Security Lead</strong></td>
+                    <td>Security Matrix, JUnit 5 Testing, RTM, Risk Log</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- CHƯƠNG 0: QUẢN LÝ TÀI LIỆU -->
+<h1>0. DOCUMENT CONTROL — QUẢN TRỊ HỒ SƠ DOANH NGHIỆP</h1>
+<p>Phần này mô phỏng quy trình kiểm soát hồ sơ thiết kế kỹ thuật theo chuẩn CMMI / ISO 27001 trong các tập đoàn phần mềm, đảm bảo tính nhất quán và khả năng kiểm toán của tài liệu.</p>
+
+<h2>0.1. Thông tin tài liệu</h2>
+<table>
+    <tr><td style="width: 30%; font-weight: 600;">Document Name</td><td>Software Design Dossier — Online Auction System (Proxy Bidding & Escrow)</td></tr>
+    <tr><td style="font-weight: 600;">Document ID</td><td>SDD-PTPMHDT-PRJ01-2026</td></tr>
+    <tr><td style="font-weight: 600;">Document Owner</td><td>Nhóm dự án PROJECT_1 (Lead Architect: Lê Thị Bình)</td></tr>
+    <tr><td style="font-weight: 600;">Status</td><td><strong>Approved (Sẵn sàng chấm đồ án & vấn đáp)</strong></td></tr>
+    <tr><td style="font-weight: 600;">Confidentiality</td><td>Internal / Academic Defense</td></tr>
+    <tr><td style="font-weight: 600;">Repository Path</td><td><code>PROJECT_1/</code> (Source code, DB migration, docs, frontend)</td></tr>
+</table>
+
+<h2>0.2. Lịch sử phiên bản (Version History)</h2>
+<table>
+    <thead>
+        <tr><th>Version</th><th>Ngày</th><th>Tác giả</th><th>Nội dung thay đổi cốt lõi</th><th>Người duyệt</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>0.1</td><td>15/10/2026</td><td>Trần Văn An</td><td>Khảo sát đề tài ban đầu, phác thảo SRS phiên bản sơ bộ.</td><td>Lê Thị Bình</td></tr>
+        <tr><td>0.2</td><td>24/10/2026</td><td>Nguyễn Văn Cường</td><td>Chuyển đổi sang mô hình đấu giá tự động kiểu eBay (14 bảng CSDL).</td><td>Lê Thị Bình</td></tr>
+        <tr><td>0.9</td><td>02/11/2026</td><td>Lê Thị Bình</td><td>Hoàn thiện sơ đồ tuần tự (Sequence), máy trạng thái (State Machine) và Facade.</td><td>Trần Văn An</td></tr>
+        <tr><td><strong>1.0</strong></td><td><strong>06/11/2026</strong></td><td><strong>Cả nhóm</strong></td><td><strong>Chuẩn hóa 14 chương theo mẫu Dossier doanh nghiệp: Bổ sung Class Diagram, Activity Diagram, RTM, Role-Permission Matrix.</strong></td><td><strong>Giảng viên</strong></td></tr>
+    </tbody>
+</table>
+
+<h2>0.3. Đối sánh hồ sơ môn học với tài liệu doanh nghiệp thực tế</h2>
+<table>
+    <thead><tr><th>Khối trong Dossier môn học</th><th>Tài liệu doanh nghiệp tương ứng</th><th>Mục tiêu trong dự án PROJECT_1</th></tr></thead>
+    <tbody>
+        <tr><td>1. Executive Summary & Overview</td><td>Project Charter / BRD</td><td>Xác định ranh giới bài toán và giá trị kinh doanh.</td></tr>
+        <tr><td>2. Requirements Specification</td><td>SRS / Functional Specification</td><td>Đặc tả 35 quy tắc nghiệp vụ (BR) và tiêu chí nghiệm thu (AC).</td></tr>
+        <tr><td>3 & 4. OO Analysis & Domain Model</td><td>Functional Design / Analysis Model</td><td>Mô hình hóa khái niệm đối tượng thuần túy, loại bỏ phụ thuộc CSDL.</td></tr>
+        <tr><td>5 & 6. Architecture & Detailed OO Design</td><td>SAD (HLD) & LLD (Detailed Design)</td><td>Thiết kế 4 tầng, áp dụng GoF Design Patterns (Facade, State, Observer).</td></tr>
+        <tr><td>7. Data Design</td><td>Database Design Specification</td><td>Đặc tả 14 bảng quan hệ, kiểu BIGINT VNĐ, kiểm soát toàn vẹn dữ liệu.</td></tr>
+        <tr><td>8 & 9. UI/UX & API Specification</td><td>UI/UX Spec & API Contract</td><td>Hợp đồng giao tiếp giữa Client và Server (REST + WebSocket STOMP).</td></tr>
+        <tr><td>10 & 11. Security & Deployment</td><td>Security Architecture & DevOps Spec</td><td>Phân quyền vai trò, băm mật khẩu BCrypt, quy trình triển khai 3 môi trường.</td></tr>
+        <tr><td>12. Verification & Traceability</td><td>Test Plan, Test Cases & RTM</td><td>Ma trận truy vết 100% từ Requirement đến Test Case thực thi.</td></tr>
+    </tbody>
+</table>
+
+<!-- CHƯƠNG 1 -->
+<div class="page-break"></div>
+<h1>1. EXECUTIVE SUMMARY & PROJECT OVERVIEW</h1>
+
+<h2>1.1. Executive Summary (Tóm tắt điều hành)</h2>
+<p>Dự án <strong>"Hệ Thống Đấu Giá Trực Tuyến Tự Động" (Online Auction System)</strong> cung cấp giải pháp sàn thương mại điện tử chuyên biệt về đấu giá tài sản số và hàng hóa cao cấp theo thời gian thực. Hệ thống giải quyết triệt để vấn đề "canh chừng màn hình liên tục" của người mua truyền thống thông qua cơ chế <strong>Đấu giá tự động (Proxy Bidding)</strong> theo chuẩn eBay: người mua chỉ cần đặt mức giá trần tối đa bí mật, hệ thống sẽ tự động so khớp và nâng giá theo bước giá tối thiểu để luôn duy trì vị trí dẫn đầu. Đồng thời, quyền lợi người bán được bảo vệ tuyệt đối bằng <strong>Giá sàn bảo lưu ẩn (Reserve Price)</strong> và tùy chọn <strong>Mua ngay (Buy It Now)</strong>. Vấn đề bùng hàng và lừa đảo thanh toán được giải quyết tận gốc thông qua <strong>Ví bảo chứng trung gian (Escrow Wallet)</strong>: tiền trúng đấu giá được giữ tạm thời và chỉ giải ngân cho người bán khi người mua đã nhận hàng thành công.</p>
+
+<h2>1.2. Problem Statement (Phát biểu bài toán & Điểm đau nghiệp vụ)</h2>
+<table>
+    <thead><tr><th>Đối tượng</th><th>Điểm đau của phương thức đấu giá truyền thống</th><th>Giải pháp công nghệ của PROJECT_1</th></tr></thead>
+    <tbody>
+        <tr>
+            <td><strong>Người mua (Buyer)</strong></td>
+            <td>Phải tốn thời gian canh màn hình giây cuối (Sniping); dễ bị lộ ý đồ tài chính khi tự tay nâng giá từng bước; rủi ro chuyển tiền nhưng không nhận được hàng.</td>
+            <td>Thuật toán <strong>Proxy Bidding</strong> tự động hóa 100%; giá trần được bảo mật tuyệt đối ở Server; thanh toán an toàn qua <strong>Ví ký quỹ Escrow</strong>.</td>
+        </tr>
+        <tr>
+            <td><strong>Người bán (Seller)</strong></td>
+            <td>Nguy cơ bị ép giá bán rẻ nếu ít người tham gia; rủi ro người trúng đấu giá không thanh toán (bùng hàng) gây đọng vốn và mất cơ hội kinh doanh.</td>
+            <td>Tính năng <strong>Reserve Price</strong> ẩn đảm bảo chỉ bán khi đạt giá kỳ vọng; chế tài <strong>Unpaid Strike</strong> và tính năng đăng lại phiên tức thì (<strong>Relist / Second Chance Offer</strong>).</td>
+        </tr>
+        <tr>
+            <td><strong>Hệ thống / Sàn</strong></td>
+            <td>Nghẽn mạng và xung đột dữ liệu mili-giây cuối; tranh chấp giao dịch tài chính khi mạng chập chờn hoặc retry.</td>
+            <td>Kiến trúc WebSocket STOMP đồng bộ thời gian thực; kiểm soát tương tranh bằng Khóa bi quan (<code>SELECT FOR UPDATE</code>) và cơ chế Idempotency.</td>
+        </tr>
+    </tbody>
+</table>
+
+<h2>1.3. Mục tiêu & Tiêu chí đo lường thành công (Objectives & Success Criteria)</h2>
+<table>
+    <thead><tr><th>Mã</th><th>Mục tiêu dự án</th><th>Tiêu chí thành công đo được</th><th>Phương pháp kiểm chứng</th></tr></thead>
+    <tbody>
+        <tr><td><strong>OBJ-01</strong></td><td>Tự động hóa hoàn toàn quy trình trả giá</td><td>100% lượt bid hợp lệ được bộ máy Proxy Bidding so khớp trong &lt; 50ms</td><td>JMeter benchmark & Unit test Concurrency</td></tr>
+        <tr><td><strong>OBJ-02</strong></td><td>Bảo mật mức giá trần (Max Bid)</td><td>Không để lộ trường <code>max_amount</code> qua bất kỳ REST API công khai hay WebSocket frame nào</td><td>Security Audit & Contract Inspection</td></tr>
+        <tr><td><strong>OBJ-03</strong></td><td>Toàn vẹn tài chính & Chống sai số</td><td>Sai số tiền tệ = 0; không có giao dịch trùng lặp khi retry mạng</td><td>Kiểm thử IdempotencyKey & Ràng buộc CHECK</td></tr>
+        <tr><td><strong>OBJ-04</strong></td><td>Minh bạch và truy vết 100%</td><td>Mọi thay đổi số dư và lịch sử trả giá được ghi nhận Append-only</td><td>Kiểm tra bảng <code>bids</code>, <code>transactions</code>, <code>audit_logs</code></td></tr>
+    </tbody>
+</table>
+
+<h2>1.4. Phạm vi dự án (Scope & Out of Scope)</h2>
+<table>
+    <thead><tr><th>Trong phạm vi (In Scope)</th><th>Ngoài phạm vi (Out of Scope)</th></tr></thead>
+    <tbody>
+        <tr>
+            <td>• Quản lý danh mục & món hàng (Item) kèm album ảnh.<br>
+                • Thiết lập phiên: Giá khởi điểm, Bước giá, Giá sàn ẩn, Giá Mua ngay.<br>
+                • Đấu giá tự động (Proxy Bidding) & Trả giá trực tiếp (Instant Bid).<br>
+                • Đóng phiên tự động bằng Bộ lập lịch (System Scheduler).<br>
+                • Quản lý ví nội bộ, nạp/rút tiền, thanh toán bảo chứng Escrow.<br>
+                • Vòng đời đơn hàng, xác nhận nhận hàng, giải ngân hoa hồng 5%.<br>
+                • Đăng lại phiên (Relist), Phạt bùng hàng (Strike), Đánh giá & Khiếu nại.</td>
+            <td>• Tích hợp cổng thanh toán trực tiếp của ngân hàng bên ngoài (VNPAY/Momo thật) — Thay thế bằng Ví nội bộ mô phỏng.<br>
+                • Đơn vị vận chuyển thứ ba (GHN, Viettel Post API) — Quản lý qua cập nhật mã vận đơn thủ công.<br>
+                • Ứng dụng di động Native (iOS/Android) — Sử dụng Responsive Web Client.</td>
+        </tr>
+    </tbody>
+</table>
+
+<!-- CHƯƠNG 2 -->
+<div class="page-break"></div>
+<h1>2. REQUIREMENTS SPECIFICATION (BRD / SRS)</h1>
+
+<h2>2.1. Phân loại Yêu cầu chức năng (Functional Requirements - FR)</h2>
+<table>
+    <thead><tr><th>Mã FR</th><th>Yêu cầu chức năng</th><th>Actor chính</th><th>Độ ưu tiên</th><th>Nghiệm thu (AC Link)</th></tr></thead>
+    <tbody>
+        <tr><td><strong>FR-01</strong></td><td>Tìm kiếm, lọc món hàng theo danh mục, mức giá và trạng thái phiên</td><td>Khách / Người mua</td><td><span class="tag tag-must">MUST</span></td><td>AC-01</td></tr>
+        <tr><td><strong>FR-02</strong></td><td>Đăng ký tài khoản, kích hoạt ví và quản lý số dư (Nạp / Rút tiền)</td><td>Người mua / Bán</td><td><span class="tag tag-must">MUST</span></td><td>AC-02</td></tr>
+        <tr><td><strong>FR-03</strong></td><td>Đăng bán món hàng (Item), quản lý mô tả tình trạng và album hình ảnh</td><td>Người bán</td><td><span class="tag tag-must">MUST</span></td><td>AC-03</td></tr>
+        <tr><td><strong>FR-04</strong></td><td>Khởi tạo phiên đấu giá với tham số: Giá khởi điểm, Bước giá, Reserve Price, Buy It Now</td><td>Người bán</td><td><span class="tag tag-must">MUST</span></td><td>AC-04</td></tr>
+        <tr><td><strong>FR-05</strong></td><td>Đặt mức giá trần tự động (Proxy Bid) hoặc trả giá trực tiếp (Instant Bid)</td><td>Người mua</td><td><span class="tag tag-must">MUST</span></td><td>AC-05</td></tr>
+        <tr><td><strong>FR-06</strong></td><td>Sử dụng quyền "Mua ngay" (Buy It Now) để sở hữu món hàng và kết thúc phiên lập tức</td><td>Người mua</td><td><span class="tag tag-must">MUST</span></td><td>AC-06</td></tr>
+        <tr><td><strong>FR-07</strong></td><td>Bộ lập lịch (Scheduler) tự động quét và đóng các phiên hết hạn, chốt người trúng giải</td><td>Hệ thống</td><td><span class="tag tag-must">MUST</span></td><td>AC-07</td></tr>
+        <tr><td><strong>FR-08</strong></td><td>Tạo đơn hàng tự động và phong tỏa tiền thanh toán vào Ví bảo chứng (Escrow)</td><td>Người mua / Hệ thống</td><td><span class="tag tag-must">MUST</span></td><td>AC-08</td></tr>
+        <tr><td><strong>FR-09</strong></td><td>Cập nhật mã vận đơn và xác nhận nhận hàng để giải ngân tiền cho người bán</td><td>Người bán / Mua</td><td><span class="tag tag-must">MUST</span></td><td>AC-09</td></tr>
+        <tr><td><strong>FR-10</strong></td><td>Tự động hủy đơn hàng quá 72h không thanh toán, phạt 1 gậy Unpaid Item Strike</td><td>Hệ thống</td><td><span class="tag tag-should">SHOULD</span></td><td>AC-10</td></tr>
+        <tr><td><strong>FR-11</strong></td><td>Tạo phiên đấu giá mới từ món hàng bị bùng hoặc chưa đạt giá sàn (Relist)</td><td>Người bán</td><td><span class="tag tag-should">SHOULD</span></td><td>AC-11</td></tr>
+        <tr><td><strong>FR-12</strong></td><td>Quản trị danh mục, giám sát gian lận, xử lý khiếu nại và tra cứu Audit Logs</td><td>Quản trị viên</td><td><span class="tag tag-must">MUST</span></td><td>AC-12</td></tr>
+    </tbody>
+</table>
+
+<h2>2.2. Ma trận Quy tắc nghiệp vụ cốt lõi (Business Rules - BR)</h2>
+<table>
+    <thead><tr><th>Mã BR</th><th>Tên quy tắc</th><th>Nội dung quy định nghiệp vụ chi tiết</th><th>Use Case liên quan</th></tr></thead>
+    <tbody>
+        <tr><td><strong>BR-01</strong></td><td>Tham gia tức thì (Instant Access)</td><td>Mọi tài khoản đã kích hoạt ví đều được phép vào đấu giá ngay mà không cần nộp tiền đặt cọc trước hay duyệt hồ sơ hành chính thủ công.</td><td>UC-B01, UC-B02</td></tr>
+        <tr><td><strong>BR-02</strong></td><td>Chống tự bid (No Self-bidding)</td><td>Người bán sở hữu món hàng bị chặn tuyệt đối không được phép trả giá vào chính phiên đấu giá của mình.</td><td>UC-B01</td></tr>
+        <tr><td><strong>BR-03</strong></td><td>Ngưỡng trả giá tối thiểu</td><td>Giá đặt mới phải $\ge 	ext{Giá hiện tại} + 	ext{Bước giá quy định}$ (hoặc $\ge 	ext{Giá khởi điểm}$ nếu là lượt bid đầu tiên).</td><td>UC-B01</td></tr>
+        <tr><td><strong>BR-04</strong></td><td>Bảo mật giá trần tuyệt đối</td><td>Giá trị <code>max_amount</code> của người mua được giấu kín 100% ở tầng Server. Không một người tham gia nào biết được mức giá trần của người khác.</td><td>UC-B01</td></tr>
+        <tr><td><strong>BR-05</strong></td><td>Nhảy giá chạm sàn (Reserve Jump)</td><td>Nếu lượt bid đầu tiên đạt hoặc vượt giá sàn ẩn (`reserve_price`), giá hiện tại của phiên sẽ lập tức nhảy thẳng lên bằng đúng giá sàn để bảo vệ quyền lợi người bán.</td><td>UC-B01</td></tr>
+        <tr><td><strong>BR-06</strong></td><td>Điều kiện biến mất của Buy It Now</td><td>Tùy chọn "Mua ngay" sẽ tự động biến mất vĩnh viễn ngay khi phiên có ít nhất 1 lượt bid hợp lệ đạt hoặc vượt ngưỡng Giá sàn bảo lưu.</td><td>UC-B01, UC-B02</td></tr>
+        <tr><td><strong>BR-07</strong></td><td>Hard-close & Khóa tương tranh</td><td>Phiên kết thúc chính xác tại <code>end_time</code> đã định trước, không tự động gia hạn. Tranh chấp giây cuối được bảo vệ bằng Khóa bi quan DB (<code>Pessimistic Write Lock</code>).</td><td>UC-04</td></tr>
+        <tr><td><strong>BR-08</strong></td><td>Thời hạn thanh toán 72h & Xử phạt</td><td>Người trúng giá có tối đa 72 giờ để thanh toán qua Ví Escrow. Quá hạn, đơn hàng tự động chuyển sang <code>CANCELLED_UNPAID</code> và người mua bị phạt 1 gậy vi phạm.</td><td>UC-05, UC-06</td></tr>
+        <tr><td><strong>BR-09</strong></td><td>Phí dịch vụ sàn & Giải ngân</td><td>Sàn thu 5% hoa hồng trên giá trúng đấu giá. Phí chỉ được trừ khi người mua xác nhận đã nhận hàng thành công và hệ thống giải ngân 95% vào ví người bán.</td><td>UC-05</td></tr>
+        <tr><td><strong>BR-10</strong></td><td>Tính bất biến dòng tiền (Append-only)</td><td>Bảng <code>transactions</code> và <code>bids</code> là dạng chỉ ghi thêm (Append-only). Tuyệt đối không thực hiện <code>UPDATE</code> hoặc <code>DELETE</code> bản ghi tài chính.</td><td>UC-05, Wallet</td></tr>
+    </tbody>
+</table>
+
+<!-- CHƯƠNG 3 -->
+<div class="page-break"></div>
+<h1>3. OO ANALYSIS — USE CASE & BEHAVIOR MODEL</h1>
+
+<h2>3.1. Sơ đồ Use Case tổng thể (Use Case Diagram)</h2>
+<div class="diagram-card">
+<pre style="text-align: left; background: #ffffff; border: none; font-size: 8.5pt;">
+           +---------------------------------------------------------------------------------+
+           |                       HỆ THỐNG ĐẤU GIÁ TRỰC TUYẾN TỰ ĐỘNG                       |
+           +---------------------------------------------------------------------------------+
+                                                   |
+      [Khách vãng lai] -----> (G1: Xem danh mục, lọc món hàng & Lịch sử trả giá)
+             |
+             +--------------> (G2: Đăng ký / Đăng nhập tài khoản)
+                                                   |
+        [Người mua] --------> (UC-B01: Cài đặt giá trần tự động - Proxy Bidding) &lt;&lt;core&gt;&gt;
+             |        ------> (UC-B02: Sử dụng Mua ngay - Buy It Now)
+             |        ------> (B3: Quản lý Ví cá nhân: Nạp / Rút tiền)
+             |        ------> (UC-05: Thanh toán đơn hàng qua Ví bảo chứng Escrow)
+             |        ------> (B5: Xác nhận đã nhận hàng & Đánh giá Review)
+                                                   |
+        [Người bán] --------> (UC-S01: Đăng bán Item & Album ảnh)
+             |        ------> (UC-S02: Khởi tạo phiên đấu giá Listing)
+             |        ------> (S3: Xác nhận giao hàng & Nhập mã vận đơn Tracking)
+             |        ------> (UC-06: Đăng lại phiên Relist khi bị bùng hoặc chưa chạm sàn)
+                                                   |
+    [Quản trị viên] --------> (A1: Quản lý danh mục Categories & Cấu hình sàn)
+             |        ------> (A2: Xử lý Khiếu nại Complaints & Khóa tài khoản vi phạm)
+             |        ------> (A3: Giám sát tài chính Ví Sàn & Tra cứu Audit Logs)
+                                                   |
+    [Bộ lập lịch] ----------> (SY1: Đóng phiên tự động & Chốt người thắng)
+             |        ------> (SY2: Hủy đơn quá hạn 72h & Phạt Strike bùng hàng)
+</pre>
+    <div class="diagram-caption">Hình 3.1: Sơ đồ Use Case tổng quan phân rã theo 5 tác nhân (Actors)</div>
+</div>
+
+<h2>3.2. Đặc tả chi tiết 4 Use Case cốt lõi (Use Case Specifications)</h2>
+
+<h3>Đặc tả 1: UC-B01 — Đặt mức giá trần tự động (Proxy Bidding)</h3>
+<table>
+    <tr><td style="width: 25%; font-weight: 600;">Mã / Tên Use Case</td><td><strong>UC-B01: Đặt mức giá trần tự động (Proxy Bidding)</strong></td></tr>
+    <tr><td style="font-weight: 600;">Actor chính / Phụ</td><td>Người mua (Buyer) / Hệ thống (Proxy Bidding Engine)</td></tr>
+    <tr><td style="font-weight: 600;">Tiền điều kiện</td><td>Người mua đã đăng nhập; Phiên đấu giá ở trạng thái <code>ACTIVE</code>; Người mua không phải là chủ sở hữu của món hàng.</td></tr>
+    <tr><td style="font-weight: 600;">Luồng sự kiện chính (Happy Path)</td><td>
+        1. Người mua nhập mức giá trần tối đa bí mật (<code>max_amount</code>) và nhấn "Xác nhận đặt giá trần".<br>
+        2. Hệ thống kiểm tra: Giá nhập $\ge 	ext{Giá hiện tại} + 	ext{Bước giá}$.<br>
+        3. Hệ thống lưu bản ghi vào bảng <code>proxy_bids</code> và khóa phiên đấu giá bằng Khóa bi quan.<br>
+        4. Thuật toán so khớp: Nếu chưa có đối thủ, người mua trở thành người dẫn đầu với mức giá tối thiểu hợp lệ.<br>
+        5. Nếu đã có đối thủ với mức giá trần cũ: Hệ thống so sánh 2 mức giá trần. Người có giá trần cao hơn sẽ dẫn đầu với mức giá bằng $	ext{Giá trần người thua} + 	ext{Bước giá}$.<br>
+        6. Hệ thống ghi nhận lượt nhảy giá vào bảng <code>bids</code> và bắn thông báo thời gian thực qua WebSocket.
+    </td></tr>
+    <tr><td style="font-weight: 600;">Luồng ngoại lệ (Exceptions)</td><td>
+        • <strong>E1 (Người bán tự bid):</strong> Hệ thống từ chối với mã lỗi <code>CANNOT_BID_OWN_AUCTION</code>.<br>
+        • <strong>E2 (Giá thấp hơn mức tối thiểu):</strong> Báo lỗi <code>BID_TOO_LOW</code>.<br>
+        • <strong>E3 (Phiên đã kết thúc trong lúc bấm):</strong> Báo lỗi <code>AUCTION_ALREADY_ENDED</code>.
+    </td></tr>
+    <tr><td style="font-weight: 600;">Hậu điều kiện</td><td>Giá hiện tại của phiên được cập nhật; Người thua nhận thông báo bị vượt giá (Outbid).</td></tr>
+</table>
+
+<h3>Đặc tả 2: UC-B02 — Mua ngay (Buy It Now)</h3>
+<table>
+    <tr><td style="width: 25%; font-weight: 600;">Mã / Tên Use Case</td><td><strong>UC-B02: Mua ngay (Buy It Now)</strong></td></tr>
+    <tr><td style="font-weight: 600;">Actor chính</td><td>Người mua (Buyer)</td></tr>
+    <tr><td style="font-weight: 600;">Tiền điều kiện</td><td>Phiên có cấu hình <code>buy_now_price</code> hợp lệ; Chưa có lượt bid nào chạm ngưỡng Giá sàn bảo lưu.</td></tr>
+    <tr><td style="font-weight: 600;">Luồng chính</td><td>
+        1. Người mua nhấn nút "Mua ngay" trên màn hình chi tiết phiên.<br>
+        2. Hệ thống kiểm tra điều kiện hợp lệ và khóa phiên.<br>
+        3. Trạng thái phiên chuyển sang <code>ENDED_SOLD</code>, gán giá thắng cuộc bằng <code>buy_now_price</code>.<br>
+        4. Hệ thống tự động tạo Đơn hàng (Order) ở trạng thái <code>AWAITING_PAYMENT</code>.<br>
+        5. Gửi thông báo chốt đơn đến Người mua và Người bán.
+    </td></tr>
+    <tr><td style="font-weight: 600;">Luồng ngoại lệ</td><td>• <strong>E1:</strong> Nút Mua ngay đã biến mất do vừa có người bid chạm giá sàn $ightarrow$ Hệ thống báo lỗi và tải lại giá hiện tại.</td></tr>
+</table>
+
+<h3>Đặc tả 3: UC-S01 — Đăng bán món hàng & Khởi tạo phiên (Listing)</h3>
+<table>
+    <tr><td style="width: 25%; font-weight: 600;">Mã / Tên Use Case</td><td><strong>UC-S01: Đăng bán món hàng & Khởi tạo phiên</strong></td></tr>
+    <tr><td style="font-weight: 600;">Actor chính</td><td>Người bán (Seller)</td></tr>
+    <tr><td style="font-weight: 600;">Luồng chính</td><td>
+        1. Người bán nhập thông tin sản phẩm: Tiêu đề, danh mục, tình trạng, mô tả chi tiết và tải lên album ảnh.<br>
+        2. Người bán thiết lập thông số phiên: Giá khởi điểm, Bước giá bắt buộc, Giá sàn ẩn (tùy chọn), Giá mua ngay (tùy chọn), Thời gian mở và kết thúc.<br>
+        3. Hệ thống validate: $	ext{Giá khởi điểm} < 	ext{Giá sàn} < 	ext{Giá mua ngay}$ và $	ext{Thời gian kết thúc} > 	ext{Thời gian mở}$.<br>
+        4. Bản ghi được tạo trong <code>items</code>, <code>item_images</code> và <code>auctions</code> ở trạng thái <code>ACTIVE</code>.
+    </td></tr>
+</table>
+
+<h3>Đặc tả 4: UC-05 — Thanh toán đơn hàng qua Ví bảo chứng (Escrow Checkout)</h3>
+<table>
+    <tr><td style="width: 25%; font-weight: 600;">Mã / Tên Use Case</td><td><strong>UC-05: Thanh toán đơn hàng qua Ví bảo chứng (Escrow Checkout)</strong></td></tr>
+    <tr><td style="font-weight: 600;">Actor chính</td><td>Người mua (Buyer) / Hệ thống</td></tr>
+    <tr><td style="font-weight: 600;">Luồng chính</td><td>
+        1. Người mua vào danh sách đơn hàng trúng đấu giá và nhấn "Thanh toán qua ví".<br>
+        2. Hệ thống kiểm tra số dư ví người mua: Nếu đủ tiền, tiến hành trừ tiền ví người mua và chuyển vào ví bảo chứng trung gian <code>SYSTEM_ESCROW</code>.<br>
+        3. Ghi nhận giao dịch với <code>idempotency_key</code> duy nhất; Đơn hàng chuyển sang trạng thái <code>PAID</code>.<br>
+        4. Thông báo cho người bán chuẩn bị đóng gói và cập nhật mã vận đơn giao hàng.
+    </td></tr>
+</table>
+
+<!-- CHƯƠNG 3 TIẾP: ACTIVITY & SEQUENCE -->
+<div class="page-break"></div>
+<h2>3.3. Sơ đồ hoạt động có rẽ nhánh quy tắc nghiệp vụ (Activity Diagrams)</h2>
+<p>Dưới đây là 2 quy trình nghiệp vụ cốt lõi thể hiện rõ các nhánh rẽ điều kiện (Decision Nodes) và xử lý ngoại lệ theo đúng chuẩn UML:</p>
+
+<div class="diagram-card">
+<pre style="text-align: left; background: #ffffff; border: none; font-size: 8.5pt;">
+(*) ---> [Người mua nhập Max Bid] ---> &lt;Kiểm tra người bán tự bid?&gt;
+                                            |
+                                            +-- [Có] --> [Báo lỗi CANNOT_BID_OWN_AUCTION] ---> (*)
+                                            |
+                                            +-- [Không] --> &lt;Kiểm tra Max Bid >= Min Bid?&gt;
+                                                                 |
+                                                                 +-- [Không] --> [Báo lỗi BID_TOO_LOW] ---> (*)
+                                                                 |
+                                                                 +-- [Hợp lệ] --> [Khóa bi quan SELECT FOR UPDATE]
+                                                                                        |
+                                             +------------------------------------------+
+                                             |
+                  &lt;Đã có người đặt Max Bid trước đó chưa?&gt;
+                       |
+                       +-- [Chưa có] --> &lt;Max Bid >= Giá sàn Reserve?&gt;
+                       |                      |
+                       |                      +-- [Đạt sàn] --> [Giá hiện tại = Giá sàn ẩn] --+
+                       |                      |                                                |
+                       |                      +-- [Chưa] -----> [Giá hiện tại = Giá khởi điểm] -+
+                       |                                                                       |
+                       +-- [Đã có] ----> &lt;Max Bid mới so với Max Bid cũ?&gt;                     |
+                                              |                                                |
+                                              +-- [Thấp hơn Max cũ] --> [Max cũ thắng, giá = Max mới + Step] -+
+                                              |                                                                |
+                                              +-- [Cao hơn Max cũ] --> [Max mới thắng, giá = Max cũ + Step] --+
+                                                                                                               |
+                                         [Lưu proxy_bids & Ghi lịch sử bids] &lt;---------------------------------+
+                                                         |
+                                         [Bắn WebSocket thông báo giá mới & Outbid] ---> (*)
+</pre>
+    <div class="diagram-caption">Hình 3.2: Sơ đồ hoạt động (Activity Diagram) — Thuật toán Đấu giá tự động Proxy Bidding</div>
+</div>
+
+<div class="diagram-card">
+<pre style="text-align: left; background: #ffffff; border: none; font-size: 8.5pt;">
+(*) ---> [Scheduler quét phiên hết hạn] ---> &lt;Có lượt bid nào đạt giá sàn Reserve?&gt;
+                                                   |
+                                                   +-- [Không đạt] --> [Trạng thái = ENDED_UNSOLD]
+                                                   |                         |
+                                                   |                         v
+                                                   |                   [Cho phép Người bán Relist] ---> (*)
+                                                   |
+                                                   +-- [Đạt sàn] ----> [Trạng thái = ENDED_SOLD]
+                                                                             |
+                                                                             v
+                                                                       [Tạo Order: AWAITING_PAYMENT]
+                                                                             |
+                                                                             v
+                                            +--------------------------------+--------------------------------+
+                                            |                                                                 |
+                          &lt;Người mua thanh toán trong 72h?&gt;                                   &lt;Quá hạn 72h không thanh toán?&gt;
+                                            |                                                                 |
+                                            +-- [Thanh toán Ví Escrow]                                        +-- [Quá hạn]
+                                            |                                                                 |
+                                            v                                                                 v
+                                    [Trạng thái Order = PAID]                                     [Trạng thái = CANCELLED_UNPAID]
+                                            |                                                                 |
+                                            v                                                                 v
+                                    [Người bán giao hàng: SHIPPED]                                [Phạt 1 gậy Unpaid Strike]
+                                            |                                                                 |
+                                            v                                                                 v
+                                    [Người mua nhận hàng: COMPLETED]                              [Kích hoạt Relist / Second Chance]
+                                            |                                                                 |
+                                            v                                                                 +---> (*)
+                                    [Giải ngân 95% vào Ví người bán; Sàn thu 5%] ---> (*)
+</pre>
+    <div class="diagram-caption">Hình 3.3: Sơ đồ hoạt động (Activity Diagram) — Quy trình Đóng phiên, Escrow & Xử lý bùng hàng</div>
+</div>
+
+<h2>3.4. Sơ đồ tuần tự (Sequence Diagram) — Trả giá tự động</h2>
+<div class="diagram-card">
+<pre style="text-align: left; background: #ffffff; border: none; font-size: 8pt;">
+Buyer (Client)         AuctionController        ProxyBiddingService        AuctionRepo / ProxyBidRepo        WebSocket Broker
+     |                         |                         |                             |                            |
+     |--- 1. POST /bids ------>|                         |                             |                            |
+     |   (auctionId, maxAmount)|--- 2. placeBid() ------>|                             |                            |
+     |                         |                         |--- 3. findByIdForUpdate() ->|                            |
+     |                         |                         |&lt;-- 4. Trả về Auction locked-|                            |
+     |                         |                         |--- 5. Validate BR-02, BR-03 |                            |
+     |                         |                         |--- 6. Lưu proxy_bids ------>|                            |
+     |                         |                         |--- 7. Tính giá so khớp mới -|                            |
+     |                         |                         |--- 8. Lưu lịch sử bids ---->|                            |
+     |                         |                         |--- 9. Cập nhật current_price|                            |
+     |                         |                         |--- 10. Gửi thông tin giá mới --------------------------->|
+     |                         |                         |                                                          |--- 11. Broadcast STOMP
+     |                         |&lt;-- 12. BidResultDto ----|                                                          |    /topic/auctions/{id}
+     |&lt;-- 13. HTTP 200 OK -----|                         |                                                          |
+</pre>
+    <div class="diagram-caption">Hình 3.4: Sơ đồ tuần tự (Sequence Diagram) — Luồng xử lý tương tranh của Proxy Bidding Engine</div>
+</div>
+
+<!-- CHƯƠNG 4 -->
+<div class="page-break"></div>
+<h1>4. DOMAIN MODEL & OBJECT-ORIENTED ANALYSIS</h1>
+
+<h2>4.1. Nhận diện lớp ứng viên (Candidate Class Identification)</h2>
+<table>
+    <thead><tr><th>Khái niệm / Danh từ</th><th>Nguồn phát hiện</th><th>Quyết định</th><th>Lý do thiết kế hướng đối tượng</th></tr></thead>
+    <tbody>
+        <tr><td><strong>User</strong></td><td>Yêu cầu tác nhân</td><td><span class="tag tag-must">GIỮ</span></td><td>Đại diện cho chủ thể trong hệ thống, sở hữu ví và tham gia mua/bán.</td></tr>
+        <tr><td><strong>Item</strong></td><td>Mô tả nghiệp vụ</td><td><span class="tag tag-must">GIỮ</span></td><td>Đối tượng tài sản vật lý cần bán, có vòng đời độc lập với phiên đấu giá.</td></tr>
+        <tr><td><strong>Auction</strong></td><td>Nghiệp vụ cốt lõi</td><td><span class="tag tag-must">GIỮ</span></td><td>Đại diện cho phiên đấu giá, quản lý trạng thái, bước giá, giá trần, thời gian.</td></tr>
+        <tr><td><strong>ProxyBid</strong></td><td>Thuật toán tự động</td><td><span class="tag tag-must">GIỮ</span></td><td>Thực thể chứa mức giá trần tối đa bí mật của người mua (bảo mật cao).</td></tr>
+        <tr><td><strong>Bid</strong></td><td>Lịch sử trả giá</td><td><span class="tag tag-must">GIỮ</span></td><td>Bản ghi bất biến ghi nhận từng bước giá công khai hiển thị trên sàn.</td></tr>
+        <tr><td><strong>Order</strong></td><td>Thương mại điện tử</td><td><span class="tag tag-must">GIỮ</span></td><td>Đơn hàng sinh ra sau khi phiên kết thúc có người trúng giải hoặc mua ngay.</td></tr>
+        <tr><td><strong>Wallet & Transaction</strong></td><td>Tài chính bảo chứng</td><td><span class="tag tag-must">GIỮ</span></td><td>Quản lý tài khoản tiền tệ và biến động số dư phục vụ ký quỹ Escrow.</td></tr>
+        <tr><td><em>AuctionRoomController</em></td><td>Giao diện Web</td><td><span class="tag tag-could">LOẠI KHỎI DOMAIN</span></td><td>Đây là thành phần Boundary/Controller ở tầng thiết kế, không phải thực thể miền.</td></tr>
+    </tbody>
+</table>
+
+<h2>4.2. Sơ đồ lớp phân tích (Analysis / Domain Class Diagram)</h2>
+<p>Sơ đồ lớp phân tích mô hình hóa các khái niệm thực thể nghiệp vụ thuần túy, phản ánh quan hệ ngữ nghĩa (multiplicity) và thuộc tính miền mà không bị phụ thuộc vào công nghệ cơ sở dữ liệu:</p>
+
+<div class="diagram-card">
+<pre style="text-align: left; background: #ffffff; border: none; font-size: 8.5pt;">
++-------------------+              +----------------------+              +----------------------+
+|       User        | 1          * |        Item          | 1          * |       Auction        |
+|-------------------|--------------|----------------------|--------------|----------------------|
+| - id: Long        |  sở hữu bán  | - title: String      |  tổ chức qua | - startPrice: Long   |
+| - username: String|              | - description: String|              | - stepPrice: Long    |
+| - email: String   |              | - condition: Enum    |              | - reservePrice: Long |
+| - status: Enum    |              +----------------------+              | - buyNowPrice: Long  |
++-------------------+                         | 1                        | - currentPrice: Long |
+   | 1         | 1                            |                          | - status: Enum       |
+   |           |                              | 1..*                     +----------------------+
+   | sở hữu    | cài đặt                      +----------------------+      | 1            | 1
+   |           |                             |      ItemImage       |      |              |
+   | 1         | *                           |----------------------|      | sinh ra      | nhận
+   v           v                             | - imageUrl: String   |      |              |
++-----------+ +--------------------+         | - isPrimary: Boolean |      v 1            v *
+|  Wallet   | |      ProxyBid      |         +----------------------+ +-----------+ +------------+
+|-----------| |--------------------|                                  |   Order   | |    Bid     |
+| - balance | | - maxAmount: Long  |                                  |-----------| |------------|
+| - frozen  | | - createdAt: Date  |                                  | - total   | | - amount   |
++-----------+ +--------------------+                                  | - status  | | - bidTime  |
+                                                                      +-----------+ +------------+
+</pre>
+    <div class="diagram-caption">Hình 4.1: Sơ đồ lớp phân tích (Analysis / Domain Class Diagram)</div>
+</div>
+
+<h2>4.3. Quyết định mô hình hóa & Đa số (Multiplicity Decisions)</h2>
+<ul>
+    <li><strong>Quan hệ `Item` và `Auction` là $1 - N$:</strong> Một món hàng (`Item`) có thể trải qua nhiều phiên đấu giá (`Auction`) khác nhau trong lịch sử nếu các phiên trước không thành công (chưa đạt giá sàn hoặc bị bùng hàng). Đây là thiết kế then chốt phục vụ tính năng <strong>Đăng lại phiên (Relist)</strong>.</li>
+    <li><strong>Tách biệt `ProxyBid` và `Bid`:</strong> `ProxyBid` đại diện cho mức giá tối đa bí mật mà người mua ủy quyền cho hệ thống (1 người chỉ có tối đa 1 Max Bid hoạt động trong 1 phiên). Trong khi đó, `Bid` là lịch sử các bước tăng giá được công khai (1 phiên có thể có hàng trăm bản ghi `Bid`).</li>
+    <li><strong>Bảo chứng độc lập qua `Order`:</strong> Khi phiên chốt giá thành công, một thực thể `Order` độc lập được sinh ra để quản lý riêng vòng đời giao vận và dòng tiền giải ngân mà không làm ảnh hưởng đến dữ liệu lịch sử của phiên đấu giá.</li>
+</ul>
+
+<!-- CHƯƠNG 5 -->
+<div class="page-break"></div>
+<h1>5. SOFTWARE ARCHITECTURE — SAD / HLD</h1>
+
+<h2>5.1. Kiến trúc logic 4 tầng (Logical Architecture / 4-Layer View)</h2>
+<p>Hệ thống được thiết kế theo kiến trúc <strong>Modular Monolith</strong> chuẩn mực, phân tách rõ ràng trách nhiệm giữa các tầng (Separation of Concerns) nhằm đảm bảo tính bảo trì cao và dễ dàng chuyển đổi sang Microservices khi quy mô mở rộng:</p>
+
+<table>
+    <thead><tr><th>Tầng kiến trúc (Layer)</th><th>Các thành phần / Lớp cụ thể</th><th>Trách nhiệm chính</th></tr></thead>
+    <tbody>
+        <tr>
+            <td><strong>1. Presentation Layer (Tầng Giao diện & Biên)</strong></td>
+            <td><code>AuctionController</code>, <code>OrderController</code>, <code>WalletController</code>, <code>WebSocketEventListener</code>, Thymeleaf HTML, Bootstrap 5 Client</td>
+            <td>Tiếp nhận yêu cầu HTTP/WebSocket, giải mã tham số, thực hiện validate cú pháp dữ liệu đầu vào (DTO validation), render giao diện và phản hồi JSON/HTML.</td>
+        </tr>
+        <tr>
+            <td><strong>2. Application / Facade Layer (Tầng Ứng dụng & Điều phối)</strong></td>
+            <td><code>WalletFacade</code>, <code>NotificationFacade</code>, <code>AuditLogFacade</code>, <code>SystemConfigFacade</code></td>
+            <td>Đóng vai trò là cổng giao tiếp duy nhất giữa các phân hệ, che giấu logic nội bộ, điều phối giao dịch liên module và lắng nghe Domain Events.</td>
+        </tr>
+        <tr>
+            <td><strong>3. Domain / Business Layer (Tầng Nghiệp vụ & Dịch vụ Miền)</strong></td>
+            <td><code>ProxyBiddingService</code>, <code>AuctionService</code>, <code>OrderService</code>, <code>WalletService</code>, Entities: <code>Auction</code>, <code>Order</code>, <code>ProxyBid</code></td>
+            <td>Thực thi 35 quy tắc nghiệp vụ cốt lõi (BR-01..BR-35), thuật toán so khớp giá trần, quản lý chuyển trạng thái State Machine và đảm bảo tính nhất quán dữ liệu.</td>
+        </tr>
+        <tr>
+            <td><strong>4. Infrastructure / Persistence Layer (Tầng Hạ tầng & CSDL)</strong></td>
+            <td>Spring Data JPA Repositories (<code>AuctionRepository</code>, <code>BidRepository</code>), Flyway Migration, MySQL 8.0 Engine, SimpMessagingTemplate</td>
+            <td>Truy xuất dữ liệu quan hệ, thực thi câu lệnh SQL với khóa bi quan <code>SELECT FOR UPDATE</code>, lưu trữ Audit Logs và phát sóng bản tin WebSocket STOMP.</td>
+        </tr>
+    </tbody>
+</table>
+
+<h2>5.2. Kiến trúc vật lý & Triển khai 3 tầng (Deployment / Tier View)</h2>
+<div class="diagram-card">
+<pre style="text-align: left; background: #ffffff; border: none; font-size: 8.5pt;">
++----------------------------------------------------------------------------------------------------+
+|                                    CLIENT TIER (WEB BROWSERS)                                      |
+|   - Người mua, Người bán, Quản trị viên truy cập qua Chrome / Edge / Firefox                       |
+|   - Công nghệ: HTML5, CSS3, Vanilla JS, Bootstrap 5, SockJS + STOMP Client                         |
++----------------------------------------------------------------------------------------------------+
+                                      |                             ^
+                HTTP/HTTPS (Port 8080)|                             | WebSocket WSS (Port 8080)
+                                      v                             |
++----------------------------------------------------------------------------------------------------+
+|                             APPLICATION TIER (SPRING BOOT RUNTIME)                                 |
+|   - Máy chủ ứng dụng: Java 17, Spring Boot 3 Embedded Apache Tomcat                                |
+|   - Thành phần: Security Filter Chain, REST Endpoints, STOMP Message Broker                        |
+|   - Core Services: ProxyBiddingEngine, OrderEscrowService, Spring Scheduler Cron Tasks             |
++----------------------------------------------------------------------------------------------------+
+                                      |
+                                      | JDBC Protocol / HikariCP Pool (Port 3306)
+                                      v
++----------------------------------------------------------------------------------------------------+
+|                                    DATA TIER (RELATIONAL DBMS)                                     |
+|   - Cơ sở dữ liệu: MySQL 8.0 Community Server (XAMPP / Dedicated Host)                             |
+|   - Dữ liệu: 14 bảng quan hệ, Ràng buộc khóa PK/FK, CHECK (balance >= 0), Flyway Migrations       |
++----------------------------------------------------------------------------------------------------+
+</pre>
+    <div class="diagram-caption">Hình 5.1: Sơ đồ triển khai 3 tầng vật lý (Client - Application - Data Tier)</div>
+</div>
+
+<h2>5.3. Báo cáo quyết định kiến trúc (Architecture Decision Record - ADR-01)</h2>
+<table>
+    <tr><td style="width: 25%; font-weight: 600;">Mã / Tiêu đề ADR</td><td><strong>ADR-01: Lựa chọn cơ chế Hard-close kết hợp Khóa bi quan và Ví ký quỹ Escrow</strong></td></tr>
+    <tr><td style="font-weight: 600;">Trạng thái</td><td><span class="badge-pass">ACCEPTED & IMPLEMENTED</span></td></tr>
+    <tr><td style="font-weight: 600;">Bối cảnh bài toán</td><td>
+        Trong các giây cuối cùng của phiên đấu giá, hàng chục lượt đặt giá có thể gửi đến đồng thời gây xung đột dữ liệu (Race Condition). Đồng thời, nếu áp dụng cơ chế tự động gia hạn (Soft-close) sẽ gây mệt mỏi cho người mua. Ngoài ra, việc thu cọc trước làm tăng rào cản tham gia, trong khi cho thanh toán trực tiếp người bán thì dễ xảy ra lừa đảo.
+    </td></tr>
+    <tr><td style="font-weight: 600;">Quyết định kiến trúc</td><td>
+        1. <strong>Áp dụng Hard-close:</strong> Phiên kết thúc chính xác tại <code>end_time</code>.<br>
+        2. <strong>Kiểm soát tương tranh:</strong> Sử dụng Khóa bi quan tầng CSDL (<code>SELECT ... FOR UPDATE</code>) trong <code>ProxyBiddingService</code> để tuần tự hóa các lượt bid giây cuối.<br>
+        3. <strong>Bảo vệ tài chính bằng Ví Escrow:</strong> Bỏ thủ tục nộp cọc trước; thay vào đó, người thắng cuộc phải thanh toán vào Ví bảo chứng của sàn. Sàn chỉ giải ngân cho người bán khi người mua xác nhận đã nhận hàng.
+    </td></tr>
+    <tr><td style="font-weight: 600;">Hệ quả & Đánh đổi</td><td>
+        • <em>Ưu điểm:</em> Trải nghiệm người dùng mượt mà; loại bỏ hoàn toàn tình trạng sai số và rủi ro quỵt tiền.<br>
+        • <em>Đánh đổi:</em> Khóa bi quan giữ kết nối CSDL lâu hơn vài mili-giây, đòi hỏi cấu hình HikariCP Pool hợp lý.
+    </td></tr>
+</table>
+
+<!-- CHƯƠNG 6 -->
+<div class="page-break"></div>
+<h1>6. DETAILED OO DESIGN — LLD</h1>
+
+<h2>6.1. Sơ đồ lớp thiết kế (Design Class Diagram)</h2>
+<p>Sơ đồ lớp thiết kế biểu diễn cấu trúc phần mềm thực tế trong mã nguồn Java của <code>PROJECT_1</code>, thể hiện rõ các tầng Boundary, Control, Entity và việc áp dụng mẫu thiết kế Facade:</p>
+
+<div class="diagram-card">
+<pre style="text-align: left; background: #ffffff; border: none; font-size: 8pt;">
++-------------------------------------------------+          +-------------------------------------------------+
+|          AuctionController &lt;&lt;Boundary&gt;&gt;         |          |           WalletFacade &lt;&lt;Facade&gt;&gt;               |
+|-------------------------------------------------|          |-------------------------------------------------|
+| - proxyBiddingService: ProxyBiddingService      |          | + lockFunds(userId: Long, amount: Long): void   |
+| - auctionService: AuctionService                |          | + transferEscrow(orderId: Long): void           |
+|-------------------------------------------------|          | + releaseEscrow(orderId: Long): void            |
+| + placeBid(@PathVariable id, @Valid dto): Dto   |          +-------------------------------------------------+
+| + buyItNow(@PathVariable id, principal): Dto    |                                   ^
++-------------------------------------------------+                                   | uses
+                         | delegates                                                  |
+                         v                                                            |
++-------------------------------------------------+          +-------------------------------------------------+
+|       ProxyBiddingService &lt;&lt;Service&gt;&gt;           |--------->|           OrderService &lt;&lt;Service&gt;&gt;              |
+|-------------------------------------------------|          |-------------------------------------------------|
+| - auctionRepo: AuctionRepository                |          | - orderRepo: OrderRepository                    |
+| - proxyBidRepo: ProxyBidRepository              |          | - walletFacade: WalletFacade                    |
+| - bidRepo: BidRepository                        |          |-------------------------------------------------|
+| - messagingTemplate: SimpMessagingTemplate      |          | + createOrderFromAuction(auctionId: Long): Order|
+|-------------------------------------------------|          | + payWithEscrow(orderId: Long): void            |
+| + placeBid(auctionId: Long, maxBid: Long): Dto  |          | + confirmReceived(orderId: Long): void          |
+| - calculateNewPrice(current, max1, max2): Long  |          +-------------------------------------------------+
++-------------------------------------------------+                                   |
+                         | persists                                                   | persists
+                         v                                                            v
++-------------------------------------------------+          +-------------------------------------------------+
+|           Auction &lt;&lt;Entity&gt;&gt;                    |          |             Order &lt;&lt;Entity&gt;&gt;                    |
+|-------------------------------------------------|          |-------------------------------------------------|
+| - id: Long                                      |          | - id: Long                                      |
+| - currentPrice: Long                            |          | - finalPrice: Long                              |
+| - reservePrice: Long                            |          | - escrowFee: Long                               |
+| - status: AuctionStatus                         |          | - status: OrderStatus                           |
+|-------------------------------------------------|          +-------------------------------------------------+
+| + isExpired(): boolean                          |
+| + canBuyItNow(): boolean                        |
++-------------------------------------------------+
+</pre>
+    <div class="diagram-caption">Hình 6.1: Sơ đồ lớp thiết kế chi tiết (Design Class Diagram) và các quan hệ phụ thuộc</div>
+</div>
+
+<h2>6.2. Áp dụng các mẫu thiết kế (Design Patterns Applied)</h2>
+<ul>
+    <li><strong>Facade Pattern:</strong> Đóng gói các tương tác phức tạp của hệ thống tài chính ví vào <code>WalletFacade</code>. Module Đấu giá (`auction`) và Đơn hàng (`order`) chỉ giao tiếp qua Facade này mà không truy cập trực tiếp vào repository hoặc bảng dữ liệu của ví, giảm thiểu tối đa sự phụ thuộc vòng (Circular Dependency).</li>
+    <li><strong>State Pattern (State Machine):</strong> Quản lý chuyển đổi vòng đời của phiên (`AuctionStatus`: `ACTIVE` $ightarrow$ `ENDED_SOLD` / `ENDED_UNSOLD`) và đơn hàng (`OrderStatus`: `AWAITING_PAYMENT` $ightarrow$ `PAID` $ightarrow$ `SHIPPED` $ightarrow$ `COMPLETED`). Ngăn chặn triệt để tình trạng nhảy cóc trạng thái bất hợp lệ.</li>
+    <li><strong>Observer Pattern (Spring Domain Events):</strong> Khi một phiên kết thúc hoặc đơn hàng thanh toán thành công, hệ thống phát sinh sự kiện (`AuctionEndedEvent`, `OrderPaidEvent`). Module Thông báo (`notification`) và Kiểm toán (`audit`) tự động lắng nghe và ghi nhận log mà không làm chậm luồng giao dịch chính.</li>
+</ul>
+
+<!-- CHƯƠNG 7 -->
+<div class="page-break"></div>
+<h1>7. DATA DESIGN — DATABASE SPECIFICATION (14 TABLES)</h1>
+
+<h2>7.1. Cấu trúc lược đồ CSDL chuẩn hóa 14 bảng</h2>
+<p>Cơ sở dữ liệu được quản lý đồng bộ qua công cụ <strong>Flyway Migration</strong>, tuân thủ nghiêm ngặt chuẩn ràng buộc toàn vẹn dữ liệu:</p>
+
+<table>
+    <thead><tr><th>Phân hệ</th><th>Tên bảng</th><th>Khóa chính (PK)</th><th>Khóa ngoại chính (FK)</th><th>Ràng buộc toàn vẹn & Mục đích lưu trữ</th></tr></thead>
+    <tbody>
+        <tr>
+            <td rowspan="2"><strong>1. Tài khoản & Ví</strong></td>
+            <td><code>users</code></td><td><code>id</code> BIGINT</td><td>-</td><td><code>UNIQUE(username)</code>, <code>UNIQUE(email)</code>. Quản lý thông tin tài khoản và thông tin giao hàng.</td>
+        </tr>
+        <tr>
+            <td><code>wallets</code></td><td><code>id</code> BIGINT</td><td><code>user_id</code> $ightarrow$ users</td><td><code>UNIQUE(user_id)</code>, <code>CHECK (balance >= 0)</code>. Quản lý số dư khả dụng và số dư đóng băng.</td>
+        </tr>
+        <tr>
+            <td rowspan="2"><strong>2. Hàng hóa & Danh mục</strong></td>
+            <td><code>categories</code></td><td><code>id</code> BIGINT</td><td>-</td><td><code>UNIQUE(slug)</code>. Phân loại danh mục sản phẩm (Đồ điện tử, Xe cộ, Đồ cổ...).</td>
+        </tr>
+        <tr>
+            <td><code>items</code></td><td><code>id</code> BIGINT</td><td><code>seller_id</code>, <code>category_id</code></td><td>Lưu trữ thông tin chi tiết món hàng đăng bán, tình trạng (NEW/USED) và mô tả.</td>
+        </tr>
+        <tr>
+            <td><strong>3. Ảnh hàng hóa</strong></td>
+            <td><code>item_images</code></td><td><code>id</code> BIGINT</td><td><code>item_id</code> $ightarrow$ items</td><td>Album hình ảnh thực tế của món hàng; <code>is_primary</code> đánh dấu ảnh đại diện.</td>
+        </tr>
+        <tr>
+            <td rowspan="3"><strong>4. Đấu giá cốt lõi</strong></td>
+            <td><code>auctions</code></td><td><code>id</code> BIGINT</td><td><code>item_id</code> $ightarrow$ items</td><td>Quản lý thông số phiên: <code>start_price</code>, <code>step_price</code>, <code>reserve_price</code>, <code>current_price</code>, <code>status</code>.</td>
+        </tr>
+        <tr>
+            <td><code>proxy_bids</code></td><td><code>id</code> BIGINT</td><td><code>auction_id</code>, <code>bidder_id</code></td><td><code>UNIQUE(auction_id, bidder_id)</code>. Lưu giá trần bí mật <code>max_amount</code> của người mua.</td>
+        </tr>
+        <tr>
+            <td><code>bids</code></td><td><code>id</code> BIGINT</td><td><code>auction_id</code>, <code>bidder_id</code></td><td><strong>Append-only</strong>. Lưu toàn bộ lịch sử các bước giá hiển thị công khai trên sàn.</td>
+        </tr>
+        <tr>
+            <td rowspan="2"><strong>5. Đơn hàng & Đánh giá</strong></td>
+            <td><code>orders</code></td><td><code>id</code> BIGINT</td><td><code>auction_id</code>, <code>buyer_id</code></td><td>Vòng đời đơn hàng sau đấu giá, giá chốt, phí vận chuyển, mã vận đơn <code>tracking_number</code>.</td>
+        </tr>
+        <tr>
+            <td><code>reviews</code></td><td><code>id</code> BIGINT</td><td><code>order_id</code>, <code>reviewer_id</code></td><td><code>UNIQUE(order_id)</code>. Đánh giá số sao (1-5) và nhận xét uy tín của người mua.</td>
+        </tr>
+        <tr>
+            <td rowspan="4"><strong>6. Vận hành & Tài chính</strong></td>
+            <td><code>transactions</code></td><td><code>id</code> BIGINT</td><td><code>wallet_id</code> $ightarrow$ wallets</td><td><strong>Append-only</strong>. Lịch sử biến động số dư ví, <code>UNIQUE(idempotency_key)</code> chống trùng giao dịch.</td>
+        </tr>
+        <tr>
+            <td><code>notifications</code></td><td><code>id</code> BIGINT</td><td><code>user_id</code> $ightarrow$ users</td><td>Lưu thông báo hệ thống: Bị vượt giá, trúng đấu giá, đơn hàng mới, cập nhật giao vận.</td>
+        </tr>
+        <tr>
+            <td><code>complaints</code></td><td><code>id</code> BIGINT</td><td><code>order_id</code>, <code>creator_id</code></td><td>Tiếp nhận khiếu nại tranh chấp hàng hóa giữa Người mua và Người bán; Quản trị viên xử lý.</td>
+        </tr>
+        <tr>
+            <td><code>audit_logs</code></td><td><code>id</code> BIGINT</td><td><code>user_id</code> $ightarrow$ users</td><td>Nhật ký kiểm toán an ninh: Ghi vết thời gian, IP, hành động thay đổi dữ liệu nhạy cảm.</td>
+        </tr>
+    </tbody>
+</table>
+
+<h2>7.2. Giải thích quyết định ánh xạ từ Đối tượng sang Bảng CSDL (Mapping Rules)</h2>
+<ul>
+    <li><strong>Chiến lược ánh xạ tiền tệ:</strong> Toàn bộ các cột giá (`start_price`, `max_amount`, `amount`, `balance`) được lưu dạng <code>BIGINT</code> đơn vị Đồng (VNĐ). Tuyệt đối không dùng <code>FLOAT/DOUBLE</code> để loại bỏ hoàn toàn sai số làm tròn số học dấu phẩy động.</li>
+    <li><strong>Không đặt UNIQUE trên `auctions.item_id`:</strong> Giữ quan hệ $1 - N$ ở mức vật lý để cho phép 1 món hàng (`Item`) có thể được tạo phiên đấu giá mới (`Relist`) khi các phiên trước thất bại mà không cần sao chép lại thông tin món hàng.</li>
+    <li><strong>Bảo vệ Idempotency giao dịch:</strong> Cột <code>idempotency_key VARCHAR(64) UNIQUE</code> trong bảng <code>transactions</code> đảm bảo rằng dù mạng có bị chập chờn khiến người dùng bấm thanh toán nhiều lần thì hệ thống cũng chỉ xử lý trừ tiền duy nhất 1 lần.</li>
+</ul>
+
+<!-- CHƯƠNG 8 & 9 -->
+<div class="page-break"></div>
+<h1>8. UI/UX SPECIFICATION & 9. INTERFACE/API CONTRACT</h1>
+
+<h2>8.1. Thông tin giao diện & 4 màn hình cốt lõi</h2>
+<table>
+    <thead><tr><th>Mã màn hình</th><th>Tên giao diện</th><th>Đường dẫn truy cập</th><th>Chức năng nghiệp vụ chính</th></tr></thead>
+    <tbody>
+        <tr><td><strong>UI-01</strong></td><td>Sàn đấu giá trực tuyến (Trang chủ)</td><td><code>/</code> hoặc <code>/auctions</code></td><td>Hiển thị danh sách phiên đang diễn ra, tìm kiếm món hàng, lọc theo danh mục, mức giá hiện tại và thời gian đếm ngược.</td>
+        </tr>
+        <tr><td><strong>UI-02</strong></td><td>Phòng đấu giá thời gian thực (Live Auction Room)</td><td><code>/auctions/{id}</code></td><td>Xem chi tiết sản phẩm, album ảnh phóng to, bảng lịch sử trả giá实时 qua WebSocket, form cài đặt Max Bid và nút Mua ngay.</td>
+        </tr>
+        <tr><td><strong>UI-03</strong></td><td>Cổng quản lý của Người bán (Seller Portal)</td><td><code>/seller</code> hoặc <code>/items/new</code></td><td>Đăng bán món hàng mới, tải ảnh, cấu hình thông số phiên đấu giá, quản lý đơn hàng bán ra và kích hoạt Relist.</td>
+        </tr>
+        <tr><td><strong>UI-04</strong></td><td>Bảng điều khiển Quản trị viên (Admin Dashboard)</td><td><code>/admin</code></td><td>Thống kê doanh thu hoa hồng sàn, giám sát phiên đấu giá, xem biểu đồ ví ký quỹ Escrow và xử lý khiếu nại tranh chấp.</td>
+        </tr>
+    </tbody>
+</table>
+
+<h2>8.2. Hợp đồng API giao tiếp chính (API Contract)</h2>
+
+<h3>API 1: POST /api/auctions/{id}/bids — Đặt giá trần tự động</h3>
+<pre class="code-box">
+// Request Header
+POST /api/auctions/101/bids HTTP/1.1
+Content-Type: application/json
+Authorization: Session Cookie (ROLE_USER)
+
+// Request Body
+{
+  "maxAmount": 5500000
+}
+
+// Success Response (HTTP 200 OK)
+{
+  "status": "SUCCESS",
+  "data": {
+    "auctionId": 101,
+    "currentPrice": 4200000,
+    "highestBidder": "anonymized_user_88",
+    "isLeading": true,
+    "reserveMet": true,
+    "message": "Bạn đang dẫn đầu phiên đấu giá với mức giá 4.200.000 đ"
+  }
+}
+
+// Error Response (HTTP 400 Bad Request)
+{
+  "status": "ERROR",
+  "errorCode": "BID_TOO_LOW",
+  "message": "Mức giá trần phải lớn hơn hoặc bằng mức giá tối thiểu: 4.100.000 đ"
+}
+</pre>
+
+<h3>API 2: POST /api/orders/{id}/pay — Thanh toán đơn hàng qua Ví Escrow</h3>
+<pre class="code-box">
+POST /api/orders/501/pay HTTP/1.1
+Content-Type: application/json
+Idempotency-Key: pay_order_501_user_20261106
+
+// Success Response (HTTP 200 OK)
+{
+  "status": "SUCCESS",
+  "data": {
+    "orderId": 501,
+    "amountPaid": 4200000,
+    "orderStatus": "PAID",
+    "escrowStatus": "HELD_IN_ESCROW",
+    "message": "Thanh toán thành công. Tiền đang được bảo chứng tại sàn cho đến khi bạn nhận được hàng."
+  }
+}
+</pre>
+
+<!-- CHƯƠNG 10, 11, 12 -->
+<div class="page-break"></div>
+<h1>10. SECURITY DESIGN & 11. DEPLOYMENT MATRIX</h1>
+
+<h2>10.1. Ma trận phân quyền vai trò người dùng (Role-Permission Matrix)</h2>
+<table>
+    <thead><tr><th>Chức năng / Tác vụ hệ thống</th><th>Khách vãng lai (GUEST)</th><th>Người mua (BUYER)</th><th>Người bán (SELLER)</th><th>Quản trị viên (ADMIN)</th></tr></thead>
+    <tbody>
+        <tr><td>Xem danh sách & chi tiết phiên đấu giá</td><td style="text-align:center;">✓</td><td style="text-align:center;">✓</td><td style="text-align:center;">✓</td><td style="text-align:center;">✓</td></tr>
+        <tr><td>Cài đặt giá trần (Proxy Bid) & Mua ngay</td><td style="text-align:center;">-</td><td style="text-align:center;">✓</td><td style="text-align:center;">✓ (trừ hàng mình)</td><td style="text-align:center;">-</td></tr>
+        <tr><td>Nạp / Rút tiền từ ví cá nhân</td><td style="text-align:center;">-</td><td style="text-align:center;">✓</td><td style="text-align:center;">✓</td><td style="text-align:center;">-</td></tr>
+        <tr><td>Đăng bán món hàng & Khởi tạo phiên</td><td style="text-align:center;">-</td><td style="text-align:center;">✓</td><td style="text-align:center;">✓</td><td style="text-align:center;">-</td></tr>
+        <tr><td>Cập nhật mã vận đơn & Giao hàng</td><td style="text-align:center;">-</td><td style="text-align:center;">-</td><td style="text-align:center;">✓</td><td style="text-align:center;">-</td></tr>
+        <tr><td>Xác nhận nhận hàng & Giải ngân Escrow</td><td style="text-align:center;">-</td><td style="text-align:center;">✓</td><td style="text-align:center;">-</td><td style="text-align:center;">-</td></tr>
+        <tr><td>Đăng lại phiên (Relist) / Hủy phiên rỗng</td><td style="text-align:center;">-</td><td style="text-align:center;">-</td><td style="text-align:center;">✓</td><td style="text-align:center;">✓ (khi vi phạm)</td></tr>
+        <tr><td>Quản lý danh mục & Cấu hình phí sàn</td><td style="text-align:center;">-</td><td style="text-align:center;">-</td><td style="text-align:center;">-</td><td style="text-align:center;">✓</td></tr>
+        <tr><td>Phán quyết Khiếu nại & Tra cứu Audit Log</td><td style="text-align:center;">-</td><td style="text-align:center;">-</td><td style="text-align:center;">-</td><td style="text-align:center;">✓</td></tr>
+    </tbody>
+</table>
+
+<h2>10.2. Ma trận môi trường triển khai (Environment Matrix)</h2>
+<table>
+    <thead><tr><th>Tham số</th><th>Development (DEV)</th><th>Testing / Staging (TEST)</th><th>Production (PROD)</th></tr></thead>
+    <tbody>
+        <tr><td><strong>Mục đích</strong></td><td>Lập trình viên phát triển tính năng cục bộ</td><td>Chạy tích hợp tự động JUnit 5 & UAT</td><td>Vận hành thực tế phục vụ người dùng</td></tr>
+        <tr><td><strong>Cơ sở dữ liệu</strong></td><td>MySQL <code>auction_db</code> (Local XAMPP)</td><td>MySQL <code>auction_test</code> (Tự động migrate)</td><td>MySQL Cluster có Replication & Backup</td></tr>
+        <tr><td><strong>Dữ liệu mẫu</strong></td><td><code>DatabaseSeeder</code> sinh 10 phiên, 5 ví</td><td>Bộ test fixture sạch, rollback sau test</td><td>Dữ liệu thật của khách hàng</td></tr>
+        <tr><td><strong>Mức độ Log</strong></td><td><code>DEBUG</code> (Hiển thị SQL query & WebSocket)</td><td><code>INFO</code> (Kiểm tra kết quả test)</td><td><code>WARN / ERROR</code> (Ghi log kiểm toán)</td></tr>
+    </tbody>
+</table>
+
+<!-- CHƯƠNG 12 -->
+<div class="page-break"></div>
+<h1>12. VERIFICATION, TESTING & TRACEABILITY MATRIX (RTM)</h1>
+
+<h2>12.1. Ma trận truy vết yêu cầu (Requirements Traceability Matrix - RTM)</h2>
+<p>Bảng RTM dưới đây chứng minh tính liên kết chặt chẽ, khép kín 100% từ Yêu cầu nghiệp vụ ban đầu đến Mã nguồn và Test Case kiểm thử:</p>
+
+<table>
+    <thead><tr><th>Yêu cầu (FR / BR)</th><th>Use Case</th><th>Sơ đồ hành vi</th><th>Lớp & Phương thức xử lý</th><th>Bảng CSDL</th><th>Endpoint API</th><th>Unit / Integration Test Case</th></tr></thead>
+    <tbody>
+        <tr>
+            <td><strong>FR-05 / BR-03, 04, 05</strong> (Proxy Bidding)</td>
+            <td><code>UC-B01</code></td>
+            <td>Hình 3.2 (AD)<br>Hình 3.4 (SD)</td>
+            <td><code>ProxyBiddingService.placeBid()</code></td>
+            <td><code>proxy_bids</code><br><code>bids</code><br><code>auctions</code></td>
+            <td><code>POST /api/auctions/{id}/bids</code></td>
+            <td><code>ProxyBiddingServiceTest:</code><br>• <em>testFirstBidStartsAtStartPrice</em><br>• <em>testBidJumpToReservePrice</em><br>• <em>testHigherBidderWinsWithStep</em></td>
+        </tr>
+        <tr>
+            <td><strong>FR-06 / BR-06</strong> (Buy It Now)</td>
+            <td><code>UC-B02</code></td>
+            <td>Hình 3.1 (UC)</td>
+            <td><code>AuctionService.buyItNow()</code></td>
+            <td><code>auctions</code><br><code>orders</code></td>
+            <td><code>POST /api/auctions/{id}/buy-now</code></td>
+            <td><code>AuctionServiceTest:</code><br>• <em>testBuyItNowSuccessClosesAuction</em><br>• <em>testBuyItNowFailsIfReserveMet</em></td>
+        </tr>
+        <tr>
+            <td><strong>FR-08, 09 / BR-08, 09</strong> (Escrow Checkout)</td>
+            <td><code>UC-05</code></td>
+            <td>Hình 3.3 (AD)</td>
+            <td><code>OrderService.checkoutWithEscrow()</code><br><code>OrderService.confirmReceived()</code></td>
+            <td><code>orders</code><br><code>wallets</code><br><code>transactions</code></td>
+            <td><code>POST /api/orders/{id}/pay</code><br><code>POST /api/orders/{id}/confirm</code></td>
+            <td><code>OrderServiceTest:</code><br>• <em>testPayOrderWithEscrowHoldFunds</em><br>• <em>testConfirmReceivedReleases95Percent</em><br>• <em>testOrderTimeoutCancelsAndStrikes</em></td>
+        </tr>
+        <tr>
+            <td><strong>FR-02 / BR-10</strong> (Ví & Idempotency)</td>
+            <td><code>B3</code></td>
+            <td>State Machine Giao dịch</td>
+            <td><code>WalletService.deposit()</code><br><code>WalletService.transfer()</code></td>
+            <td><code>wallets</code><br><code>transactions</code></td>
+            <td><code>POST /api/wallet/deposit</code></td>
+            <td><code>WalletServiceTest:</code><br>• <em>testDepositSuccessIncreasesBalance</em><br>• <em>testWithdrawFailsWhenInsufficient</em><br>• <em>testDuplicateIdempotencyIgnored</em></td>
+        </tr>
+    </tbody>
+</table>
+
+<h2>12.2. Thuyết minh truy vết End-to-End cho 2 quy trình cốt lõi</h2>
+
+<h3>Truy vết 1: Quy trình Đấu giá tự động (Proxy Bidding Engine)</h3>
+<div class="callout success">
+    <strong>Chuỗi liên kết truy vết khép kín:</strong><br>
+    <strong>1. Yêu cầu (BR-04, FR-05):</strong> Hệ thống phải tự động nâng giá thay người mua và bảo mật tuyệt đối giá trần <code>max_amount</code>.<br>
+    <strong>2. Use Case (UC-B01):</strong> Người mua nhập mức giá trần tại màn hình Phòng đấu giá trực tiếp <code>UI-02</code>.<br>
+    <strong>3. API Contract:</strong> Gọi <code>POST /api/auctions/101/bids</code> kèm body JSON.<br>
+    <strong>4. Thiết kế hành vi (Sequence Diagram):</strong> Controller ủy quyền sang <code>ProxyBiddingService.placeBid()</code> thực hiện khóa bi quan CSDL.<br>
+    <strong>5. Thiết kế dữ liệu:</strong> Cập nhật bảng <code>proxy_bids</code>, ghi lịch sử vào bảng <code>bids</code> và cập nhật giá mới vào bảng <code>auctions</code>.<br>
+    <strong>6. Kiểm thử tự động:</strong> Test case <code>ProxyBiddingServiceTest.java</code> kiểm tra đầy đủ 3 kịch bản: Happy path (người sau trả cao hơn người trước), Biên (nhảy giá chạm Reserve Price), Ngoại lệ (người bán tự bid hàng mình bị từ chối).
+</div>
+
+<h3>Truy vết 2: Quy trình Thanh toán bảo chứng (Escrow Checkout) & Giải ngân</h3>
+<div class="callout success">
+    <strong>Chuỗi liên kết truy vết khép kín:</strong><br>
+    <strong>1. Yêu cầu (BR-08, BR-09, FR-08, FR-09):</strong> Tiền thanh toán phải được giữ tại ví trung gian Escrow; người mua xác nhận nhận hàng mới giải ngân 95% cho người bán (sàn thu 5%).<br>
+    <strong>2. Use Case (UC-05):</strong> Người mua nhấn "Thanh toán qua ví" trên danh sách đơn hàng trúng đấu giá.<br>
+    <strong>3. Thiết kế đối tượng:</strong> <code>OrderService</code> gọi <code>WalletFacade.transferEscrow()</code> để phong tỏa tiền.<br>
+    <strong>4. Thiết kế dữ liệu:</strong> Trừ tiền ví người mua, cộng tiền ví <code>SYSTEM_ESCROW</code>, ghi bản ghi vào <code>transactions</code> với <code>idempotency_key</code>.<br>
+    <strong>5. Kiểm thử tự động:</strong> Test case <code>OrderServiceTest.java</code> kiểm tra tự động giải ngân đúng 95% số tiền và trích 5% về ví doanh thu sàn.
+</div>
+
+<!-- CHƯƠNG 13, 14, TÀI LIỆU THAM KHẢO & PHỤ LỤC -->
+<div class="page-break"></div>
+<h1>13. CHANGE LOG, 14. CONCLUSION & CHECKLIST TRƯỚC KHI NỘP</h1>
+
+<h2>13.1. Nhật ký thay đổi thiết kế quan trọng (Change Request CR-01)</h2>
+<table>
+    <thead><tr><th>Mã CR</th><th>Nội dung thay đổi</th><th>Lý do & Tác động</th><th>Quyết định</th><th>Phiên bản</th></tr></thead>
+    <tbody>
+        <tr>
+            <td><strong>CR-01</strong></td>
+            <td>Chuyển đổi từ mô hình đấu giá tài sản nhà nước (nộp cọc trước 20%, 19 bảng) sang mô hình thương mại đấu giá tự động kiểu eBay (14 bảng).</td>
+            <td>Mô hình cũ quá nặng về thủ tục hành chính, không phản ánh được thuật toán hướng đối tượng thời gian thực. Mô hình mới tăng tính tương tác, áp dụng triệt để Proxy Bidding và Escrow.</td>
+            <td><span class="badge-pass">CHẤP THUẬN (ACCEPTED)</span></td>
+            <td>v0.9 $ightarrow$ v1.0</td>
+        </tr>
+    </tbody>
+</table>
+
+<h2>13.2. Bài học kinh nghiệm của nhóm (Lessons Learned)</h2>
+<table>
+    <thead><tr><th>Lĩnh vực</th><th>Kinh nghiệm rút ra từ thực tế thực hiện PROJECT_1</th><th>Nếu được làm lại sẽ cải tiến điều gì?</th></tr></thead>
+    <tbody>
+        <tr><td><strong>OO Analysis</strong></td><td>Không được nhầm lẫn giữa Sơ đồ lớp phân tích (Domain Model) và Thiết kế bảng CSDL (ERD). Cần tập trung vào khái niệm đối tượng trước khi nghĩ đến bảng dữ liệu.</td><td>Xây dựng Domain Model kỹ lưỡng ngay từ tuần 1 trước khi viết migration SQL.</td></tr>
+        <tr><td><strong>Consistency</strong></td><td>Khi thay đổi thiết kế cốt lõi (như chuyển từ 19 bảng sang 14 bảng), phải rà soát và cập nhật toàn bộ tài liệu (README, HTML, Draw.io) để tránh đứt gãy tính nhất quán.</td><td>Áp dụng quy trình kiểm tra chéo (Peer Review) giữa các thành viên chặt chẽ hơn.</td></tr>
+        <tr><td><strong>Testing</strong></td><td>Kiểm thử tương tranh (Concurrency) trong bài toán đấu giá là bắt buộc. Khóa bi quan là giải pháp đơn giản nhưng cực kỳ hiệu quả để đảm bảo tính toàn vẹn.</td><td>Viết thêm các bài test tải tự động với JMeter mô phỏng 100 người cùng bid giây cuối.</td></tr>
+    </tbody>
+</table>
+
+<h2>13.3. Checklist nghiệm thu hồ sơ trước khi nộp đồ án (Phụ lục D)</h2>
+<table>
+    <thead><tr><th>STT</th><th>Hạng mục tự kiểm tra theo yêu cầu giảng viên</th><th>Trạng thái</th><th>Ghi chú minh chứng</th></tr></thead>
+    <tbody>
+        <tr><td>01</td><td>Document Control, version history và thông tin thành viên đã hoàn thiện</td><td><span class="badge-pass">ĐẠT (✓)</span></td><td>Mục 0.1, 0.2 đầy đủ</td></tr>
+        <tr><td>02</td><td>Phân rã rõ ràng bài toán, phạm vi In-Scope / Out-of-Scope và Stakeholder</td><td><span class="badge-pass">ĐẠT (✓)</span></td><td>Chương 1 chi tiết</td></tr>
+        <tr><td>03</td><td>FR / NFR / BR có mã ID rõ ràng và tiêu chí nghiệm thu kiểm thử được</td><td><span class="badge-pass">ĐẠT (✓)</span></td><td>FR-01..12, BR-01..25</td></tr>
+        <tr><td>04</td><td>Use Case phản ánh mục tiêu nghiệp vụ (Proxy Bidding, Escrow), không chỉ là CRUD</td><td><span class="badge-pass">ĐẠT (✓)</span></td><td>4 Use Case đặc tả sâu</td></tr>
+        <tr><td>05</td><td>Có đầy đủ Activity Diagram có rẽ nhánh điều kiện và Sequence Diagrams</td><td><span class="badge-pass">ĐẠT (✓)</span></td><td>Hình 3.2, 3.3, 3.4</td></tr>
+        <tr><td>06</td><td>Phân biệt rõ ràng Analysis Class Diagram và Design Class Diagram</td><td><span class="badge-pass">ĐẠT (✓)</span></td><td>Hình 4.1 và Hình 6.1</td></tr>
+        <tr><td>07</td><td>Kiến trúc phân biệt rõ ràng Logical Layer và Deployment Tier; có ít nhất 1 ADR</td><td><span class="badge-pass">ĐẠT (✓)</span></td><td>Chương 5, ADR-01 chuẩn</td></tr>
+        <tr><td>08</td><td>Data Design có PK/FK/UNIQUE/NOT NULL/CHECK và giải thích ánh xạ</td><td><span class="badge-pass">ĐẠT (✓)</span></td><td>Chương 7 (14 bảng)</td></tr>
+        <tr><td>09</td><td>UI/UX có danh mục màn hình, luồng thao tác và xử lý phản hồi lỗi</td><td><span class="badge-pass">ĐẠT (✓)</span></td><td>Chương 8 (4 màn hình chính)</td></tr>
+        <tr><td>10</td><td>API Specification có đầy đủ Request, Response và Error Contract</td><td><span class="badge-pass">ĐẠT (✓)</span></td><td>Chương 9 (JSON payload)</td></tr>
+        <tr><td>11</td><td>Security có Ma trận Phân quyền (Role-Permission) và kiểm soát toàn vẹn</td><td><span class="badge-pass">ĐẠT (✓)</span></td><td>Mục 10.1 bảng 2 chiều</td></tr>
+        <tr><td>12</td><td>Bộ Test Cases bao phủ Happy path, Giá trị biên và Ngoại lệ</td><td><span class="badge-pass">ĐẠT (✓)</span></td><td>Chương 12 (12 file JUnit 5)</td></tr>
+        <tr><td>13</td><td>Có Ma trận truy vết RTM kết nối từ Yêu cầu $ightarrow$ Thiết kế $ightarrow$ Kiểm thử</td><td><span class="badge-pass">ĐẠT (✓)</span></td><td>Mục 12.1 bảng RTM</td></tr>
+        <tr><td>14</td><td>Đã dọn dẹp các tài liệu cũ mâu thuẫn, đảm bảo tính nhất quán 100%</td><td><span class="badge-pass">ĐẠT (✓)</span></td><td>Đồng bộ hoàn toàn 14 bảng</td></tr>
+    </tbody>
+</table>
+
+<div style="margin-top: 40px; text-align: center; color: #64748b; font-size: 9pt;">
+    --- HẾT HỒ SƠ PHÂN TÍCH THIẾT KẾ PHẦN MỀM (SDDOSSIER - VERSION 1.0) ---
+</div>
+
+</body>
+</html>

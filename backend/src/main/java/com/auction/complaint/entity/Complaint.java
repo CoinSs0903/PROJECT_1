@@ -1,12 +1,25 @@
 package com.auction.complaint.entity;
 
-import com.auction.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "complaints")
-public class Complaint extends BaseEntity {
+public class Complaint {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();
+        }
+    }
 
     @Column(name = "order_id", nullable = false)
     private Long orderId;
@@ -33,6 +46,22 @@ public class Complaint extends BaseEntity {
     private LocalDateTime resolvedAt;
 
     public Complaint() {}
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
 
     public Long getOrderId() {
         return orderId;
